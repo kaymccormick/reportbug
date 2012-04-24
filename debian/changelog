@@ -29,8 +29,11 @@ reportbug (6.3.2) UNRELEASED; urgency=low
   * reportbug/{debbugs, utils}.py
     - report foreign architectures information (if m-a); thanks to Cyril
       Brulebois for the report; Closes: #658795
+  * bin/reportbug, man/reportbug.*
+    - fix several typos; thanks to Simon Kainz for the report and patch;
+      Closes: #669249
 
- -- Sandro Tosi <morph@debian.org>  Sun, 08 Apr 2012 00:55:40 +0200
+ -- Sandro Tosi <morph@debian.org>  Tue, 24 Apr 2012 23:59:14 +0200
 
 reportbug (6.3.1) unstable; urgency=low
 
