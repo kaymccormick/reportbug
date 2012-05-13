@@ -496,7 +496,52 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         body    = "nmu %s_%s . %s . -m \"%s\"\n" % (package, version, archs or "ALL", reason)
     elif tag == 'transition':
         subject = 'transition: %s' % (package)
-        body    = '(please explain about the transition: impacted packages, reason, ...)\n'
+        body    = '(please explain about the transition: impacted packages, reason, ...\n' \
+                  ' for more info see: https://wiki.debian.org/Teams/ReleaseTeam/Transitions)\n'
+        affected = '<Fill out>'
+        good = '<Fill out>'
+        bad = '<Fill out>'
+
+        ui.long_message('To assist the release team, please fill in the following information. '
+                        'You will be asked to provide package names of the library package(s) '
+                        'that are the source of the transition.  If more than one library is '
+                        'changing the name, please use a space separated list.  Alternatively '
+                        'you can use a regex by enclosing the regex in slashes ("/").  Please '
+                        'ensure that the "old" regex does not match the "new" packages.')
+
+        prompt = 'Please enter old binary package name of the library (or a regex matching it):'
+        tfrom = ui.get_string(prompt)
+        if tfrom:
+            prompt = 'Please enter new binary package name of the library (or a regex matching it):'
+            tto = ui.get_string(prompt)
+        else:
+            tto = None
+        if tfrom and tto:
+            # Compute a ben file from this.
+
+            # (quote if x does not start with a "/")
+            quote=lambda x: (x[0] == '/' and x) or '"%s"' % x
+
+            listbad = [quote(x) for x in tfrom.strip().split()]
+            listgood = [quote(x) for x in tto.strip().split()]
+
+            j = " | .depends ~ ".join
+            affected = ".depends ~ " + j(listbad + listgood)
+            good = ".depends ~ " + j(listgood)
+            bad = ".depends ~ " + j(listbad)
+
+
+        body += textwrap.dedent(u"""\
+
+               Ben file:
+
+               title = "%s";
+               is_affected = %s;
+               is_good = %s;
+               is_bad = %s;
+
+               """ % (package, affected, good, bad))
+
     elif tag == 'britney':
         subject = subject_britney
         body = ''
