@@ -16,6 +16,8 @@ reportbug (6.3.2) UNRELEASED; urgency=low
       requests, so reportbug won't crash if proper values (for section and
       priority) is not found; thanks to James McCoy for the report;
       Closes: #658748
+    - support release team generating "ben" files when requesting a transition;
+      thanks to Niels Thykier for the report and patch; Closes: #672722
   * reportbug/utils.py
     - correctly report the installation status for each dependency packages, not
       just the last status applied to each pkgs; thanks to Piotr Engelking for
@@ -35,7 +37,7 @@ reportbug (6.3.2) UNRELEASED; urgency=low
     - fix several typos; thanks to Simon Kainz for the report and patch;
       Closes: #669249
 
- -- Sandro Tosi <morph@debian.org>  Sun, 03 Jun 2012 18:04:58 +0200
+ -- Sandro Tosi <morph@debian.org>  Sun, 03 Jun 2012 18:35:50 +0200
 
 reportbug (6.3.1) unstable; urgency=low
 
