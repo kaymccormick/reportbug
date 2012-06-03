@@ -509,7 +509,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
                         'you can use a regex by enclosing the regex in slashes ("/").  Please '
                         'ensure that the "old" regex does not match the "new" packages.  '
                         'Example: old="/libapt-pkg4.10|libapt-inst1.2/ libept1" '
-                        'new="/libapt-pkg4.12|libapt-inst1.5|libept1.4.12/"')
+                        'new="/libapt-pkg4.12|libapt-inst1.5|libept1.4.12/". For futher '
+                        'reference, please refer to http://ben.debian.net/ .')
 
         prompt = 'Please enter old binary package name of the library (or a regex matching it):'
         tfrom = ui.get_string(prompt)
