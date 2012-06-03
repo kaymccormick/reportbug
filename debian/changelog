@@ -3,6 +3,8 @@ reportbug (6.3.2) UNRELEASED; urgency=low
   * reportbug/checkversions.py
     - match version on the precise architecture, not just check string
       inclusiong; thanks to Nelson de Oliveira for the report; Closes: #650651
+    - include arch:all in package versions lookup; thanks to Hilmar Preuße for
+      the report; Closes: #673204
   * bin/reportbug
     - clarify the menu title when presenting more packages; thanks to Alois
       Mahdal for the report; Closes: #654165
@@ -33,7 +35,7 @@ reportbug (6.3.2) UNRELEASED; urgency=low
     - fix several typos; thanks to Simon Kainz for the report and patch;
       Closes: #669249
 
- -- Sandro Tosi <morph@debian.org>  Tue, 24 Apr 2012 23:59:14 +0200
+ -- Sandro Tosi <morph@debian.org>  Sun, 03 Jun 2012 18:04:58 +0200
 
 reportbug (6.3.1) unstable; urgency=low
 

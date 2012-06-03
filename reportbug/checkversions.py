@@ -130,7 +130,8 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
         if dist in dists:
             # select only those lines that refers to source pkg
             # or to binary packages available on the current arch
-            if 'source' in l[3].split(',') or arch in l[3].split(','):
+            if 'source' in l[3].split(',') or arch in l[3].split(',') or \
+                    l[3] == 'all':
                 versions[dist] = l[1]
 
     return versions
