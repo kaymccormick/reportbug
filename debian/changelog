@@ -1,4 +1,4 @@
-reportbug (6.3.2) UNRELEASED; urgency=low
+reportbug (6.4) unstable; urgency=low
 
   * reportbug/checkversions.py
     - match version on the precise architecture, not just check string
@@ -42,7 +42,7 @@ reportbug (6.3.2) UNRELEASED; urgency=low
       before preparing the report body; Closes: #666469
   * Extend my copyright years to include 2012
 
- -- Sandro Tosi <morph@debian.org>  Wed, 06 Jun 2012 22:06:46 +0200
+ -- Sandro Tosi <morph@debian.org>  Wed, 06 Jun 2012 22:10:17 +0200
 
 reportbug (6.3.1) unstable; urgency=low
 
