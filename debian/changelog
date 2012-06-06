@@ -30,6 +30,7 @@ reportbug (6.3.2) UNRELEASED; urgency=low
       report; Closes: #661221
   * debian/control
     - added python-mock to b-d-i, needed for the test suite
+    - bump Standards-Version to 3.9.3 (no changes needed)
   * reportbug/{debbugs, utils}.py
     - report foreign architectures information (if m-a); thanks to Cyril
       Brulebois for the report; Closes: #658795
@@ -40,7 +41,7 @@ reportbug (6.3.2) UNRELEASED; urgency=low
     - initial support for multi-arch: keep arch-qualifier and remove it just
       before preparing the report body; Closes: #666469
 
- -- Sandro Tosi <morph@debian.org>  Wed, 06 Jun 2012 21:40:07 +0200
+ -- Sandro Tosi <morph@debian.org>  Wed, 06 Jun 2012 22:03:24 +0200
 
 reportbug (6.3.1) unstable; urgency=low
 
