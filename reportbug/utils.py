@@ -180,7 +180,7 @@ def query_dpkg_for(filename, use_dlocate=True):
         # Ignore diversions
         if 'diversion by' in line: continue
 
-        (package, path) = line.split(':', 1)
+        (package, path) = line.split(': ', 1)
         path = path.strip()
         packlist = package.split(', ')
         for package in packlist:

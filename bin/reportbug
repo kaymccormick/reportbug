@@ -2068,7 +2068,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                     pass
         else:
             message = utils.generate_blank_report(
-                submitas or package, pkgversion, severity, justification,
+                (submitas or package).split(':')[0], pkgversion, severity, justification,
                 depinfo, conftext, foundfile, incfiles, bts, exinfo, rtype,
                 klass, subject, tags, body, mode, pseudos, debsumsoutput,
                 issource=issource)
