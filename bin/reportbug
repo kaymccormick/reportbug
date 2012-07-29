@@ -2067,8 +2067,13 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                 except IOError:
                     pass
         else:
+            p = submitas or package
+            # multiarch: remove arch qualifier only if we're not reporting
+            # against the src package
+            if not p.startswith('src:'):
+                p = p.split(':')[0]
             message = utils.generate_blank_report(
-                (submitas or package).split(':')[0], pkgversion, severity, justification,
+                p, pkgversion, severity, justification,
                 depinfo, conftext, foundfile, incfiles, bts, exinfo, rtype,
                 klass, subject, tags, body, mode, pseudos, debsumsoutput,
                 issource=issource)
