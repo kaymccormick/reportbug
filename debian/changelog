@@ -1,10 +1,10 @@
-reportbug (6.4.1) UNRELEASED; urgency=low
+reportbug (6.4.1) unstable; urgency=low
 
   * bin/reportbug
     - remove arch qualifier (for m-a) only if we're not reporting against the
       source package; thanks to Vincent Lefevre for the report; Closes: #681157
 
- -- Sandro Tosi <morph@debian.org>  Sun, 29 Jul 2012 11:08:10 +0200
+ -- Sandro Tosi <morph@debian.org>  Sun, 29 Jul 2012 11:10:25 +0200
 
 reportbug (6.4) unstable; urgency=low
 
