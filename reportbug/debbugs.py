@@ -401,7 +401,6 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         'britney':          "testing migration script bugs",
         'transition':       "transition tracking",
         'unblock':          "unblock requests",
-        'freeze-exception': "Freeze exceptions",
         'opu':              "oldstable proposed updates requests",
         'pu':               "stable proposed updates requests",
         'rm':               "Stable/Testing removal requests",
@@ -448,7 +447,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         else:
             package = info[12] or package
 
-    if tag in ('binnmu', 'unblock', 'freeze-exception', 'opu', 'pu', 'rm'):
+    if tag in ('binnmu', 'unblock', 'opu', 'pu', 'rm'):
         # FIXME: opu/pu/rm should lookup the version elsewhere
         version = info and info[0]
         if online:
@@ -548,7 +547,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     elif tag == 'britney':
         subject = subject_britney
         body = ''
-    elif tag == 'unblock' or tag == 'freeze-exception':
+    elif tag == 'unblock':
         subject = 'unblock: %s/%s' % (package, version)
         body    = textwrap.dedent(u"""\
                 Please unblock package %s

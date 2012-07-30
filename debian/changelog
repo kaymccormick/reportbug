@@ -1,3 +1,11 @@
+reportbug (6.4.2) UNRELEASED; urgency=low
+
+  * reportbug/debbugs.py
+    - remove 'freeze-exception' option for release.d.o package; thanks to Niels
+      Thykier for the report; Closes: #683272
+
+ -- Sandro Tosi <morph@debian.org>  Mon, 30 Jul 2012 18:51:49 +0200
+
 reportbug (6.4.1) unstable; urgency=low
 
   * bin/reportbug
