@@ -1,3 +1,10 @@
+reportbug (6.99.0) UNRELEASED; urgency=low
+
+  * reportbug/debbugs.py
+    - fix a typo; thanks to Niels Thykier for the report; Closes: #683277
+
+ -- Sandro Tosi <morph@debian.org>  Wed, 15 Aug 2012 23:25:43 +0200
+
 reportbug (6.4.3) unstable; urgency=low
 
   * reportbug/debbugs.py
