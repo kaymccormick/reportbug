@@ -1,4 +1,4 @@
-;; Vague implementation of needed code to invoke GNUS from reportbug
+;; Vague implementation of needed code to invoke Gnus from reportbug
 ;; by Tollef Fog Heen
 (require 'gnus)
 
