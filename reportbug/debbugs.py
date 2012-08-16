@@ -213,8 +213,6 @@ def handle_debian_ftp(package, bts, ui, fromaddr, timeout, online=True, http_pro
         "Package removal - Requested by the QA team.",
         'ROP' :
         "Package removal - Request of Porter.",
-        'ROSRM' :
-        "Package removal - Request of Stable Release Manager.",
         'NBS' :
         "Package removal - Not Built [by] Source.",
         'NPOASR' :

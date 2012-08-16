@@ -2,11 +2,14 @@ reportbug (6.99.0) UNRELEASED; urgency=low
 
   * reportbug/debbugs.py
     - fix a typo; thanks to Niels Thykier for the report; Closes: #683277
+    - remove 'ROSRM' options from ftp.d.o removal requests; thanks to Scott
+      Kitterman for the report and to Adam D. Barratt and Philipp Kern for
+      ack'ing it (on IRC); Closes: #682105
   * bin/reportbug, man/reportbug.1, share/reportbug.el
     - the correct name is Gnus, not GNUS; thanks to Tollef Fog Heen for the
       report; Closes: #683325
 
- -- Sandro Tosi <morph@debian.org>  Wed, 15 Aug 2012 23:28:59 +0200
+ -- Sandro Tosi <morph@debian.org>  Thu, 16 Aug 2012 21:02:12 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
