@@ -1,4 +1,4 @@
-reportbug (6.4.3) UNRELEASED; urgency=low
+reportbug (6.4.3) unstable; urgency=low
 
   * reportbug/debbugs.py
     - add a note to include/attach the debdiff in case of unblocks for
@@ -16,7 +16,7 @@ reportbug (6.4.3) UNRELEASED; urgency=low
       package, don't present '-1' as resulting package, but that nothing was
       selected; thanks to Valentin Lorentz for the report; Closes: #667663
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 21:27:38 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 22:49:44 +0200
 
 reportbug (6.4.2) unstable; urgency=low
 
