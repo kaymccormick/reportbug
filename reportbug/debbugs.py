@@ -554,6 +554,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
 
                 (explain the reason for the unblock here)
 
+                (include/attach the debdiff against the package in testing)
+
                 unblock %s/%s
                 """ % (package, package, version))
     elif tag == 'pu' or tag == 'opu':

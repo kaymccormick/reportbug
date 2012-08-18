@@ -1,3 +1,12 @@
+reportbug (6.4.3) UNRELEASED; urgency=low
+
+  * reportbug/debbugs.py
+    - add a note to include/attach the debdiff in case of unblocks for
+      release.d.o; thanks to Ulrich Dangel for the report and to Niels Thykier
+      for ack'ing it on IRC; Closes: #681206
+
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 14:07:24 +0200
+
 reportbug (6.4.2) unstable; urgency=low
 
   * reportbug/debbugs.py
