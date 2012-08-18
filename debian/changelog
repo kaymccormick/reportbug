@@ -12,8 +12,11 @@ reportbug (6.99.0) UNRELEASED; urgency=low
     - mention that deb-src lines has to be available in sources.list to populate
       apt cache with source packages too, needed for --src/--source option to
       work; thanks to Ian Bruce for the report; Closes: #684227
+  * reportbug/submit.py
+    - properly handle ~/~user in --output cli option, expanding it to the user's
+      homedir; thanks to Fritz Wuehler for the report; Closes: #680465
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 11:54:38 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 15:11:56 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
