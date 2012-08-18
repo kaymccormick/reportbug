@@ -50,7 +50,7 @@ STATUSDB = os.path.join(DPKGLIB, 'status')
 # Headers other than these become email headers for debbugs servers
 PSEUDOHEADERS = ('Package', 'Source', 'Version', 'Severity', 'File', 'Tags',
                  'Justification', 'Followup-For', 'Owner', 'User', 'Usertags',
-                 'Forwarded')
+                 'Forwarded', 'Control')
 
 MODES = {'novice': 'Offer simple prompts, bypassing technical questions.',
          'standard': 'Offer more extensive prompts, including asking about '

@@ -4,8 +4,11 @@ reportbug (6.4.3) UNRELEASED; urgency=low
     - add a note to include/attach the debdiff in case of unblocks for
       release.d.o; thanks to Ulrich Dangel for the report and to Niels Thykier
       for ack'ing it on IRC; Closes: #681206
+  * reportbug/utils.py
+    - recognize Control as a pseudo-header; thanks to Paul Wise for the report;
+      Closes: #684540
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 14:07:24 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 16:03:33 +0200
 
 reportbug (6.4.2) unstable; urgency=low
 
