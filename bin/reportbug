@@ -406,6 +406,9 @@ def find_package_for(filename, notatty=False, pathonly=False):
 
         package = ui.menu("Multiple packages match: ", packs, 'Select one '
                           'of these packages: ', any_ok=True)
+        # for urwid, when pressing 'Cancel' in the menu
+        if package == -1:
+            package = None
         return (filename, package)
     else:
         package = packages.keys()[0]

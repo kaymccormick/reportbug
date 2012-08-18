@@ -11,8 +11,12 @@ reportbug (6.4.3) UNRELEASED; urgency=low
     - fix a crash when selecting 'Quit' in the Urwid UI window presenting the
       list of bugs already filed; thanks to Ryan Kavanagh for the report;
       Closes: #668395
+  * bin/reportbug
+    - in Urwid UI, when cancelling on the list of packages matching the input
+      package, don't present '-1' as resulting package, but that nothing was
+      selected; thanks to Valentin Lorentz for the report; Closes: #667663
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 18:28:22 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 21:27:38 +0200
 
 reportbug (6.4.2) unstable; urgency=low
 
