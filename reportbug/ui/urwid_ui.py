@@ -609,6 +609,9 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                 if info < 0:
                     if info == -1:
                         result = None
+                    # -2 is the Quit response, triggers the exiting way in main
+                    elif info == -2:
+                        raise NoReport
                     else:
                         # uniform to return Bugreport instance
                         result = debbugs.get_report(info, timeout)[0]

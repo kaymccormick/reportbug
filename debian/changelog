@@ -7,8 +7,12 @@ reportbug (6.4.3) UNRELEASED; urgency=low
   * reportbug/utils.py
     - recognize Control as a pseudo-header; thanks to Paul Wise for the report;
       Closes: #684540
+  * reportbug/ui/urwid_ui.py
+    - fix a crash when selecting 'Quit' in the Urwid UI window presenting the
+      list of bugs already filed; thanks to Ryan Kavanagh for the report;
+      Closes: #668395
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 16:03:33 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Aug 2012 18:28:22 +0200
 
 reportbug (6.4.2) unstable; urgency=low
 
