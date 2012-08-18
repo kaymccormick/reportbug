@@ -425,7 +425,10 @@ $HOME/.reportbugrc\fP).
 .TP
 .B \-\-src, \-\-source
 Specify to report the bug against the source package, and not the
-binary package (default behaviour).
+binary package (default behaviour).  In order for this option to work,
+you have to populate the relevant 'deb-src' lines in
+/etc/apt/sources.list so that apt cache will know about source packages
+too.
 .TP
 .B \-t TYPE, \-\-type=TYPE
 Specify the type of report to be submitted; currently accepts either
