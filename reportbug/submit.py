@@ -481,7 +481,8 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             for address in cclist:
                 ewrite('  %s\n', address)
 
-    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed:
+    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed \
+            and mailing:
         ewrite('\n')
         ui.long_message(
             """If you want to provide additional information, please wait to

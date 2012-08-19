@@ -18,6 +18,9 @@ reportbug (6.99.0) UNRELEASED; urgency=low
   * reportbug/submit.py
     - properly handle ~/~user in --output cli option, expanding it to the user's
       homedir; thanks to Fritz Wuehler for the report; Closes: #680465
+    - don't show the last menu (about how to provide additional info) if
+      quitting or saving to file; thanks to Adrian Bunk for the report;
+      Closes: #668838
   * reportbug/ui/gtk2_ui.py
     - hide 'Apply' button on the last screen of GTK+ UI; thanks to Samuel Hym
       for the report; Closes: #675735
@@ -26,7 +29,7 @@ reportbug (6.99.0) UNRELEASED; urgency=low
       the package to associate the bug to; thanks to Jonathan Nieder for the
       report and patch; Closes: #661563
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Aug 2012 19:20:49 +0200
+ -- Sandro Tosi <morph@debian.org>  Sun, 19 Aug 2012 22:06:14 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
