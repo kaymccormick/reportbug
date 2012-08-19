@@ -28,8 +28,11 @@ reportbug (6.99.0) UNRELEASED; urgency=low
     - suggests to contact debian-users@ in case of difficulties in identifying
       the package to associate the bug to; thanks to Jonathan Nieder for the
       report and patch; Closes: #661563
+  * reportbug/utils.py
+    - identify also config files with spaces in the filename; thanks to Vincent
+      Lefevre for the report; Closes: #669022
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Aug 2012 22:06:14 +0200
+ -- Sandro Tosi <morph@debian.org>  Mon, 20 Aug 2012 00:59:38 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
