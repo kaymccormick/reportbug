@@ -12,6 +12,9 @@ reportbug (6.99.0) UNRELEASED; urgency=low
     - mention that deb-src lines has to be available in sources.list to populate
       apt cache with source packages too, needed for --src/--source option to
       work; thanks to Ian Bruce for the report; Closes: #684227
+    - clarify that when using an external MUA, the attachment feature will not
+      be able to send those files to the MUA, so they are actually discarded;
+      thanks to Stefano Rivera for the report; Closes: #679907
   * reportbug/submit.py
     - properly handle ~/~user in --output cli option, expanding it to the user's
       homedir; thanks to Fritz Wuehler for the report; Closes: #680465
@@ -19,7 +22,7 @@ reportbug (6.99.0) UNRELEASED; urgency=low
     - hide 'Apply' button on the last screen of GTK+ UI; thanks to Samuel Hym
       for the report; Closes: #675735
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Aug 2012 12:25:03 +0200
+ -- Sandro Tosi <morph@debian.org>  Sun, 19 Aug 2012 18:34:50 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
