@@ -31,8 +31,11 @@ reportbug (6.99.0) UNRELEASED; urgency=low
   * reportbug/utils.py
     - identify also config files with spaces in the filename; thanks to Vincent
       Lefevre for the report; Closes: #669022
+  * debian/control
+    - update Suggests on emacs packages; thanks to Adrian Bunk for the report;
+      Closes: #686165
 
- -- Sandro Tosi <morph@debian.org>  Mon, 20 Aug 2012 00:59:38 +0200
+ -- Sandro Tosi <morph@debian.org>  Wed, 29 Aug 2012 17:54:16 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 
