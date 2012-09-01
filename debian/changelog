@@ -24,6 +24,9 @@ reportbug (6.99.0) UNRELEASED; urgency=low
   * reportbug/ui/gtk2_ui.py
     - hide 'Apply' button on the last screen of GTK+ UI; thanks to Samuel Hym
       for the report; Closes: #675735
+    - remove indication that 'e' would edit the bug report in the last menu,
+      it's text UI specific; thanks to David Smith for the report;
+      Closes: #686168
   * bin/reportbug
     - suggests to contact debian-users@ in case of difficulties in identifying
       the package to associate the bug to; thanks to Jonathan Nieder for the
@@ -35,7 +38,7 @@ reportbug (6.99.0) UNRELEASED; urgency=low
     - update Suggests on emacs packages; thanks to Adrian Bunk for the report;
       Closes: #686165
 
- -- Sandro Tosi <morph@debian.org>  Wed, 29 Aug 2012 17:54:16 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 01 Sep 2012 22:51:33 +0200
 
 reportbug (6.4.3) unstable; urgency=low
 

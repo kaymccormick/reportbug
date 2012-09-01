@@ -1215,6 +1215,8 @@ class SelectOptionsPage (Page):
             self.default.grab_focus ()
 
     def execute (self, prompt, menuopts, options):
+        # remove text UI indication
+        prompt = prompt.replace(' (e to edit)', '')
         self.label.set_text (prompt)
 
         buttons = []
