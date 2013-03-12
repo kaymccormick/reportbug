@@ -1,4 +1,4 @@
-reportbug (6.4.4) UNRELEASED; urgency=low
+reportbug (6.4.4) unstable; urgency=low
 
   * reportbug/ui/gtk2_ui.py
     - proper update GTK+ UI from threads, using gobject.idle_add(), possibily
@@ -6,7 +6,7 @@ reportbug (6.4.4) UNRELEASED; urgency=low
       reporters and to Bruno Filipe Oliveira Ramos for the patch;
       Closes: #620225
 
- -- Sandro Tosi <morph@debian.org>  Tue, 12 Mar 2013 23:20:05 +0100
+ -- Sandro Tosi <morph@debian.org>  Tue, 12 Mar 2013 23:45:13 +0100
 
 reportbug (6.4.3) unstable; urgency=low
 
