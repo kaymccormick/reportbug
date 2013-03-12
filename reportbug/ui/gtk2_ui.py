@@ -616,7 +616,7 @@ class GetStringPage (Page):
 
     def execute (self, prompt, options=None, force_prompt=False, default=''):
         # Hackish: remove the text needed for textual UIs...
-        self.label.set_text (prompt.replace(' (enter Ctrl+c to exit reportbug without reporting a bug)', ''))
+        gobject.idle_add (self.label.set_text, prompt.replace(' (enter Ctrl+c to exit reportbug without reporting a bug)', ''))
         self.entry.set_text (default)
 
         if options:
@@ -673,7 +673,7 @@ class GetMultilinePage (Page):
     def execute (self, prompt):
         self.empty_ok = True
         # The result must be iterable for reportbug even if it's empty and not modified
-        self.label.set_text (prompt)
+        gobject.idle_add (self.label.set_text, prompt)
         self.buffer.set_text ("")
         self.buffer.emit ('changed')
 
@@ -762,7 +762,7 @@ class GetListPage (TreePage):
     def execute (self, prompt):
         self.empty_ok = True
 
-        self.label.set_text (prompt)
+        gobject.idle_add (self.label.set_text, prompt)
 
         self.model = gtk.ListStore (str)
         self.model.connect ('row-changed', self.validate)
@@ -803,7 +803,7 @@ class MenuPage (TreePage):
 
     def execute (self, par, options, prompt, default=None, any_ok=False,
                  order=None, extras=None, multiple=False):
-        self.label.set_text (par)
+        gobject.idle_add (self.label.set_text, par)
 
         self.model = gtk.ListStore (str, str)
         self.view.set_model (self.model)
@@ -1011,7 +1011,7 @@ class HandleBTSQueryPage (TreePage):
         return matches
 
     def execute (self, buglist, sectitle):
-        self.label.set_text ("%s. Double-click a bug to retrieve and submit more information." % sectitle)
+        gobject.idle_add (self.label.set_text, "%s. Double-click a bug to retrieve and submit more information." % sectitle)
 
         self.model = gtk.TreeStore (*([str] * len (self.columns)))
         for category in buglist:
@@ -1089,7 +1089,7 @@ class LongMessagePage (Page):
         message = message % args
         # make it all on one line, it will be wrapped at display-time
         message = ' '.join(message.split())
-        self.label.set_text (message)
+        gobject.idle_add (self.label.set_text, message)
         # Reportbug should use final_message, so emulate it
         if ('999999' in message):
             self.set_page_type (gtk.ASSISTANT_PAGE_CONFIRM)
@@ -1215,7 +1215,7 @@ class SelectOptionsPage (Page):
             self.default.grab_focus ()
 
     def execute (self, prompt, menuopts, options):
-        self.label.set_text (prompt)
+        gobject.idle_add (self.label.set_text, prompt)
 
         buttons = []
         for menuopt in menuopts:
@@ -1294,7 +1294,7 @@ class ProgressPage (Page):
         return vbox
 
     def set_label (self, text):
-        self.label.set_text (text)
+        gobject.idle_add (self.label.set_text, text)
 
     def reset_label (self):
         self.set_label ("This operation may take a while")
