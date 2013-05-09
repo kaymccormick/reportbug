@@ -89,9 +89,9 @@ fhs_directories = ['/', '/usr', '/usr/share', '/var', '/usr/X11R6',
                    '/usr/man', '/usr/doc', '/usr/bin']
 
 # A map between suites and distributions names
-SUITES2DISTS = {'lenny': 'oldstable',
-                'squeeze': 'stable',
-                'wheezy': 'testing',
+SUITES2DISTS = {'squeeze': 'oldstable',
+                'wheezy': 'stable',
+                'jessie': 'testing',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
 
