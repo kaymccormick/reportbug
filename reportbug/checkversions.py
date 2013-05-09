@@ -104,8 +104,15 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
     if not dists:
         dists = ('oldstable', 'stable', 'testing', 'unstable', 'experimental')
 
+    arch = utils.get_arch()
+
+    url = RMADISON_URL % package
+    url += '&s=' + ','.join(dists)
+    # select only those lines that refers to source pkg
+    # or to binary packages available on the current arch
+    url += '&a=source,all,' + arch
     try:
-        page = open_url(RMADISON_URL % package)
+        page = open_url(url)
     except NoNetwork:
         return {}
     except urllib2.HTTPError, x:
@@ -118,7 +125,6 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
     content = page.read().replace(' ', '').strip()
     page.close()
 
-    arch = utils.get_arch()
     versions = {}
     for line in content.split('\n'):
         l = line.split('|')
@@ -126,13 +132,8 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
         if len(l) != 4:
             continue
         # map suites name (returned by madison) to dist name
-        dist = utils.SUITES2DISTS.get(l[2], '')
-        if dist in dists:
-            # select only those lines that refers to source pkg
-            # or to binary packages available on the current arch
-            if 'source' in l[3].split(',') or arch in l[3].split(',') or \
-                    l[3] == 'all':
-                versions[dist] = l[1]
+        dist = utils.SUITES2DISTS.get(l[2], l[2])
+        versions[dist] = l[1]
 
     return versions
 

@@ -90,3 +90,9 @@ class TestVersionAvailable(unittest2.TestCase):
         # squeeze (stable at this time) is the first suite where texlive-xetex
         # is arch:all
         self.assertIn('stable', vers)
+
+    @attr('network')
+    def test_codenames(self):
+        vers = checkversions.get_versions_available('reportbug', 60, ['sid'])
+	self.assertEqual(1, len(vers))
+	self.assertEqual(vers.keys()[0], 'unstable')
