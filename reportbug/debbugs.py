@@ -401,8 +401,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         'britney':          "testing migration script bugs",
         'transition':       "transition tracking",
         'unblock':          "unblock requests",
-        'opu':              "oldstable proposed updates requests",
-        'pu':               "stable proposed updates requests",
+        'squeeze-pu':       "squeeze proposed updates requests",
+        'wheezy-pu':        "wheezy proposed updates requests",
         'rm':               "Stable/Testing removal requests",
         'other' :           "None of the other options",
         }, 'Choose the request type: ', empty_ok=True)
@@ -447,14 +447,14 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         else:
             package = info[12] or package
 
-    if tag in ('binnmu', 'unblock', 'opu', 'pu', 'rm'):
-        # FIXME: opu/pu/rm should lookup the version elsewhere
+    if tag in ('binnmu', 'unblock', 'wheezy-pu', 'squeeze-pu', 'rm'):
+        # FIXME: pu/rm should lookup the version elsewhere
         version = info and info[0]
         if online:
-            if tag == 'pu':
-                version = checkversions.get_versions_available(package, timeout).get('stable', '')
-            elif tag == 'opu':
-                version = checkversions.get_versions_available(package, timeout).get('oldstable', '')
+            if tag == 'wheezy-pu':
+                version = checkversions.get_versions_available(package, timeout, 'wheezy').values()[0]
+            elif tag == 'squeeze-pu':
+                version = checkversions.get_versions_available(package, timeout, 'squeeze').values()[0]
         if version:
             cont = ui.select_options(
                 "Latest version seems to be %s, is this the proper one ?" % (version),
@@ -487,7 +487,11 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
                 ui.long_message('No architecture specified, skipping...')
 
     pseudos.append("User: release.debian.org@packages.debian.org")
-    pseudos.append("Usertags: %s" % (tag))
+    if tag.endswith('-pu'):
+        pseudos.append("Usertags: pu")
+        pseudos.append("Tags: %s" % (tag[:-3]))
+    else:
+        pseudos.append("Usertags: %s" % (tag))
 
     if tag == 'binnmu':
         reason  = ui.get_string("binNMU changelog entry: ")
@@ -558,7 +562,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
 
                 unblock %s/%s
                 """ % (package, package, version))
-    elif tag == 'pu' or tag == 'opu':
+    elif tag.endswith('-pu'):
         subject = '%s: package %s/%s' % (tag, package, version)
         body    = '(please explain the reason for this update here)\n'
     elif tag == 'rm':
