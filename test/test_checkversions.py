@@ -76,7 +76,7 @@ class TestVersionAvailable(unittest2.TestCase):
         vers = checkversions.get_versions_available('reportbug', 60)
         # check stable version is lower than unstable
         chk = checkversions.compare_versions(vers['stable'], vers['unstable'])
-        self.assertEqual(chk, 1)
+        self.assertGreaterEqual(chk, 0)
 
     @attr('network') #marking the test as using network
     def test_bts649649(self):
