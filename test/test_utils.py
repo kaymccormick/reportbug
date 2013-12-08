@@ -576,9 +576,10 @@ class TestMisc(unittest2.TestCase):
         handler = os.path.dirname(__file__) + '/../share/handle_bugscript'
         bugscript_file = os.path.dirname(__file__) + '/data/bugscript'
 
-        (rc, h, ph, t) = utils.exec_and_parse_bugscript(handler, bugscript_file)
+        (rc, h, ph, t, a) = utils.exec_and_parse_bugscript(handler, bugscript_file)
 
         self.assertIn('python', t)
         self.assertIn('debian', t)
         self.assertIn('From: morph@dummy.int', h)
         self.assertIn('User: morph@debian.org', ph)
+        self.assertIn('/etc/fstab', a)

@@ -2029,7 +2029,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
 
             # we get the return code of the script, headers and pseudo- set
             # by the script, and last the text output of the script
-            (rc, bugscript_hdrs, bugscript_pseudo, text) = \
+            (rc, bugscript_hdrs, bugscript_pseudo, text, bugscript_attachments) = \
                  utils.exec_and_parse_bugscript(handler, bugexec)
 
             if rc and not notatty:
@@ -2045,6 +2045,10 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                 headers.extend(bugscript_hdrs.split('\n'))
             if bugscript_pseudo:
                 pseudos.append(bugscript_pseudo.strip())
+            # add attachments only if no MUA is used, using attachments with a
+            # MUA is not yet supported by reportbug.
+            if bugscript_attachments and not mua:
+                attachments += bugscript_attachments
             addinfo = None
             if not self.options.noconf:
                 addinfo = u"\n-- Package-specific info:\n"+text

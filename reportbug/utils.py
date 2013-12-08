@@ -1181,7 +1181,9 @@ def exec_and_parse_bugscript(handler, bugscript):
 
     isheaders = False
     ispseudoheaders = False
+    isattachments = False
     headers = pseudoheaders = text = ''
+    attachments = []
     fp = open(filename)
     for line in fp.readlines():
         # we identify the blocks for headers and pseudo-h
@@ -1193,15 +1195,21 @@ def exec_and_parse_bugscript(handler, bugscript):
             ispseudoheaders = True
         elif line == '-- END PSEUDOHEADERS --\n':
             ispseudoheaders = False
+        elif line == '-- BEGIN ATTACHMENTS --\n':
+            isattachments = True
+        elif line == '-- END ATTACHMENTS --\n':
+            isattachments = False
         else:
             if isheaders:
                 headers += line
             elif ispseudoheaders:
                 pseudoheaders += line
+            elif isattachments:
+                attachments.append(line.strip())
             else:
                 text += line
     fp.close()
     cleanup_temp_file(filename)
 
     text = text.decode('utf-8', 'replace')
-    return (rc, headers, pseudoheaders, text)
+    return (rc, headers, pseudoheaders, text, attachments)
