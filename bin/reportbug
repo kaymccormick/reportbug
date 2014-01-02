@@ -587,7 +587,6 @@ def offer_configuration(options):
         is_addr_ok = utils.check_email_addr(from_addr)
         if not is_addr_ok:
             ewrite('Your email address is not valid; please try another one.\n')
-
     stupidmode = not ui.yes_no(
         'Do you have a "mail transport agent" (MTA) like Exim, Postfix or '
         'SSMTP configured on this computer to send mail to the Internet?',
@@ -595,7 +594,7 @@ def offer_configuration(options):
         'If you can send email from this machine without setting an SMTP Host '
         'in your mailer, you should choose this answer.',
         'No, I need to use an SMTP Host or I don\'t know if I have an MTA.',
-        (not options.smtphost))
+        (not options.smtphost) if options.smtphost else False)
 
     if stupidmode:
         opts = []
