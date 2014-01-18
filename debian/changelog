@@ -3,8 +3,11 @@ reportbug (6.4.5) UNRELEASED; urgency=low
   * bin/reportbug
     - changed to "No" the default to local MTA question in configuration mode;
       thanks to Hartmut Bruening for the report; Closes: #732789
+  * reportbug/debbugs.py
+    - improve the ITP template to ask for more information; thanks to Lucas
+      Nussbaum for the report and patch; Closes: #719067
 
- -- Sandro Tosi <morph@debian.org>  Thu, 02 Jan 2014 19:56:52 +0100
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Jan 2014 22:34:18 +0100
 
 reportbug (6.4.4) unstable; urgency=low
 

@@ -577,6 +577,15 @@ itp_template = textwrap.dedent(u"""\
       Description     : %(short_desc)s
 
     (Include the long description here.)
+
+    Please also include as much relevant information as possible.
+    For example, consider answering the following questions:
+     - why is this package useful/relevant? is it a dependency for
+       another package? do you use it? if there are other packages
+       providing similar functionality, how does it compare?
+     - how do you plan to maintain it? inside a packaging team
+       (check list at https://wiki.debian.org/Teams)? are you
+       looking for co-maintainers? do you need a sponsor?
 """)
 
 
