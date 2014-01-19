@@ -3,6 +3,8 @@ import unittest2
 from reportbug import checkversions
 from nose.plugins.attrib import attr
 
+import mock
+
 class TestCheckversions(unittest2.TestCase):
 
     def test_compare_versions(self):
@@ -30,6 +32,42 @@ class TestCheckversions(unittest2.TestCase):
         self.assertEqual(checkversions.later_version('', '1.2.3'), '')
 
         self.assertEqual(checkversions.later_version('1.2.4', '1.2.3'), '1.2.4')
+
+class TestNewQueue(unittest2.TestCase):
+
+    def test_bts704040(self):
+
+        # return an iterable object, so that Deb822 (what parses the result)
+        # will work
+        pkg_in_new = """Source: procps
+Binary: libprocps1-dev, procps, libprocps1
+Version: 1:3.3.6-2 1:3.3.6-1 1:3.3.7-1 1:3.3.5-1
+Architectures: source, amd64
+Age: 4 months
+Last-Modified: 1353190660
+Queue: new
+Maintainer: Craig Small <csmall@debian.org>
+Changed-By: Craig Small <csmall@debian.org>
+Distribution: experimental
+Fingerprint: 5D2FB320B825D93904D205193938F96BDF50FEA5
+Closes: #682082, #682083, #682086, #698482, #699716
+Changes-File: procps_3.3.6-1_amd64.changes
+
+Source: aaa
+""".split('\n')
+
+        # save the original checkversions.open_url() method
+        save_open_url = checkversions.open_url
+
+        checkversions.open_url = mock.MagicMock(return_value = pkg_in_new)
+
+        res = checkversions.get_newqueue_available('procps', 60)
+
+        self.assertEqual(res.keys()[0], u'experimental (new)')
+        self.assertEqual(res[u'experimental (new)'], u'1:3.3.7-1')
+
+        # restore the original checkversions.open_url() method
+        checkversions.open_url = save_open_url
 
 class TestVersionAvailable(unittest2.TestCase):
 

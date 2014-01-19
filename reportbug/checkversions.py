@@ -155,7 +155,8 @@ def get_newqueue_available(package, timeout, dists=None, http_proxy=None, arch='
     for para in Deb822.iter_paragraphs(page):
         if para['Source'] == package:
             k = para['Distribution'] + ' (' + para['Queue']  + ')'
-            versions[k] = para['Version']
+            # in case of multiple versions, choose the bigger
+            versions[k] = max(para['Version'].split())
 
     return versions
 
