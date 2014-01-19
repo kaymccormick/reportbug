@@ -142,6 +142,19 @@ close blocks, else the parser could produce undesired results. Also note that
 those headers are added to the ones already presente so a header with the same
 name will appear twice, since it won't replace the existing one.
 
+Add attachments from the bugscript
+==================================
+
+Similarly to headers and pseudo-headers, it's possible to add an attachment
+from the bugscript using this syntax:
+
+    -- BEGIN ATTACHMENTS --
+    /path/to/the/file/to/attach
+    -- END ATTACHMENTS --
+
+and that will attach the mentioned files to the bug report (if that's allowed,
+in particular with not using a MUA but the internal reportbug mail facility).
+
 Source layout
 =============
 

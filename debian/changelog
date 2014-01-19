@@ -6,8 +6,12 @@ reportbug (6.4.5) UNRELEASED; urgency=low
   * reportbug/debbugs.py
     - improve the ITP template to ask for more information; thanks to Lucas
       Nussbaum for the report and patch; Closes: #719067
+  * bin/reportbug, reportbug/utils.py, doc/README.developers
+    - implement support for attachments in bugscripts; thanks to Joachim
+      Breitner for the report and to Michael Stapelberg for the patch;
+      Closes: #526110
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Jan 2014 22:34:18 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 19 Jan 2014 17:03:29 +0100
 
 reportbug (6.4.4) unstable; urgency=low
 
