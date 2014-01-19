@@ -74,7 +74,8 @@ import ui.text_ui as ui
 from reportbug.ui import AVAILABLE_UIS
 
 NEWBIELINE = """Dear Maintainer,
-*** Please consider answering these questions, where appropriate ***
+
+*** Reporter, please consider answering these questions, where appropriate ***
 
    * What led up to the situation?
    * What exactly did you do (or not do) that was effective (or
@@ -82,7 +83,7 @@ NEWBIELINE = """Dear Maintainer,
    * What was the outcome of this action?
    * What outcome did you expect instead?
 
-*** End of the template - remove these lines ***"""
+*** End of the template - remove these template lines ***"""
 
 fhs_directories = ['/', '/usr', '/usr/share', '/var', '/usr/X11R6',
                    '/usr/man', '/usr/doc', '/usr/bin']
