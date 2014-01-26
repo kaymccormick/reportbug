@@ -1,5 +1,6 @@
 reportbug (6.4.5) UNRELEASED; urgency=low
 
+  [ Sandro Tosi ]
   * bin/reportbug
     - changed to "No" the default to local MTA question in configuration mode;
       thanks to Hartmut Bruening for the report; Closes: #732789
@@ -18,7 +19,13 @@ reportbug (6.4.5) UNRELEASED; urgency=low
     - if NEW has several versions of the given package, choose the bigger;
       thanks to Thorsten Glaser for the report; Closes: #704040
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Jan 2014 20:03:17 +0100
+  [ Julien Cristau ]
+  * Update codename/suite mapping for wheezy release
+  * test: don't assert that unstable version is strictly greater than stable
+  * checkversions: let rmadison do the architecture/suite filtering
+  * debbugs: retire the opu tag for release.debian.org; Closes: #707631
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 20:18:46 +0100
 
 reportbug (6.4.4) unstable; urgency=low
 
