@@ -21,6 +21,7 @@ reportbug (6.4.5) UNRELEASED; urgency=low
       thanks to Thorsten Glaser for the report; Closes: #704040
   * debian/control
     - use canonical URL for Alioth service
+    - bump Standards-Version to 3.9.5 (no changes needed)
 
   [ Julien Cristau ]
   * Update codename/suite mapping for wheezy release
@@ -28,7 +29,7 @@ reportbug (6.4.5) UNRELEASED; urgency=low
   * checkversions: let rmadison do the architecture/suite filtering
   * debbugs: retire the opu tag for release.debian.org; Closes: #707631
 
- -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 20:31:04 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 20:31:34 +0100
 
 reportbug (6.4.4) unstable; urgency=low
 
