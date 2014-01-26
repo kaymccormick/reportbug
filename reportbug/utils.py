@@ -498,7 +498,7 @@ def get_avail_database():
 def available_package_description(package):
     data = commands.getoutput('apt-cache show'+commands.mkarg(package))
     data = data.decode('utf-8', 'replace')
-    descre = re.compile(r'^Description: (.*)$')
+    descre = re.compile(r'^Description(?:-en): (.*)$')
     for line in data.split('\n'):
         m = descre.match(line)
         if m:
