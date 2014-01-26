@@ -8,7 +8,7 @@ DISTRO := $(shell dpkg-parsechangelog | egrep '^Distribution:' | sed 's/^Distrib
 REPORTBUG_VERSION := $(shell python -c "import reportbug; print reportbug.VERSION_NUMBER")
 
 %:
-	dh $@
+	dh $@ --with=python2
 
 override_dh_auto_build:
 	# Test if versions are synchronized (only if releasing); this will bomb if not synced

@@ -2,8 +2,9 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
 
   * debian/rules
     - convert to dh sequencer
+  * Switch to dh_python2
 
- -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 22:13:01 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 23:28:21 +0100
 
 reportbug (6.5.0) unstable; urgency=low
 
