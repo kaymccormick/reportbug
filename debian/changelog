@@ -1,4 +1,4 @@
-reportbug (6.4.5) UNRELEASED; urgency=low
+reportbug (6.5.0) unstable; urgency=low
 
   [ Sandro Tosi ]
   * bin/reportbug
@@ -31,7 +31,7 @@ reportbug (6.4.5) UNRELEASED; urgency=low
   * checkversions: let rmadison do the architecture/suite filtering
   * debbugs: retire the opu tag for release.debian.org; Closes: #707631
 
- -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 20:32:40 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 20:40:56 +0100
 
 reportbug (6.4.4) unstable; urgency=low
 
