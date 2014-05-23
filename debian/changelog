@@ -11,8 +11,11 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
   * reportbug/{debbugs.py, utils.py}
     - check for valid (as per Policy) package name while handling WNPP; thanks
       to Paul Wise for the report; Closes: #748719
+  * reportbug/ui/gtk2_ui.py
+    - set monospace font when entering the bug body; thanks to Bob Bib for the
+      report; Closes: #700032
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 May 2014 00:50:03 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 May 2014 01:33:27 +0200
 
 reportbug (6.5.0) unstable; urgency=low
 

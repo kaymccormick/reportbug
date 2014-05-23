@@ -1113,6 +1113,7 @@ class EditorPage (Page):
         vbox.pack_start (hbox, expand=False)
 
         self.view = gtk.TextView ()
+        self.view.modify_font(pango.FontDescription("Monospace"))
         self.view.set_wrap_mode (gtk.WRAP_WORD)
         if has_spell:
             gtkspell.Spell (self.view)
