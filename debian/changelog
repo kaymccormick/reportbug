@@ -4,8 +4,12 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
     - convert to dh sequencer
   * Switch to dh_python2
   * Bump compat to 9
+  * man/reportbug.1
+    - mark it explicitly that -N/--bugnumber must receive the bug number as an
+      argument to the command; thanks to Ron Murray for the report;
+      Closes: #741369
 
- -- Sandro Tosi <morph@debian.org>  Sun, 26 Jan 2014 23:29:25 +0100
+ -- Sandro Tosi <morph@debian.org>  Fri, 23 May 2014 21:49:45 +0200
 
 reportbug (6.5.0) unstable; urgency=low
 
