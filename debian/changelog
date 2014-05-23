@@ -8,8 +8,11 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
     - mark it explicitly that -N/--bugnumber must receive the bug number as an
       argument to the command; thanks to Ron Murray for the report;
       Closes: #741369
+  * reportbug/{debbugs.py, utils.py}
+    - check for valid (as per Policy) package name while handling WNPP; thanks
+      to Paul Wise for the report; Closes: #748719
 
- -- Sandro Tosi <morph@debian.org>  Fri, 23 May 2014 21:49:45 +0200
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 May 2014 00:50:03 +0200
 
 reportbug (6.5.0) unstable; urgency=low
 

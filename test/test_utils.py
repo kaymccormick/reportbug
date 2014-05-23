@@ -583,3 +583,15 @@ class TestMisc(unittest2.TestCase):
         self.assertIn('From: morph@dummy.int', h)
         self.assertIn('User: morph@debian.org', ph)
         self.assertIn('/etc/fstab', a)
+
+    def test_check_package_name(self):
+        self.assertTrue(utils.check_package_name('reportbug'))
+        self.assertTrue(utils.check_package_name('ab'))
+        self.assertFalse(utils.check_package_name('a'))
+        self.assertFalse(utils.check_package_name('.a'))
+        self.assertFalse(utils.check_package_name('dfffff       '))
+        self.assertFalse(utils.check_package_name('reportbug_reportbug'))
+        self.assertTrue(utils.check_package_name('reportbug+love-war.com'))
+        self.assertTrue(utils.check_package_name('reportbug2001'))
+        self.assertFalse(utils.check_package_name('UPPERCASE'))
+        self.assertFalse(utils.check_package_name('((()))'))

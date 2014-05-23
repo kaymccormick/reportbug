@@ -627,6 +627,9 @@ def handle_wnpp(package, bts, ui, fromaddr, timeout, online=True, http_proxy=Non
         else:
             prompt = 'Please enter the package name: '
         package = ui.get_string(prompt)
+        if not utils.check_package_name(package):
+            ui.long_message('Invalid package name')
+            package = ""
 
     ui.log_message('Checking status database...\n')
     info = utils.get_package_status(package, avail=True)

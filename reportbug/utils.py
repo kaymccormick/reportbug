@@ -1214,3 +1214,13 @@ def exec_and_parse_bugscript(handler, bugscript):
 
     text = text.decode('utf-8', 'replace')
     return (rc, headers, pseudoheaders, text, attachments)
+
+def check_package_name(pkg):
+    """Check the package name against Debian Policy:
+    https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Source
+
+    Returns True if the package name is valid."""
+
+    pkg_re = re.compile('^[a-z0-9][a-z0-9+-\.]+$')
+
+    return True if pkg_re.match(pkg) else False
