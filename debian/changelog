@@ -14,8 +14,19 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - set monospace font when entering the bug body; thanks to Bob Bib for the
       report; Closes: #700032
+  * Acknowledge NMU (thanks for that!); Closes: #757190
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 May 2014 01:33:27 +0200
+ -- Sandro Tosi <morph@debian.org>  Thu, 04 Sep 2014 23:03:41 +0100
+
+reportbug (6.5.0+nmu1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * CVE-2014-0479: Arbitrary code execution in compare_versions.
+    A man-in-the-middle attacker could put shell metacharacters in the
+    version number, causing execution of code of their choice.
+    Thanks to Jakub Wilk <jwilk@debian.org>
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 03 Aug 2014 16:03:15 +0200
 
 reportbug (6.5.0) unstable; urgency=low
 

@@ -37,6 +37,7 @@ from reportbug.exceptions import (
 
 # needed to parse new.822
 from debian.deb822 import Deb822
+from debian import debian_support
 
 RMADISON_URL = 'http://qa.debian.org/madison.php?package=%s&text=on'
 INCOMING_URL = 'http://incoming.debian.org/'
@@ -87,13 +88,7 @@ def compare_versions(current, upstream):
     """Return 1 if upstream is newer than current, -1 if current is
     newer than upstream, and 0 if the same."""
     if not current or not upstream: return 0
-    rc = os.system('dpkg --compare-versions %s lt %s' % (current, upstream))
-    rc2 = os.system('dpkg --compare-versions %s gt %s' % (current, upstream))
-    if not rc:
-        return 1
-    elif not rc2:
-        return -1
-    return 0
+    return debian_support.version_compare(upstream, current)
 
 def later_version(a, b):
     if compare_versions(a, b) > 0:
