@@ -35,6 +35,7 @@ try:
 except:
     has_spell = False
 
+gtk.set_interactive (0)
 gtk.gdk.threads_init ()
 
 import sys

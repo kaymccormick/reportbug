@@ -15,8 +15,12 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
     - set monospace font when entering the bug body; thanks to Bob Bib for the
       report; Closes: #700032
   * Acknowledge NMU (thanks for that!); Closes: #757190
+  * reportbug/ui/gtk2_ui.py
+    - uninstall GTK+ readline hook, this prevent a crash in reportbug; thanks to
+      Eric Valette for the report and to Simon McVittie for the GTK+-side
+      analysis and patch; Closes: #758619
 
- -- Sandro Tosi <morph@debian.org>  Thu, 04 Sep 2014 23:03:41 +0100
+ -- Sandro Tosi <morph@debian.org>  Thu, 04 Sep 2014 23:13:09 +0100
 
 reportbug (6.5.0+nmu1) unstable; urgency=high
 
