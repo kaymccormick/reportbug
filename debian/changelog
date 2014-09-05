@@ -1,4 +1,4 @@
-reportbug (6.5.1) UNRELEASED; urgency=medium
+reportbug (6.5.1) unstable; urgency=medium
 
   * debian/rules
     - convert to dh sequencer
@@ -20,7 +20,7 @@ reportbug (6.5.1) UNRELEASED; urgency=medium
       Eric Valette for the report and to Simon McVittie for the GTK+-side
       analysis and patch; Closes: #758619
 
- -- Sandro Tosi <morph@debian.org>  Thu, 04 Sep 2014 23:13:09 +0100
+ -- Sandro Tosi <morph@debian.org>  Fri, 05 Sep 2014 22:34:23 +0100
 
 reportbug (6.5.0+nmu1) unstable; urgency=high
 
