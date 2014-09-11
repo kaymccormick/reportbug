@@ -6,8 +6,10 @@ reportbug (6.5.2) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - fix vesion/version typo; thanks to Niels Thykier for the report and to
       Tomas Pospisek for the patch; Closes: #683277
+    - use a future-proof URL for the rc_policy.txt document; thanks to Paul Wise
+      for the report and patch; Closes: #673270
 
- -- Sandro Tosi <morph@debian.org>  Thu, 11 Sep 2014 23:44:55 +0100
+ -- Sandro Tosi <morph@debian.org>  Fri, 12 Sep 2014 00:59:10 +0100
 
 reportbug (6.5.1) unstable; urgency=medium
 
