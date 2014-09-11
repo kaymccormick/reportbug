@@ -810,7 +810,7 @@ def main():
                       help='sign report with GNU Privacy Guard (GnuPG/gpg)')
     parser.add_option('-G', '--gnus', action='store_const', dest='mua',
                       const=utils.MUA['gnus'],
-                      help='send the report using GNUS')
+                      help='send the report using Gnus')
     parser.add_option('--pgp', action='store_const', dest='sign',
                       const='pgp',
                       help='sign report with Pretty Good Privacy (PGP)')
