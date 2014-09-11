@@ -459,7 +459,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
             cont = ui.select_options(
                 "Latest version seems to be %s, is this the proper one ?" % (version),
                 "Yn", {'y': "This is the correct version",
-                       'n': "Enter the proper vesion"})
+                       'n': "Enter the proper version"})
             if cont == 'n':
                 version = None
         if not version:
