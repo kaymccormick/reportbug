@@ -8,6 +8,38 @@ reportbug (6.5.2) UNRELEASED; urgency=medium
       Tomas Pospisek for the patch; Closes: #683277
     - use a future-proof URL for the rc_policy.txt document; thanks to Paul Wise
       for the report and patch; Closes: #673270
+    - remove 'ROSRM' options from ftp.d.o removal requests; thanks to Scott
+      Kitterman for the report and to Adam D. Barratt and Philipp Kern for
+      ack'ing it (on IRC); Closes: #682105
+  * man/reportbug.1
+    - mention that deb-src lines has to be available in sources.list to populate
+      apt cache with source packages too, needed for --src/--source option to
+      work; thanks to Ian Bruce for the report; Closes: #684227
+    - clarify that when using an external MUA, the attachment feature will not
+      be able to send those files to the MUA, so they are actually discarded;
+      thanks to Stefano Rivera for the report; Closes: #679907
+  * reportbug/submit.py
+    - properly handle ~/~user in --output cli option, expanding it to the user's
+      homedir; thanks to Fritz Wuehler for the report; Closes: #680465
+    - don't show the last menu (about how to provide additional info) if
+      quitting or saving to file; thanks to Adrian Bunk for the report;
+      Closes: #668838
+  * reportbug/ui/gtk2_ui.py
+    - hide 'Apply' button on the last screen of GTK+ UI; thanks to Samuel Hym
+      for the report; Closes: #675735
+    - remove indication that 'e' would edit the bug report in the last menu,
+      it's text UI specific; thanks to David Smith for the report;
+      Closes: #686168
+  * bin/reportbug
+    - suggests to contact debian-users@ in case of difficulties in identifying
+      the package to associate the bug to; thanks to Jonathan Nieder for the
+      report and patch; Closes: #661563
+  * reportbug/utils.py
+    - identify also config files with spaces in the filename; thanks to Vincent
+      Lefevre for the report; Closes: #669022
+  * debian/control
+    - update Suggests on emacs packages; thanks to Adrian Bunk for the report;
+      Closes: #686165
 
  -- Sandro Tosi <morph@debian.org>  Fri, 12 Sep 2014 00:59:10 +0100
 

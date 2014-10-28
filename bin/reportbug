@@ -441,6 +441,8 @@ def get_package_name(bts='debian', mode=MODE_EXPERT):
         prompt += ", or type 'other' to report a more general problem."
     else:
         prompt += '.'
+    prompt += " If you don't know what package the bug is in, "\
+              "please contact debian-user@lists.debian.org for assistance."
 
     options = []
     pkglist = commands.getoutput('apt-cache pkgnames')

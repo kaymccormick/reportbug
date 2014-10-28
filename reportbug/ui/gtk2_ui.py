@@ -1217,6 +1217,8 @@ class SelectOptionsPage (Page):
             self.default.grab_focus ()
 
     def execute (self, prompt, menuopts, options):
+        # remove text UI indication
+        prompt = prompt.replace(' (e to edit)', '')
         gobject.idle_add (self.label.set_text, prompt)
 
         buttons = []
@@ -1322,6 +1324,9 @@ class ReportbugAssistant (gtk.Assistant):
         # 2. Hide back button on show, because it can be shown-hidden by the assistant depending on the page
         if isinstance (widget, gtk.Button):
             if widget.get_label() == 'gtk-go-back':
+                widget.connect ('show', self.on_back_show)
+                return
+            if widget.get_label() == 'gtk-apply':
                 widget.connect ('show', self.on_back_show)
                 return
             if widget.get_label() == 'gtk-cancel':

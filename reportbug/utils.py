@@ -358,7 +358,8 @@ def get_package_status(package, avail=False):
             if line[:2] != ' /':
                 confmode = False
             else:
-                conffiles = conffiles + [tuple(line.split()[:2])]
+                # re is used to identify also conffiles with spaces in the name
+                conffiles = conffiles + [re.findall(' (.+) ([^ ]+)$', line)[0]]
 
         if versionre.match(line):
             (crud, pkgversion) = line.split(": ", 1)

@@ -313,7 +313,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
     elif mua:
         pipe, filename = TempFile(prefix=tfprefix, dir=draftpath)
     elif outfile or not ((mta and os.path.exists(mta)) or smtphost):
-        msgname = outfile or ('/var/tmp/%s.bug' % package)
+        msgname = os.path.expanduser(outfile) or ('/var/tmp/%s.bug' % package)
         if os.path.exists(msgname):
             try:
                 os.rename(msgname, msgname+'~')
@@ -481,7 +481,8 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             for address in cclist:
                 ewrite('  %s\n', address)
 
-    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed:
+    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed \
+            and mailing:
         ewrite('\n')
         ui.long_message(
             """If you want to provide additional information, please wait to

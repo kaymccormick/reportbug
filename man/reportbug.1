@@ -50,6 +50,11 @@ This option supports also globbing (i.e. names with wildcards, like
 file.*) but remember to include them between single quotes (the
 previous example becomes: 'file.*') else the shell would expand it
 before calling reportbug leading to an error.
+
+Be aware that when using an external MUA to send the message (such
+as mutt), the attachment feature is not available and no file will
+be attached at all: the MUA feature to attach files must be used
+instead (so from within the MUA).
 .TP
 .B \-b, \-\-no\-query\-bts
 Don't check the Debian bug tracking system to see if this problem has
@@ -425,7 +430,10 @@ $HOME/.reportbugrc\fP).
 .TP
 .B \-\-src, \-\-source
 Specify to report the bug against the source package, and not the
-binary package (default behaviour).
+binary package (default behaviour).  In order for this option to work,
+you have to populate the relevant 'deb-src' lines in
+/etc/apt/sources.list so that apt cache will know about source packages
+too.
 .TP
 .B \-t TYPE, \-\-type=TYPE
 Specify the type of report to be submitted; currently accepts either
