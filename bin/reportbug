@@ -1429,7 +1429,7 @@ class UI(object):
                                 pkgversion = v
                                 break
                 elif len(packages) > 0:
-                    src = package
+                    src = utils.get_source_name(package)
                     if len(packages) and not notatty:
                         packages.sort()
                         if src not in [x[0] for x in packages]:
