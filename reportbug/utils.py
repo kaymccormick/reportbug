@@ -765,7 +765,9 @@ def get_arch():
     return arch
 
 def get_multiarch():
-    return commands.getoutput('COLUMNS=79 dpkg --print-foreign-architectures 2>/dev/null')
+    out = commands.getoutput('COLUMNS=79 dpkg --print-foreign-architectures 2>/dev/null')
+    print '>' + str(out) + '<'
+    return ', '.join(out.splitlines())
 
 def generate_blank_report(package, pkgversion, severity, justification,
                           depinfo, confinfo, foundfile='', incfiles='',

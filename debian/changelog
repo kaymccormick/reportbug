@@ -1,3 +1,11 @@
+reportbug (6.6.1) UNRELEASED; urgency=medium
+
+  * reportbug/utils.py
+    - don't split multiarch information on multiple lines; thanks to James
+      Cowgill for the report; Closes: #759690
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 06 Nov 2014 22:08:34 +0000
+
 reportbug (6.6.0) unstable; urgency=medium
 
   * bin/reportbug, man/reportbug.1 share/reportbug.el

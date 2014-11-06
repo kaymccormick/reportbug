@@ -5,6 +5,8 @@ import os.path
 import platform
 from nose.plugins.attrib import attr
 import debianbts
+import mock
+import commands
 
 class TestUtils(unittest2.TestCase):
 
@@ -263,6 +265,24 @@ class TestSystemInformation(unittest2.TestCase):
         package = utils.get_running_kernel_pkg()
 
         self.assertIn(platform.release(), package)
+
+    def test_get_multiarch(self):
+
+        orig = commands.getoutput
+
+        commands.getoutput = mock.MagicMock(return_value = '')
+        multiarch = utils.get_multiarch()
+        self.assertEqual(multiarch, '')
+
+        commands.getoutput = mock.MagicMock(return_value = 'i386')
+        multiarch = utils.get_multiarch()
+        self.assertEqual(multiarch, 'i386')
+
+        commands.getoutput = mock.MagicMock(return_value = 'i386\namd64')
+        multiarch = utils.get_multiarch()
+        self.assertItemsEqual(multiarch.split(', '), ['i386', 'amd64'])
+
+        commands.getoutput = orig
 
 class TestMua(unittest2.TestCase):
 
