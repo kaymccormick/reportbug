@@ -2,7 +2,6 @@ import unittest2
 
 from nose.plugins.attrib import attr
 import mock
-
 from reportbug import utils
 from reportbug import debbugs
 
@@ -65,6 +64,10 @@ class TestInfofunc(unittest2.TestCase):
         self.assertIn('Architecture: ' + arch, info)
         self.assertTrue(info.endswith('\n\n'))
 
+        # save original method
+        __save1 = utils.get_arch
+        __save2 = utils.get_multiarch
+
         utils.get_arch = mock.MagicMock(return_value = 'non-existing-arch')
         info = debbugs.dpkg_infofunc()
         self.assertIn('non-existing-arch', info)
@@ -82,6 +85,11 @@ class TestInfofunc(unittest2.TestCase):
         self.assertIn('Foreign Architectures:', info)
         self.assertIn('multi-arch-ified', info)
         self.assertIn('Foreign Architectures: multi-arch-ified', info)
+
+        utils.get_arch = __save1
+        utils.get_multiarch = __save2
+        del __save1
+        del __save2
 
     def test_debian_infofunc(self):
         info = debbugs.debian_infofunc()
