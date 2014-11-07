@@ -7,6 +7,7 @@ from nose.plugins.attrib import attr
 import debianbts
 import mock
 import commands
+import subprocess
 
 class TestUtils(unittest2.TestCase):
 
@@ -283,6 +284,33 @@ class TestSystemInformation(unittest2.TestCase):
         self.assertItemsEqual(multiarch.split(', '), ['i386', 'amd64'])
 
         commands.getoutput = orig
+
+    def test_get_init_system(self):
+
+        __save = os.path.isdir
+        os.path.isdir = mock.MagicMock(return_value = True)
+        init = utils.get_init_system()
+        self.assertTrue(init.startswith('systemd'))
+        os.path.isdir = __save
+        del __save
+
+        __save = subprocess.call
+        subprocess.call = mock.MagicMock(return_value = 0)
+        init = utils.get_init_system()
+        self.assertTrue(init.startswith('upstart'))
+        subprocess.call = __save
+        del __save
+
+        __save1 = os.path.isfile
+        __save2 = os.path.islink
+        os.path.isfile = mock.MagicMock(return_value = True)
+        os.path.islink = mock.MagicMock(return_value = False)
+        init = utils.get_init_system()
+        self.assertTrue(init.startswith('sysvinit'))
+        os.path.isfile = __save1
+        os.path.islink = __save2
+        del __save1
+        del __save2
 
 class TestMua(unittest2.TestCase):
 

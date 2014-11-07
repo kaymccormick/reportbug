@@ -3,6 +3,11 @@ reportbug (6.6.1) UNRELEASED; urgency=medium
   * reportbug/utils.py
     - don't split multiarch information on multiple lines; thanks to James
       Cowgill for the report; Closes: #759690
+  * reportbug/{bugreport.py, utils.py}
+    - include init system information in bug reports; thanks to Yves-Alexis
+      Perez for the report and debian-devel ml for suggestions and inputs;
+      Closes #741930
+
 
  -- Sandro Tosi <morph@debian.org>  Thu, 06 Nov 2014 22:08:34 +0000
 

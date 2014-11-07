@@ -1226,3 +1226,17 @@ def check_package_name(pkg):
     pkg_re = re.compile('^[a-z0-9][a-z0-9+-\.]+$')
 
     return True if pkg_re.match(pkg) else False
+
+def get_init_system():
+    """Determines the init system on the current machine"""
+
+    init = 'unable to detect'
+
+    if os.path.isdir('/run/systemd/system'):
+        init = 'systemd (via /run/systemd/system)'
+    if not subprocess.call('. /lib/lsb/init-functions ; init_is_upstart', shell=True):
+        init = 'upstart (via init_is_upstart())'
+    elif os.path.isfile('/sbin/init') and not os.path.islink('/sbin/init'):
+        init = 'sysvinit (via /sbin/init)'
+
+    return init
