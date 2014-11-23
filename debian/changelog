@@ -7,9 +7,10 @@ reportbug (6.6.1) UNRELEASED; urgency=medium
     - include init system information in bug reports; thanks to Yves-Alexis
       Perez for the report and debian-devel ml for suggestions and inputs;
       Closes #741930
+  * reportbug/debbugs.py
+    - add 'newcomer' tag
 
-
- -- Sandro Tosi <morph@debian.org>  Thu, 06 Nov 2014 22:08:34 +0000
+ -- Sandro Tosi <morph@debian.org>  Sun, 23 Nov 2014 21:52:33 +0000
 
 reportbug (6.6.0) unstable; urgency=medium
 
