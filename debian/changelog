@@ -1,4 +1,4 @@
-reportbug (6.6.1) UNRELEASED; urgency=medium
+reportbug (6.6.1) unstable; urgency=medium
 
   * reportbug/utils.py
     - don't split multiarch information on multiple lines; thanks to James
@@ -10,7 +10,7 @@ reportbug (6.6.1) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - add 'newcomer' tag
 
- -- Sandro Tosi <morph@debian.org>  Sun, 23 Nov 2014 21:52:33 +0000
+ -- Sandro Tosi <morph@debian.org>  Tue, 02 Dec 2014 21:52:57 +0000
 
 reportbug (6.6.0) unstable; urgency=medium
 
