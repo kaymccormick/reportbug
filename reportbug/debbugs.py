@@ -399,8 +399,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         'britney':          "testing migration script bugs",
         'transition':       "transition tracking",
         'unblock':          "unblock requests",
-        'squeeze-pu':       "squeeze proposed updates requests",
         'wheezy-pu':        "wheezy proposed updates requests",
+        'jessie-pu':        "jessie proposed updates requests",
         'rm':               "Stable/Testing removal requests",
         'other' :           "None of the other options",
         }, 'Choose the request type: ', empty_ok=True)
@@ -445,14 +445,11 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         else:
             package = info[12] or package
 
-    if tag in ('binnmu', 'unblock', 'wheezy-pu', 'squeeze-pu', 'rm'):
+    if tag in ('binnmu', 'unblock', 'jessie-pu', 'wheezy-pu', 'rm'):
         # FIXME: pu/rm should lookup the version elsewhere
         version = info and info[0]
-        if online:
-            if tag == 'wheezy-pu':
-                version = checkversions.get_versions_available(package, timeout, 'wheezy').values()[0]
-            elif tag == 'squeeze-pu':
-                version = checkversions.get_versions_available(package, timeout, 'squeeze').values()[0]
+        if online and tag.endswith('-pu'):
+            version = checkversions.get_versions_available(package, timeout, tag[:-3]).values()[0]
         if version:
             cont = ui.select_options(
                 "Latest version seems to be %s, is this the proper one ?" % (version),
