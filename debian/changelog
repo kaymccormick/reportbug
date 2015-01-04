@@ -1,3 +1,11 @@
+reportbug (6.6.3) UNRELEASED; urgency=medium
+
+  * reportbug/debbugs.py
+    - when checking the version for a PU upload, pass a list of distributions;
+      thanks to Ivo De Decker for spotting; Addresses: #774443
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 04 Jan 2015 10:36:43 +0000
+
 reportbug (6.6.2) unstable; urgency=medium
 
   * reportbug/debbugs.py
