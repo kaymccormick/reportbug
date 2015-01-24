@@ -603,7 +603,7 @@ def handle_wnpp(package, bts, ui, fromaddr, timeout, online=True, http_proxy=Non
         'RFA' :
         "This is a `Request for Adoption'. Due to lack of time, resources, interest or something similar, the current maintainer is asking for someone else to maintain this package. They will maintain it in the meantime, but perhaps not in the best possible way. In short: the package needs a new maintainer.",
         'RFH' :
-        "This is a `Request For Help'. The current maintainer wants to continue to maintain this package, but they needs some help to do this, because their time is limited or the package is quite big and needs several maintainers.",
+        "This is a `Request For Help'. The current maintainer wants to continue to maintain this package, but they need some help to do this because their time is limited or the package is quite big and needs several maintainers.",
         'ITP' :
         "This is an `Intent To Package'. Please submit a package description along with copyright and URL in such a report.",
         'RFP' :
