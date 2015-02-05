@@ -1,3 +1,10 @@
+reportbug (6.6.4) UNRELEASED; urgency=medium
+
+  * share/script
+    - report PAGER environment variable when filing a bug against reportbug
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 05 Feb 2015 12:06:31 +0000
+
 reportbug (6.6.3) unstable; urgency=medium
 
   * reportbug/debbugs.py

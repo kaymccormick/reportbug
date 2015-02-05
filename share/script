@@ -7,7 +7,7 @@ import re
 OUT=os.fdopen(3, 'w')
 
 envprint = False
-for var in ['EDITOR', 'VISUAL', 'REPORTBUGEMAIL', 'DEBEMAIL', 'EMAIL',
+for var in ['EDITOR', 'PAGER', 'VISUAL', 'REPORTBUGEMAIL', 'DEBEMAIL', 'EMAIL',
             'DEBFULLNAME', 'DEBNAME', 'NAME', 'INTERFACE']:
     if var in os.environ:
         if not envprint:
