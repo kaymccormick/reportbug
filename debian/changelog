@@ -5,8 +5,10 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
       the report; Closes: #776015
   * share/script
     - report PAGER environment variable when filing a bug against reportbug
+  * reportbug/ui/gtk2_ui.py
+    - correctly acquire GDK mutual exclusion lock
 
- -- Sandro Tosi <morph@debian.org>  Thu, 05 Feb 2015 12:06:31 +0000
+ -- Sandro Tosi <morph@debian.org>  Sun, 12 Apr 2015 20:41:14 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 

@@ -451,7 +451,9 @@ class ReportbugApplication (threading.Thread):
         self.next_value = None
         
     def run (self):
+        gtk.gdk.threads_enter ()
         gtk.main ()
+        gtk.gdk.threads_leave ()
 
     def get_last_value (self):
         return self.queue.get ()
