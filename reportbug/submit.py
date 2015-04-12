@@ -488,7 +488,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
     if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed \
             and mailing:
         ewrite('\n')
-        ui.long_message(
+        ui.final_message(
             """If you want to provide additional information, please wait to
 receive the bug tracking number via email; you may then send any extra
 information to %s (e.g. %s), where n is the bug number.  Normally you
