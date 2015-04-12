@@ -312,8 +312,12 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
         pipe = sys.stdout
     elif mua:
         pipe, filename = TempFile(prefix=tfprefix, dir=draftpath)
-    elif outfile or not ((mta and os.path.exists(mta)) or smtphost):
-        msgname = os.path.expanduser(outfile) or ('/var/tmp/%s.bug' % package)
+    elif outfile or not ((mta and os.path.exists(mta)) and not smtphost):
+        # outfile can be None at this point
+        if outfile:
+            msgname = os.path.expanduser(outfile)
+        else:
+            msgname = '/var/tmp/%s.bug' % package
         if os.path.exists(msgname):
             try:
                 os.rename(msgname, msgname+'~')
@@ -331,7 +335,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             # we just need a place where to write() and a file handler
             # is here just for that
             pipe = fh
-    elif mta and not smtphost:
+    elif (mta and os.path.exists(mta)) and not smtphost:
         try:
             x = os.getcwd()
         except OSError:

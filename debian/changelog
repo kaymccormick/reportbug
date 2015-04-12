@@ -7,8 +7,11 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
     - report PAGER environment variable when filing a bug against reportbug
   * reportbug/ui/gtk2_ui.py
     - correctly acquire GDK mutual exclusion lock
+  * reportbug/submit.py
+    - correctly handle the case where there is not MTA or smtphost defined;
+      Closes: #782319, #780825, #769055
 
- -- Sandro Tosi <morph@debian.org>  Sun, 12 Apr 2015 20:41:14 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 12 Apr 2015 23:14:00 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
