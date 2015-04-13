@@ -207,6 +207,46 @@ class TestPackages(unittest2.TestCase):
 
         #self.assertEqual(result[0][0], pkg)
 
+    def test_bts683116(self):
+        """Check Description and Description-LANG are recognized"""
+
+        pkginfo = """Package: reportbug
+Status: install ok installed
+Version: 6.6.3
+%s: reports bugs in the Debian distribution
+                """
+        pkg = 'reportbug'
+
+        __save = commands.getoutput
+        commands.getoutput = mock.MagicMock(return_value=pkginfo % 'Description')
+        result = utils.available_package_description(pkg)
+        self.assertEqual(u'reports bugs in the Debian distribution', result)
+        commands.getoutput = mock.MagicMock(return_value=pkginfo % 'Description-en')
+        result = utils.available_package_description(pkg)
+        self.assertEqual(u'reports bugs in the Debian distribution', result)
+        commands.getoutput = __save
+        del __save
+
+        __save = commands.getoutput
+        commands.getoutput = mock.MagicMock(return_value=pkginfo % 'Description')
+        result = utils.get_package_status(pkg)
+        self.assertEqual(u'reports bugs in the Debian distribution', result[11])
+        commands.getoutput = mock.MagicMock(return_value=pkginfo % 'Description-en')
+        result = utils.get_package_status(pkg)
+        self.assertEqual(u'reports bugs in the Debian distribution', result[11])
+        commands.getoutput = __save
+        del __save
+
+        __save = utils.get_dpkg_database
+        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description',])
+        result = utils.get_package_info([((pkg,), pkg)])
+        self.assertEqual(u'reports bugs in the Debian distribution', result[0][3])
+        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description-en',])
+        result = utils.get_package_info([((pkg,), pkg)])
+        self.assertEqual(u'reports bugs in the Debian distribution', result[0][3])
+        utils.get_dpkg_database = __save
+        del __save
+
     def test_packages_providing(self):
         pkg = 'editor'
         result = utils.packages_providing(pkg)

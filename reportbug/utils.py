@@ -319,7 +319,7 @@ def get_package_status(package, avail=False):
     statusre = re.compile('Status: ')
     originre = re.compile('Origin: ')
     bugsre = re.compile('Bugs: ')
-    descre = re.compile('Description: ')
+    descre = re.compile('Description(?:-.*)?: ')
     fullre = re.compile(' ')
     srcre = re.compile('Source: ')
     sectionre = re.compile('Section: ')
@@ -499,7 +499,7 @@ def get_avail_database():
 def available_package_description(package):
     data = commands.getoutput('apt-cache show'+commands.mkarg(package))
     data = data.decode('utf-8', 'replace')
-    descre = re.compile(r'^Description(?:-en): (.*)$')
+    descre = re.compile('^Description(?:-.*)?: (.*)$')
     for line in data.split('\n'):
         m = descre.match(line)
         if m:
@@ -572,7 +572,7 @@ def get_package_info(packages, skip_notfound=False):
     packob = re.compile('^Package: (?P<pkg>.*)$', re.MULTILINE)
     statob = re.compile('^Status: (?P<stat>.*)$', re.MULTILINE)
     versob = re.compile('^Version: (?P<vers>.*)$', re.MULTILINE)
-    descob = re.compile('^Description: (?P<desc>.*)$', re.MULTILINE)
+    descob = re.compile('^Description(?:-.*)?: (?P<desc>.*)$', re.MULTILINE)
 
     ret = []
     for p in packinfo:

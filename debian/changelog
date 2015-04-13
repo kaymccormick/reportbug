@@ -21,8 +21,11 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
   * bin/reportbug, reportbug/ui/urwid_ui.py
     - make the Cancel button in Urwid interface works for tags and severity
       lists; thanks to Ryan Kavanagh for report and patch; Closes: #702521
+  * reportbug/utils.py
+    - support LANG declined Description-xx field in package information; thanks
+      to Robert Luberda for the report; Closes: #683116
 
- -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 15:46:52 +0100
+ -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 21:28:49 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
