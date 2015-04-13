@@ -672,7 +672,7 @@ def browse_bugs(hierarchy, count, bugs, bts, queryonly, mirrors,
                         lastpage = []
                         break
                     elif x == 'b':
-                        launch_browser('http://bugs.debian.org/%s' % package)
+                        launch_browser('https://bugs.debian.org/%s' % package)
                         continue
                     elif x == 'r':
                         continue
@@ -895,7 +895,7 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
                         lastpage = []
                         break
                     elif x == 'b':
-                        launch_browser('http://bugs.debian.org/%s' % package)
+                        launch_browser('https://bugs.debian.org/%s' % package)
                     elif x == 'r':
                         continue
                     elif x == 'q':

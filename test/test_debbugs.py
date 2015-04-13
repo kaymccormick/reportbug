@@ -130,7 +130,7 @@ class TestMiscFunctions(unittest2.TestCase):
         dictparse = re.compile(r'([^\s]+)\s+(.+)',re.IGNORECASE)
 
         bdo_list = {}
-        pseudo = urllib.urlopen('http://bugs.debian.org/pseudopackages/pseudo-packages.description')
+        pseudo = urllib.urlopen('https://bugs.debian.org/pseudopackages/pseudo-packages.description')
         for l in pseudo:
             m = dictparse.search(l)
             bdo_list[m.group(1)] = m.group(2)
@@ -171,33 +171,33 @@ class TestUrlFunctions(unittest2.TestCase):
     def test_cgi_report_url(self):
 
         self.assertEqual(debbugs.cgi_report_url('debian', 123),
-                         'http://bugs.debian.org/cgi-bin/bugreport.cgi?' +
+                         'https://bugs.debian.org/cgi-bin/bugreport.cgi?' +
                              'bug=123&archived=False&mbox=no')
         self.assertIsNone(debbugs.cgi_report_url('default', 123))
 
     def test_cgi_package_url(self):
 
         self.assertEqual(debbugs.cgi_package_url('debian', 'reportbug'),
-                         'http://bugs.debian.org/cgi-bin/pkgreport.cgi?' +
+                         'https://bugs.debian.org/cgi-bin/pkgreport.cgi?' +
                              'archived=no&pkg=reportbug&repeatmerged=yes')
         self.assertEqual(debbugs.cgi_package_url
                          ('debian', 'reportbug', source=True),
-                         'http://bugs.debian.org/cgi-bin/pkgreport.cgi?src=' +
+                         'https://bugs.debian.org/cgi-bin/pkgreport.cgi?src=' +
                              'reportbug&archived=no&repeatmerged=yes')
         self.assertEqual(debbugs.cgi_package_url
                          ('debian', 'reportbug', version='5.0'),
-                         'http://bugs.debian.org/cgi-bin/pkgreport.cgi?archi' +
+                         'https://bugs.debian.org/cgi-bin/pkgreport.cgi?archi' +
                          'ved=no&version=5.0&pkg=reportbug&repeatmerged=yes')
 
 
     def test_get_package_url(self):
 
         self.assertEqual(debbugs.get_package_url('debian', 'reportbug'),
-                         'http://bugs.debian.org/cgi-bin/pkgreport.cgi?archi' +
+                         'https://bugs.debian.org/cgi-bin/pkgreport.cgi?archi' +
                          'ved=no&pkg=reportbug&repeatmerged=yes')
 
     def test_get_report_url(self):
 
         self.assertEqual(debbugs.get_report_url('debian', 123),
-                         'http://bugs.debian.org/cgi-bin/bugreport.cgi?' +
+                         'https://bugs.debian.org/cgi-bin/bugreport.cgi?' +
                          'bug=123&archived=False&mbox=no')

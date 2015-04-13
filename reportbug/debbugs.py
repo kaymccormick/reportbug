@@ -749,7 +749,7 @@ SYSTEMS = { 'debian' :
               'deppkgs' : ('gcc', 'g++', 'cpp', 'gcj', 'gpc', 'gobjc',
                            'chill', 'gij', 'g77', 'python', 'python-base',
                            'x-window-system-core', 'x-window-system'),
-              'cgiroot' : 'http://bugs.debian.org/cgi-bin/',
+              'cgiroot' : 'https://bugs.debian.org/cgi-bin/',
               'infofunc' : debian_infofunc,
               },
             'ubuntu' :
