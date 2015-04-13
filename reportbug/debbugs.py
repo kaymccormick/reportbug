@@ -466,8 +466,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     if tag in ('binnmu', 'rm'):
         partial = ui.select_options(
             "Is this request for specific architectures?",
-            'yN', {'y': 'This is a partial (specific architectures) removal.',
-                   'n': 'This removal is for all architectures.' })
+            'yN', {'y': 'This is a partial (specific architectures) request.',
+                   'n': 'This request is for all architectures.' })
         if partial == 'y':
             if tag == 'rm':
                 ui.long_message('The proper way to request a partial removal '

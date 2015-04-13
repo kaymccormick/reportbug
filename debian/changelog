@@ -3,6 +3,8 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - fix usage of singular they in RFH description; thanks to Doug Torrance for
       the report; Closes: #776015
+    - clarify the menu for partial/all archs for binNMUs and RMs; thanks to
+      Kamaraju Kusumanchi for the report; Closes: #773606
   * share/script
     - report PAGER environment variable when filing a bug against reportbug
   * reportbug/ui/gtk2_ui.py
@@ -12,7 +14,7 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
       Closes: #782319, #780825, #769055
     - use ui.final_message() when printing the last message and then exit
 
- -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 00:35:13 +0100
+ -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 12:20:04 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
