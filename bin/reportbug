@@ -486,6 +486,11 @@ def get_package_name(bts='debian', mode=MODE_EXPERT):
                 package = 'reportbug'
 
         if package in ('general', 'project', 'debian-general', 'base'):
+            ui.long_message(
+                "If you have a general problem, please do consider using "
+		'the available Debian support channels to narrow the problem '
+		'down. This will help us together to resolve the problem '
+		'quicker. See https://www.debian.org/support')
             if not ui.yes_no(
                 "Are you sure this bug doesn't apply to a specific package?",
                 'Yes, this bug is truly general.',

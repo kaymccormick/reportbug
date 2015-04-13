@@ -13,8 +13,11 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
     - correctly handle the case where there is not MTA or smtphost defined;
       Closes: #782319, #780825, #769055
     - use ui.final_message() when printing the last message and then exit
+  * bin/reportbug
+    - suggest to contact Debian support channels when reporting bugs against
+      generic packages; thanks to Tomas Pospisek for the patch; Closes: #661563
 
- -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 12:20:04 +0100
+ -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 12:38:41 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
