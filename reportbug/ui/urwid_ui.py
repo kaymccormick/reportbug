@@ -431,7 +431,8 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
             box.add_buttons( [(oklabel, 0), (cancellabel, -1)] )
         result, chosen = box.main(ui)
         if result < 0:
-            return []
+            # We return None to differentiate a Cancel/Quit from no selection, []
+            return None
         return chosen
 
     # Single menu option only

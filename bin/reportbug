@@ -1935,6 +1935,9 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                                        "problem or report?", severities,
                                        'Please select a severity level: ',
                                        default=default, order=debbugs.SEVLIST)
+                    # urwid has a cancel and a quit button that return < 0
+                    if severity < 0:
+                        sys.exit()
 
             if rtype == 'gnats':
                 # Class of report
@@ -2008,6 +2011,9 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
             taglist = ui.select_multiple(
                 'Do any of the following apply to this report?', tags,
                 'Please select tags: ')
+            if taglist is None:
+                # We've pressed cancel or quit in urwid
+                sys.exit()
 
         patch = ('patch' in taglist)
 

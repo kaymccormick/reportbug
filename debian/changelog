@@ -18,8 +18,11 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
       generic packages; thanks to Tomas Pospisek for the patch; Closes: #661563
   * reportbug/{debbugs.py, ui/text_ui.py}, test/test_{debbugs.py, urlutils.py}
     - use HTTPS when connecting to Debian BTS
+  * bin/reportbug, reportbug/ui/urwid_ui.py
+    - make the Cancel button in Urwid interface works for tags and severity
+      lists; thanks to Ryan Kavanagh for report and patch; Closes: #702521
 
- -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 12:54:49 +0100
+ -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 15:46:52 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
