@@ -5,6 +5,9 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
       the report; Closes: #776015
     - clarify the menu for partial/all archs for binNMUs and RMs; thanks to
       Kamaraju Kusumanchi for the report; Closes: #773606
+    - clarify to not select any item in the suite menu for ftp.debian.org to
+      choose 'unstable', that should work on every UI available; thanks to
+      Rafael Laboissiere for the report; Closes: #765546
   * share/script
     - report PAGER environment variable when filing a bug against reportbug
   * reportbug/ui/gtk2_ui.py
@@ -25,7 +28,7 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
     - support LANG declined Description-xx field in package information; thanks
       to Robert Luberda for the report; Closes: #683116
 
- -- Sandro Tosi <morph@debian.org>  Mon, 13 Apr 2015 21:28:49 +0100
+ -- Sandro Tosi <morph@debian.org>  Tue, 14 Apr 2015 13:43:41 +0100
 
 reportbug (6.6.3) unstable; urgency=medium
 
