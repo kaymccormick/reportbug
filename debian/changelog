@@ -19,6 +19,9 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
   * bin/reportbug
     - suggest to contact Debian support channels when reporting bugs against
       generic packages; thanks to Tomas Pospisek for the patch; Closes: #661563
+    - set default encoding to UTF-8, should prevent all the "UnicodeDecodeError:
+      'ascii' codec can't decode" bugs; Closes: #769013, #739507, #761367,
+      #771833, #672487, #739507, #612712, #690882, #779200, #642096, #666116
   * reportbug/{debbugs.py, ui/text_ui.py}, test/test_{debbugs.py, urlutils.py}
     - use HTTPS when connecting to Debian BTS
   * bin/reportbug, reportbug/ui/urwid_ui.py
@@ -28,7 +31,7 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
     - support LANG declined Description-xx field in package information; thanks
       to Robert Luberda for the report; Closes: #683116
 
- -- Sandro Tosi <morph@debian.org>  Tue, 14 Apr 2015 13:43:41 +0100
+ -- Sandro Tosi <morph@debian.org>  Fri, 24 Apr 2015 21:37:28 -0400
 
 reportbug (6.6.3) unstable; urgency=medium
 
