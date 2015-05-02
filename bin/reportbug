@@ -805,7 +805,7 @@ def main():
                       dest='noconf', help='do not include conffiles in report')
     parser.add_option('-C', '--class', action='callback', type='string',
                       callback=verify_option, dest="klass", metavar='CLASS',
-                      callback_args=('Permitted report classes:',
+                      callback_args=('Permitted report classes',
                                      debbugs.CLASSLIST),
                       help='specify report class for GNATS BTSes')
     parser.add_option('-d', '--debug', action='store_true', default=False,
@@ -884,7 +884,7 @@ def main():
                       help='query the BTS for reports')
     parser.add_option('-T', '--tag', action='callback', dest='tags',
                       callback=verify_append_option,  type='string',
-                      callback_args=('Permitted tags:',
+                      callback_args=('Permitted tags',
                                      debbugs.get_tags),
                       help='add the specified tag to the report')
     parser.add_option('--http_proxy', '--proxy', help='use this proxy for '
@@ -922,7 +922,7 @@ def main():
                       dest='queryonly', help='only query the BTS')
     parser.add_option('-t', '--type', action='callback', dest='type',
                       callback=verify_option, type='string',
-                      callback_args=('Valid types of report:',
+                      callback_args=('Valid types of report',
                                      ('gnats', 'debbugs')),
                       help='choose the type of report to file')
     parser.add_option('-B', '--bts', action='callback', dest='bts',
