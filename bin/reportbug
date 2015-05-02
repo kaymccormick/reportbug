@@ -749,6 +749,11 @@ def verify_option(option, opt, value, parser, *args):
 
 def verify_append_option(option, opt, value, parser, *args):
     heading, valid = args
+    # special case --tag: in valid we pass a function reference
+    # as get_tags is dependant on the user mode, so we also have to convert
+    # the mode to the integer value expected... FIXME
+    if opt == '--tag':
+        valid = sorted(valid(mode=utils.MODELIST.index(parser.values.mode)).keys())+['none']
     if value == 'help':
         ewrite('%s:\n %s\n' % (heading, '\n '.join(valid)))
         sys.exit(1)
@@ -880,7 +885,7 @@ def main():
     parser.add_option('-T', '--tag', action='callback', dest='tags',
                       callback=verify_append_option,  type='string',
                       callback_args=('Permitted tags:',
-                                     sorted(debbugs.get_tags().keys())+['none']),
+                                     debbugs.get_tags),
                       help='add the specified tag to the report')
     parser.add_option('--http_proxy', '--proxy', help='use this proxy for '
                       'HTTP accesses')
