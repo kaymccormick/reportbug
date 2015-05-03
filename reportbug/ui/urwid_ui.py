@@ -657,38 +657,3 @@ def initialize ():
 
 def can_input():
     return sys.stdin.isatty()
-
-def test():
-    import time
-
-    fp = sys.stdout
-
-    long_message('This is a test.  This is only a test.\nPlease do not adjust your set.')
-    time.sleep(1)
-##     output = get_string('Tell me your name, biatch.')
-##     print >> fp, output
-##     output = get_multiline('List all of your aliases now.')
-##     print >> fp, output
-##     result = select_options('This is really lame', 'ynM', {
-##         'y' : 'You bet', 'n' : 'Never!', 'm' : 'Maybe'})
-##     print >> fp, result
-##     yn = yes_no('Do you like green eggs and ham?', 'Yes sireee', 'No way!')
-##     print >> fp, yn
-
-    mailers = [(x, '') for x in reportbug.MUA.keys()]
-    mailers.sort()
-    mailer = menu('Choose a mailer for your report', mailers,
-                  'Select mailer: ', default='mutt', empty_ok=True)
-    print >> fp, mailer
-
-    import debbugs
-
-    tags = debbugs.get_tags()
-
-    taglist = select_multiple(
-        'Do any of the following apply to this report?', tags,
-        'Please select tags: ')
-    print >> fp, taglist
-
-if __name__ == '__main__':
-    test()
