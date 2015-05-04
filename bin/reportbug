@@ -905,6 +905,10 @@ def main():
                       help='query on source packages, not binary packages')
     parser.add_option('--no-query-source', action='store_false',
                       dest='query_src', help='query on binary packages only')
+    parser.add_option('--security-team', action='store_true', dest='secteam', default=None,
+                      help='send the report only to the security team, if tag=security')
+    parser.add_option('--no-security-team', action='store_false', default=None,
+                      dest='secteam', help='do not send the report only to the security team, if tag=security')
     parser.add_option('--debconf', action='store_true',
                       help='include debconf settings in your report')
     parser.add_option('--no-debconf', action='store_false', dest='debconf',
@@ -2037,10 +2041,10 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
             tags = ''
 
         if 'security' in taglist:
-            if ui.yes_no(
+            if self.options.secteam or (self.options.secteam is None and ui.yes_no(
                 'Are you reporting an undisclosed vulnerability? If so, in order to responsibly disclose the issue, it should not be sent to the public BTS right now, but instead to the private Security Team mailing list.',
                 'Yes, it is an undisclosed vulnerability, send this report to the private Security Team mailing list and not to the BTS.',
-                'No, it is already a publicly disclosed vulnerability, send this report to the BTS.', False):
+                'No, it is already a publicly disclosed vulnerability, send this report to the BTS.', False)):
                 sendto = 'team@security.debian.org'
 
         # Execute bug script

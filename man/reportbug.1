@@ -388,6 +388,16 @@ Set the subject of the bug report (i.e. a brief explanation of the
 problem, less than 60 characters).  If you do not specify this switch,
 you will be prompted for a subject.
 .TP
+.B \-\-security\-team
+If the 'security' tag is set, this option will explicitly specify to send the
+report only to the Debian Security Team, as this is an undisclosed
+vulnerability.
+.TP
+.B \-\-no\-security\-team
+If the 'security' tag is set, this option will explicitly specify to not send
+the report only to the Debian Security Team, as this is not an undisclosed
+vulnerability.
+.TP
 .B \-S SEVERITY, \-\-severity=SEVERITY
 Specify a severity level, from \fBcritical\fP, \fBgrave\fP,
 \fBserious\fP, \fBimportant\fP, \fBnormal\fP, \fBminor\fP, and

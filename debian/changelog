@@ -32,8 +32,12 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
   * reportbug/utils.py
     - support LANG declined Description-xx field in package information; thanks
       to Robert Luberda for the report; Closes: #683116
+  * bin/reportbug, man/reportbug.1
+    - add --{no-}security-team, to declare to send (or not) the report only to
+      the security team since it is (or not) an undisclosed vulnerability;
+      Closes: #685829
 
- -- Sandro Tosi <morph@debian.org>  Sat, 02 May 2015 15:00:19 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 03 May 2015 23:59:40 -0400
 
 reportbug (6.6.3) unstable; urgency=medium
 
