@@ -481,6 +481,21 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
             if not archs:
                 ui.long_message('No architecture specified, skipping...')
 
+    if tag == 'binnmu':
+        suite = ui.menu("For which suite are you requesting this binNMU?"
+                        "  Don't select anything for \"unstable\"", {
+            'jessie' : "",
+            'jessie-backports' : "",
+            'jessie-security' : "",
+            'wheezy' : "",
+            'wheezy-backports' : "",
+            'wheezy-security' : "",
+            'stretch': "",
+            'experimental' : "",
+        }, 'Choose the suite: ', empty_ok=True)
+        if not suite:
+            suite = 'unstable'
+
     pseudos.append("User: release.debian.org@packages.debian.org")
     if tag.endswith('-pu'):
         pseudos.append("Usertags: pu")
@@ -491,7 +506,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     if tag == 'binnmu':
         reason  = ui.get_string("binNMU changelog entry: ")
         subject = "nmu: %s_%s" % (package, version)
-        body    = "nmu %s_%s . %s . -m \"%s\"\n" % (package, version, archs or "ALL", reason)
+        body    = "nmu %s_%s . %s . %s . -m \"%s\"\n" % (package, version, archs or "ALL", suite, reason)
     elif tag == 'transition':
         subject = 'transition: %s' % (package)
         body    = '(please explain about the transition: impacted packages, reason, ...\n' \

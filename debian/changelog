@@ -1,4 +1,4 @@
-reportbug (6.6.4) UNRELEASED; urgency=medium
+ (6.6.4) UNRELEASED; urgency=medium
 
   * reportbug/debbugs.py
     - fix usage of singular they in RFH description; thanks to Doug Torrance for
@@ -8,6 +8,9 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
     - clarify to not select any item in the suite menu for ftp.debian.org to
       choose 'unstable', that should work on every UI available; thanks to
       Rafael Laboissiere for the report; Closes: #765546
+    - extend release.d.o binNMUs handling to include a menu to request the suite
+      the binNMU is for; thanks to Andreas Beckmann for the report and Niels
+      Thykier, Adam D. Barratt from release team for help; Closes: #769355
   * share/script
     - report PAGER environment variable when filing a bug against reportbug
   * reportbug/ui/gtk2_ui.py
@@ -37,7 +40,7 @@ reportbug (6.6.4) UNRELEASED; urgency=medium
       the security team since it is (or not) an undisclosed vulnerability;
       Closes: #685829
 
- -- Sandro Tosi <morph@debian.org>  Sun, 03 May 2015 23:59:40 -0400
+ -- Sandro Tosi <morph@debian.org>  Sat, 09 May 2015 00:50:24 -0400
 
 reportbug (6.6.3) unstable; urgency=medium
 
