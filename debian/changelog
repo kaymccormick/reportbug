@@ -1,4 +1,4 @@
- (6.6.4) UNRELEASED; urgency=medium
+reportbug (6.6.4) UNRELEASED; urgency=medium
 
   * reportbug/debbugs.py
     - fix usage of singular they in RFH description; thanks to Doug Torrance for
@@ -39,8 +39,10 @@
     - add --{no-}security-team, to declare to send (or not) the report only to
       the security team since it is (or not) an undisclosed vulnerability;
       Closes: #685829
+  * bin/reportbug, reportbug/debbugs.py
+    - remove 'base' pseudo-package, to be deprecated in BTS too; Closes: #761206
 
- -- Sandro Tosi <morph@debian.org>  Sat, 09 May 2015 00:50:24 -0400
+ -- Sandro Tosi <morph@debian.org>  Sat, 09 May 2015 23:49:36 -0400
 
 reportbug (6.6.3) unstable; urgency=medium
 

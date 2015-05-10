@@ -489,7 +489,7 @@ def get_package_name(bts='debian', mode=MODE_EXPERT):
                          'bug tracking system itself.'):
                 package = 'reportbug'
 
-        if package in ('general', 'project', 'debian-general', 'base'):
+        if package in ('general', 'project', 'debian-general'):
             ui.long_message(
                 "If you have a general problem, please do consider using "
 		'the available Debian support channels to narrow the problem '

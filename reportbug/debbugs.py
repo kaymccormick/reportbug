@@ -160,7 +160,6 @@ def convert_severity(severity, type='debbugs'):
 
 # These packages are virtual in Debian; we don't look them up...
 debother = {
-    'base' : 'General bugs in the base system',
     'bugs.debian.org' : 'The bug tracking system, @bugs.debian.org',
     'buildd.debian.org' :  'Problems and requests related to the Debian Buildds',
     'buildd.emdebian.org' :  'Problems related to building packages for Emdebian',
