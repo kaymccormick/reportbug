@@ -505,7 +505,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     if tag == 'binnmu':
         reason  = ui.get_string("binNMU changelog entry: ")
         subject = "nmu: %s_%s" % (package, version)
-        body    = "nmu %s_%s . %s . %s . -m \"%s\"\n" % (package, version, archs or "ALL", suite, reason)
+        body    = "nmu %s_%s . %s . %s . -m \"%s\"\n" % (package, version, archs or "ANY", suite, reason)
     elif tag == 'transition':
         subject = 'transition: %s' % (package)
         body    = '(please explain about the transition: impacted packages, reason, ...\n' \
