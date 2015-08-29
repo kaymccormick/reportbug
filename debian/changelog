@@ -3,8 +3,11 @@ reportbug (6.6.5) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - use 'ANY' as an alias for "all architectures" when requesting a binNMU;
       thanks to Mehdi for report and patch; Closes: #795687
+  * debian/control
+    - set dep on python-debianbts to the version implementing the paged access
+      to BTS; Closes: #796759
 
- -- Sandro Tosi <morph@debian.org>  Sun, 16 Aug 2015 15:33:12 +0100
+ -- Sandro Tosi <morph@debian.org>  Sat, 29 Aug 2015 21:46:46 +0100
 
 reportbug (6.6.4) unstable; urgency=medium
 

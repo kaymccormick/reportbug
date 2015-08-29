@@ -166,6 +166,14 @@ class TestGetReports(unittest2.TestCase):
         buginfo, bodies = debbugs.get_report(503300, 120)
         self.assertGreater(len(bodies), 0)
 
+    @attr('network') #marking the test as using network
+    def test_bts796759(self):
+
+        # verify accessing WNPP happens correctly, now that BTS
+        # access has to be done in batches
+        data = debbugs.get_reports('wnpp', 120, source=True)
+        self.assertGreater(data[0], 0)
+
 class TestUrlFunctions(unittest2.TestCase):
 
     def test_cgi_report_url(self):
