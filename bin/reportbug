@@ -56,7 +56,7 @@ from reportbug.tempfiles import (
     )
 from reportbug.exceptions import (
     UINotImportable, UINotImplemented,
-    NoNetwork, NoPackage, NoBugs, NoReport,
+    NoNetwork, NoPackage, NoBugs, NoReport, QuertBTSError,
     )
 from reportbug import submit
 from reportbug import checkversions
@@ -1739,6 +1739,8 @@ class UI(object):
                 else:
                     ewrite('Nothing new to report; exiting.\n')
                 return
+            except QuertBTSError:
+                ewrite('Error accessing the BTS, no bugs information available.\n')
 
             if self.options.queryonly and not exinfo:
                 return

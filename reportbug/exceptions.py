@@ -57,3 +57,7 @@ class InvalidRegex(reportbug_exception):
 # Lame empty exception used later to save some coding
 class NoMessage(reportbug_exception):
     pass
+
+# There was a problem accessing BTS
+class QuertBTSError(reportbug_exception):
+    pass

@@ -43,6 +43,7 @@ from collections import defaultdict
 import checkversions
 from exceptions import (
     NoNetwork,
+    QuertBTSError,
     )
 from urlutils import open_url
 
@@ -1285,8 +1286,11 @@ def get_reports(package, timeout, system='debian', mirrors=None, version=None,
         else:
             bugs = map(int, package)
 
-        # retrieve bugs and generate the hierarchy
-        stats = debianbts.get_status(bugs)
+        try:
+            # retrieve bugs and generate the hierarchy
+            stats = debianbts.get_status(bugs)
+        except:
+            raise QuertBTSError
 
         d = defaultdict(list)
         for s in stats:
