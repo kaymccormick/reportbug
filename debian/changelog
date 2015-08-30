@@ -13,8 +13,11 @@ reportbug (6.6.5) UNRELEASED; urgency=medium
     - special-case also the short alias -T along with --tag; this fixes a crash
       in 'debian-bug' in Emacs; thanks to Sven  Joachim for report and patch;
       Closes: #794590
+  * reportbug/utils.py
+    - correctly identify conffiles marked as obsolete; thanks to Jakub Wilk for
+      the report; Closes: #791577
 
- -- Sandro Tosi <morph@debian.org>  Sun, 30 Aug 2015 01:09:54 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 30 Aug 2015 02:39:06 +0100
 
 reportbug (6.6.4) unstable; urgency=medium
 

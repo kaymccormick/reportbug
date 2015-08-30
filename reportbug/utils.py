@@ -359,7 +359,7 @@ def get_package_status(package, avail=False):
                 confmode = False
             else:
                 # re is used to identify also conffiles with spaces in the name
-                conffiles = conffiles + [re.findall(' (.+) ([^ ]+)$', line)[0]]
+                conffiles = conffiles + [re.findall(r' (.+) ([^ |^(obsolete)]+).*$', line)[0]]
 
         if versionre.match(line):
             (crud, pkgversion) = line.split(": ", 1)

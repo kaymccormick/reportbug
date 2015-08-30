@@ -148,6 +148,31 @@ class TestPackages(unittest2.TestCase):
 
         self.assertIsNotNone(recommends)
 
+    def test_bts791577(self):
+        """Verify obsolete config files are correctly parsed"""
+
+        # bonus points for testing also conffiles with spaces in the filename
+        pkgstatus = """Conffiles:
+ /etc/reportbug.conf 17b8e0850fa74d18b96ce5856321de0d
+ /etc/reportbug with spaces.conf feedcafefeedcafefeedcafefeedcafe
+ /etc/reportbug.conf.obsolete deadbeefdeadbeefdeadbeefdeadbeef obsolete
+ /etc/reportbug with spaces and obsolete.conf cafebabecafebabecafebabecafebabe obsolete
+        """
+
+        pkg = 'reportbug'
+
+        expected_conffiles = [u'/etc/reportbug.conf',
+                              u'/etc/reportbug with spaces.conf',
+                              u'/etc/reportbug.conf.obsolete',
+                              u'/etc/reportbug with spaces and obsolete.conf']
+
+        __save = commands.getoutput
+        commands.getoutput = mock.MagicMock(return_value=pkgstatus)
+        result = utils.get_package_status(pkg)
+        conffile = [x[0] for x in result[4]]
+        self.assertListEqual(conffile, expected_conffiles)
+        commands.getoutput = __save
+        del __save
 
     def test_get_changed_config_files(self):
 
