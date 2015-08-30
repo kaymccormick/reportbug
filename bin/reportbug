@@ -752,7 +752,7 @@ def verify_append_option(option, opt, value, parser, *args):
     # special case --tag: in valid we pass a function reference
     # as get_tags is dependant on the user mode, so we also have to convert
     # the mode to the integer value expected... FIXME
-    if opt == '--tag':
+    if opt == '--tag' or opt == '-T':
         valid = sorted(valid(mode=utils.MODELIST.index(parser.values.mode)).keys())+['none']
     if value == 'help':
         ewrite('%s:\n %s\n' % (heading, '\n '.join(valid)))

@@ -9,8 +9,12 @@ reportbug (6.6.5) UNRELEASED; urgency=medium
   * bin/reportbug, reportbug/{debbugs.py, exceptions.py}
     - in case of an error accessing the BTS, throw a new exception, and catch it
       in the main program, and display a message about it
+  * bin/reportbug
+    - special-case also the short alias -T along with --tag; this fixes a crash
+      in 'debian-bug' in Emacs; thanks to Sven  Joachim for report and patch;
+      Closes: #794590
 
- -- Sandro Tosi <morph@debian.org>  Sat, 29 Aug 2015 21:48:09 +0100
+ -- Sandro Tosi <morph@debian.org>  Sun, 30 Aug 2015 01:09:54 +0100
 
 reportbug (6.6.4) unstable; urgency=medium
 
