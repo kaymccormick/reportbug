@@ -23,7 +23,7 @@ coverhtml: coverage
 codechecks: pep8 pyflakes pylint
 
 pep8:
-	pep8 --verbose --repeat --show-source --filename=*.py,reportbug,querybts . --statistics
+	pep8 --verbose --repeat --show-source --filename=*.py,reportbug,querybts . --statistics --ignore=E501
 
 pyflakes:
 	pyflakes . bin/*

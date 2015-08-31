@@ -9,17 +9,16 @@ import mock
 import commands
 import subprocess
 
-class TestUtils(unittest2.TestCase):
 
+class TestUtils(unittest2.TestCase):
     def test_modes_and_modelist(self):
         """Check MODES items and MODELIST are in sync"""
 
         self.assertItemsEqual(utils.MODES.keys(), utils.MODELIST)
 
-class TestEmail(unittest2.TestCase):
 
+class TestEmail(unittest2.TestCase):
     def test_check_email_addr(self):
-        
         real_addr = 'reportbug-maint@lists.alioth.debian.org'
 
         self.assertTrue(utils.check_email_addr(real_addr))
@@ -32,7 +31,6 @@ class TestEmail(unittest2.TestCase):
         self.assertFalse(utils.check_email_addr('too@many@at@signs'))
 
     def test_get_email_addr(self):
-
         email = 'Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>'
         name, email_addr = utils.get_email_addr(email)
 
@@ -40,7 +38,6 @@ class TestEmail(unittest2.TestCase):
         self.assertEqual(email_addr, 'reportbug-maint@lists.alioth.debian.org')
 
     def test_get_email(self):
-
         name = 'Reportbug Maintainers'
         mail = 'reportbug-maint@lists.alioth.debian.org'
 
@@ -50,7 +47,6 @@ class TestEmail(unittest2.TestCase):
         self.assertEqual(mail, m)
 
     def test_get_user_id(self):
-
         name = 'Reportbug Maintainers'
         mail = 'reportbug-maint@lists.alioth.debian.org'
         addr = utils.get_user_id(mail, name)
@@ -59,7 +55,7 @@ class TestEmail(unittest2.TestCase):
         name = 'test'
         mail = 'faked'
         addr = utils.get_user_id(mail, name)
-        self.assertIn(mail+'@', addr)
+        self.assertIn(mail + '@', addr)
 
         mail = 'Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>'
         addr = utils.get_user_id(mail)
@@ -69,14 +65,12 @@ class TestEmail(unittest2.TestCase):
         addr = utils.get_user_id(mail)
         self.assertIn(mail, addr)
 
-
     def test_find_rewritten(self):
         unittest2.skip("Is utils.find_rewritten actually useful to someone? deprecate it?")
 
+
 class TestPackages(unittest2.TestCase):
-
     def test_get_package_status(self):
-
         status = utils.get_package_status('non-existing-package')
 
         (pkgversion, pkgavail, depends, recommends, conffiles, maintainer,
@@ -175,7 +169,6 @@ class TestPackages(unittest2.TestCase):
         self.assertListEqual(conffile, expected_conffiles)
 
     def test_get_changed_config_files(self):
-
         status = utils.get_package_status('dpkg')
 
         (pkgversion, pkgavail, depends, recommends, conffiles, maintainer,
@@ -204,7 +197,6 @@ class TestPackages(unittest2.TestCase):
         self.assertNotEqual(result[1], {})
 
     def test_get_package_info(self):
-
         result = utils.get_package_info([])
         self.assertEqual(result, [])
 
@@ -215,7 +207,7 @@ class TestPackages(unittest2.TestCase):
         self.assertEqual(result[0][0], pkg)
 
         # open package surely not available on my client systems
-        #to cover line 568
+        # to cover line 568
         pkg = 'slapd'
         result = utils.get_package_info([((pkg,), pkg)])
 
@@ -227,10 +219,10 @@ class TestPackages(unittest2.TestCase):
         self.assertEqual(result, [])
 
         # package with a Provides
-        #pkg = 'emacs'
-        #result = utils.get_package_info([((pkg,), pkg)])
+        # pkg = 'emacs'
+        # result = utils.get_package_info([((pkg,), pkg)])
 
-        #self.assertEqual(result[0][0], pkg)
+        # self.assertEqual(result[0][0], pkg)
 
     def test_bts683116(self):
         """Check Description and Description-LANG are recognized"""
@@ -263,10 +255,10 @@ Version: 6.6.3
         del __save
 
         __save = utils.get_dpkg_database
-        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description',])
+        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description', ])
         result = utils.get_package_info([((pkg,), pkg)])
         self.assertEqual(u'reports bugs in the Debian distribution', result[0][3])
-        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description-en',])
+        utils.get_dpkg_database = mock.MagicMock(return_value=[pkginfo % 'Description-en', ])
         result = utils.get_package_info([((pkg,), pkg)])
         self.assertEqual(u'reports bugs in the Debian distribution', result[0][3])
         utils.get_dpkg_database = __save
@@ -279,22 +271,20 @@ Version: 6.6.3
         self.assertGreater(len(result), 0)
 
     def test_get_avail_database(self):
-        
         avail_db = utils.get_avail_database()
         entry = avail_db.next()
         self.assertIsNotNone(entry)
 
     def test_available_package_description(self):
-
         descr = utils.available_package_description('reportbug')
         self.assertEquals(descr, 'reports bugs in the Debian distribution')
 
         descr = utils.available_package_description('reportbug-bugfree')
         self.assertIsNone(descr)
 
-class TestSourcePackages(unittest2.TestCase):
 
-    #@unittest2.skip("Too slow")
+class TestSourcePackages(unittest2.TestCase):
+    # @unittest2.skip("Too slow")
     def test_get_source_name(self):
         binpkg = 'python-reportbug'
         src = utils.get_source_name(binpkg)
@@ -303,7 +293,7 @@ class TestSourcePackages(unittest2.TestCase):
         src = utils.get_source_name('reportbug-bugfree')
         self.assertIsNone(src)
 
-    #@unittest2.skip("Too slow")
+    # @unittest2.skip("Too slow")
     def test_get_source_package(self):
         src = 'reportbug'
         binpkgs = utils.get_source_package(src)
@@ -313,54 +303,48 @@ class TestSourcePackages(unittest2.TestCase):
         binpkgs_frombin = utils.get_source_package(bin)
         self.assertEqual(binpkgs, binpkgs_frombin)
 
+
 class TestSystemInformation(unittest2.TestCase):
-
     def test_get_cpu_cores(self):
-
         cores = utils.get_cpu_cores()
         self.assertGreaterEqual(cores, 1)
 
-
     def test_lsb_release_info(self):
-
         res = utils.lsb_release_info()
         self.assertIn('Debian', res)
 
     def test_get_running_kernel_pkg(self):
-
         package = utils.get_running_kernel_pkg()
 
         self.assertIn(platform.release(), package)
 
     def test_get_multiarch(self):
-
         orig = commands.getoutput
 
-        commands.getoutput = mock.MagicMock(return_value = '')
+        commands.getoutput = mock.MagicMock(return_value='')
         multiarch = utils.get_multiarch()
         self.assertEqual(multiarch, '')
 
-        commands.getoutput = mock.MagicMock(return_value = 'i386')
+        commands.getoutput = mock.MagicMock(return_value='i386')
         multiarch = utils.get_multiarch()
         self.assertEqual(multiarch, 'i386')
 
-        commands.getoutput = mock.MagicMock(return_value = 'i386\namd64')
+        commands.getoutput = mock.MagicMock(return_value='i386\namd64')
         multiarch = utils.get_multiarch()
         self.assertItemsEqual(multiarch.split(', '), ['i386', 'amd64'])
 
         commands.getoutput = orig
 
     def test_get_init_system(self):
-
         __save = os.path.isdir
-        os.path.isdir = mock.MagicMock(return_value = True)
+        os.path.isdir = mock.MagicMock(return_value=True)
         init = utils.get_init_system()
         self.assertTrue(init.startswith('systemd'))
         os.path.isdir = __save
         del __save
 
         __save = subprocess.call
-        subprocess.call = mock.MagicMock(return_value = 0)
+        subprocess.call = mock.MagicMock(return_value=0)
         init = utils.get_init_system()
         self.assertTrue(init.startswith('upstart'))
         subprocess.call = __save
@@ -368,8 +352,8 @@ class TestSystemInformation(unittest2.TestCase):
 
         __save1 = os.path.isfile
         __save2 = os.path.islink
-        os.path.isfile = mock.MagicMock(return_value = True)
-        os.path.islink = mock.MagicMock(return_value = False)
+        os.path.isfile = mock.MagicMock(return_value=True)
+        os.path.islink = mock.MagicMock(return_value=False)
         init = utils.get_init_system()
         self.assertTrue(init.startswith('sysvinit'))
         os.path.isfile = __save1
@@ -377,8 +361,8 @@ class TestSystemInformation(unittest2.TestCase):
         del __save1
         del __save2
 
-class TestMua(unittest2.TestCase):
 
+class TestMua(unittest2.TestCase):
     def test_mua_is_supported(self):
 
         for mua in ('mh', 'nmh', 'gnus', 'mutt', 'claws-mail'):
@@ -401,7 +385,6 @@ class TestMua(unittest2.TestCase):
 
 
 class TestBugreportBody(unittest2.TestCase):
-
     def test_get_dependency_info(self):
 
         pkg = 'reportbug'
@@ -415,7 +398,6 @@ class TestBugreportBody(unittest2.TestCase):
         # check for the provides stuff
         result = utils.get_dependency_info('reportbug', [['awk']])
         self.assertIn('awk', result)
-
 
     def test_bts657753(self):
         # check that non-existing deps gets a correct installation info
@@ -488,8 +470,7 @@ Shell: /bin/sh linked to /bin/bash"""
         self.assertIn('Usertags', p)
         self.assertIn('Morph', p)
 
-
-    @attr('network') #marking the test as using network
+    @attr('network')  # marking the test as using network
     def test_generate_blank_report(self):
 
         report = utils.generate_blank_report('reportbug', '1.2.3', 'normal',
@@ -522,8 +503,8 @@ Shell: /bin/sh linked to /bin/bash"""
                                                  '', '', '', type='debbugs',
                                                  exinfo={'123456': ''})
 
-class TestConfig(unittest2.TestCase):
 
+class TestConfig(unittest2.TestCase):
     # Use an "internal" file for testing
     def setUp(self):
         self._FILES = utils.FILES
@@ -533,7 +514,6 @@ class TestConfig(unittest2.TestCase):
         utils.FILES = self._FILES
 
     def test_parse_config_files(self):
-
         desired_conf = {
             'bts': 'debian',
             'check_available': True,
@@ -588,9 +568,7 @@ class TestConfig(unittest2.TestCase):
 
 
 class TestControl(unittest2.TestCase):
-
     def test_parse_bug_control_file(self):
-
         ctrl_file = os.path.dirname(__file__) + '/data/control'
 
         submitas, submitto, reportwith, supplemental = \
@@ -603,10 +581,9 @@ class TestControl(unittest2.TestCase):
         self.assertIn('python', supplemental)
         self.assertIn('perl', supplemental)
 
+
 class TestPaths(unittest2.TestCase):
-
     def test_search_path_for(self):
-
         p = 'not-existing'
         res = utils.search_path_for(p)
         self.assertIsNone(res)
@@ -619,21 +596,19 @@ class TestPaths(unittest2.TestCase):
         res = utils.search_path_for(p)
         self.assertEquals(res, '/usr/bin/dpkg')
 
+
 class TestEditor(unittest2.TestCase):
-
     def test_which_editor(self):
-
         res = utils.which_editor()
         self.assertIsNotNone(res)
 
         e = 'reportbug-editor'
         res = utils.which_editor(e)
         self.assertEquals(e, res)
-        
+
+
 class TestSearch(unittest2.TestCase):
-
     def test_search_pipe(self):
-
         f = 'reportbug'
 
         dlocate = True
@@ -652,10 +627,9 @@ class TestSearch(unittest2.TestCase):
         self.assertEquals(dloc, dlocate)
         self.assertGreater(len(res), 0)
 
+
 class TestDpkg(unittest2.TestCase):
-
     def test_query_dpkg_for(self):
-
         p = 'reportbug'
         dlocate = True
         res = utils.query_dpkg_for(p, dlocate)
@@ -677,15 +651,13 @@ class TestDpkg(unittest2.TestCase):
         self.assertEquals(res[0], p)
         self.assertEquals(res[1], {})
 
+
 class TestMisc(unittest2.TestCase):
-
     def test_first_run(self):
-
         isfirstrun = utils.first_run()
         self.assertIsNotNone(isfirstrun)
 
     def test_exec_and_parse_bugscript(self):
-
         handler = os.path.dirname(__file__) + '/../share/handle_bugscript'
         bugscript_file = os.path.dirname(__file__) + '/data/bugscript'
 

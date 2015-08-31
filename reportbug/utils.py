@@ -6,24 +6,25 @@
 #
 # This program is freely distributable per the following license:
 #
-##  Permission to use, copy, modify, and distribute this software and its
-##  documentation for any purpose and without fee is hereby granted,
-##  provided that the above copyright notice appears in all copies and that
-##  both that copyright notice and this permission notice appear in
-##  supporting documentation.
-##
-##  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
-##  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
-##  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-##  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-##  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-##  SOFTWARE.
+#  Permission to use, copy, modify, and distribute this software and its
+#  documentation for any purpose and without fee is hereby granted,
+#  provided that the above copyright notice appears in all copies and that
+#  both that copyright notice and this permission notice appear in
+#  supporting documentation.
+#
+#  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
+#  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
+#  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+#  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+#  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+#  SOFTWARE.
 
 import sys
 import os
 import re
 import platform
+
 try:
     import pwd
     from tempfiles import TempFile, tempfile_prefix, cleanup_temp_file
@@ -54,13 +55,13 @@ PSEUDOHEADERS = ('Package', 'Source', 'Version', 'Severity', 'File', 'Tags',
 
 MODES = {'novice': 'Offer simple prompts, bypassing technical questions.',
          'standard': 'Offer more extensive prompts, including asking about '
-         'things that a moderately sophisticated user would be expected to '
-         'know about Debian.',
-         'advanced' : 'Like standard, but assumes you know a bit more about '
-         'Debian, including "incoming".',
+                     'things that a moderately sophisticated user would be expected to '
+                     'know about Debian.',
+         'advanced': 'Like standard, but assumes you know a bit more about '
+                     'Debian, including "incoming".',
          'expert': 'Bypass most handholding measures and preliminary triage '
-         'routines.  This mode should not be used by people unfamiliar with '
-         'Debian\'s policies and operating procedures.'}
+                   'routines.  This mode should not be used by people unfamiliar with '
+                   'Debian\'s policies and operating procedures.'}
 MODELIST = ['novice', 'standard', 'advanced', 'expert']
 for mode in MODELIST:
     exec 'MODE_%s=%d' % (mode.upper(), MODELIST.index(mode))
@@ -95,11 +96,12 @@ SUITES2DISTS = {'squeeze': 'oldstable',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
 
+
 def realpath(filename):
     filename = os.path.abspath(filename)
 
     bits = filename.split('/')
-    for i in range(2, len(bits)+1):
+    for i in range(2, len(bits) + 1):
         component = '/'.join(bits[0:i])
         if component in fhs_directories:
             continue
@@ -113,16 +115,19 @@ def realpath(filename):
 
     return filename
 
+
 pathdirs = ['/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/X11R6/bin',
             '/usr/games']
 
+
 def search_path_for(filename):
     d, f = os.path.split(filename)
-    if d: return realpath(filename)
+    if d:
+        return realpath(filename)
 
     path = os.environ.get("PATH", os.defpath).split('/')
     for d in pathdirs:
-        if not d in path:
+        if d not in path:
             path.append(d)
 
     for d in path:
@@ -130,6 +135,7 @@ def search_path_for(filename):
         if os.path.exists(fullname):
             return realpath(fullname)
     return None
+
 
 def which_editor(specified_editor=None):
     """ Determine which editor program to use.
@@ -144,19 +150,20 @@ def which_editor(specified_editor=None):
 
         """
     debian_default_editor = "/usr/bin/sensible-editor"
-    for editor in [
-        specified_editor,
-        os.environ.get("VISUAL"),
-        os.environ.get("EDITOR"),
-        debian_default_editor]:
+    for editor in [specified_editor,
+                   os.environ.get("VISUAL"),
+                   os.environ.get("EDITOR"),
+                   debian_default_editor]:
         if editor:
             break
 
     return editor
 
+
 def glob_escape(filename):
     filename = re.sub(r'([*?\[\]])', r'\\\1', filename)
     return filename
+
 
 def search_pipe(searchfile, use_dlocate=True):
     arg = commands.mkarg(searchfile)
@@ -166,6 +173,7 @@ def search_pipe(searchfile, use_dlocate=True):
         use_dlocate = False
         pipe = os.popen('COLUMNS=79 dpkg --search %s 2>/dev/null' % arg)
     return (pipe, use_dlocate)
+
 
 def query_dpkg_for(filename, use_dlocate=True):
     try:
@@ -179,13 +187,14 @@ def query_dpkg_for(filename, use_dlocate=True):
     for line in pipe:
         line = line.strip()
         # Ignore diversions
-        if 'diversion by' in line: continue
+        if 'diversion by' in line:
+            continue
 
         (package, path) = line.split(': ', 1)
         path = path.strip()
         packlist = package.split(', ')
         for package in packlist:
-            if packages.has_key(package):
+            if package in packages:
                 packages[package].append(path)
             else:
                 packages[package] = [path]
@@ -195,6 +204,7 @@ def query_dpkg_for(filename, use_dlocate=True):
         return query_dpkg_for(filename, use_dlocate=False)
 
     return filename, packages
+
 
 def find_package_for(filename, pathonly=False):
     """Find the package(s) containing this file."""
@@ -206,17 +216,19 @@ def find_package_for(filename, pathonly=False):
         dpkg_info = re.compile('/var/lib/dpkg/info/(.+)\.[^.]+')
         m = dpkg_info.match(filename)
         # callee want a dict as second pair element...
-        packages[m.group(1)]=''
+        packages[m.group(1)] = ''
         return (filename, packages)
 
     if filename[0] == '/':
         fn, pkglist = query_dpkg_for(filename)
-        if pkglist: return fn, pkglist
+        if pkglist:
+            return fn, pkglist
 
     newfilename = search_path_for(filename)
     if pathonly and not newfilename:
         return (filename, None)
     return query_dpkg_for(newfilename or filename)
+
 
 def find_rewritten(username):
     for filename in ['/etc/email-addresses']:
@@ -237,6 +249,7 @@ def find_rewritten(username):
                     print 'Invalid entry in %s' % filename
                     return None
 
+
 def check_email_addr(addr):
     """Simple check for email validity"""
     if '@' not in addr:
@@ -252,12 +265,15 @@ def check_email_addr(addr):
         return False
     return True
 
+
 def get_email_addr(addr):
     addr = rfc822.AddressList(addr)
     return addr.addresslist[0]
 
+
 def get_email(email='', realname=''):
     return get_email_addr(get_user_id(email, realname))
+
 
 def get_user_id(email='', realname='', charset='utf-8'):
     uid = os.getuid()
@@ -273,7 +289,7 @@ def get_user_id(email='', realname='', charset='utf-8'):
         else:
             domainname = socket.getfqdn()
 
-        email = email+'@'+domainname
+        email = email + '@' + domainname
 
     # Handle EMAIL if it's formatted as 'Bob <bob@host>'.
     if '<' in email or '(' in email:
@@ -298,12 +314,15 @@ def get_user_id(email='', realname='', charset='utf-8'):
     if re.match(r'[\w\s]+$', realname):
         return u'%s <%s>' % (realname, email)
 
-    addr = rfc822.dump_address_pair( (realname, email) )
+    addr = rfc822.dump_address_pair((realname, email))
     if isinstance(addr, str):
         addr = addr.decode('utf-8', 'replace')
     return addr
 
+
 statuscache = {}
+
+
 def get_package_status(package, avail=False):
     if not avail and package in statuscache:
         return statuscache[package]
@@ -352,7 +371,8 @@ def get_package_status(package, avail=False):
 
     for line in output.split(os.linesep):
         line = line.rstrip()
-        if not line: continue
+        if not line:
+            continue
 
         if confmode:
             if line[:2] != ' /':
@@ -402,7 +422,7 @@ def get_package_status(package, avail=False):
             src_name = src_name.split()[0]
         elif sectionre.match(line):
             crud, section = line.split(": ", 1)
-        elif desc and line[0]==' ':
+        elif desc and line[0] == ' ':
             fulldesc.append(line)
 
     installed = False
@@ -414,7 +434,7 @@ def get_package_status(package, avail=False):
     if bugs:
         reportinfo = debbugs.parse_bts_url(bugs)
     elif origin:
-        if debbugs.SYSTEMS.has_key(origin):
+        if origin in debbugs.SYSTEMS:
             vendor = debbugs.SYSTEMS[origin]['name']
             reportinfo = (debbugs.SYSTEMS[origin].get('type', 'debbugs'),
                           debbugs.SYSTEMS[origin]['btsroot'])
@@ -433,8 +453,9 @@ def get_package_status(package, avail=False):
         statuscache[package] = info
     return info
 
-#dbase = []
-#avail = []
+
+# dbase = []
+# avail = []
 
 # Object that essentially chunkifies the output of apt-cache dumpavail
 class AvailDB(object):
@@ -469,7 +490,7 @@ class AvailDB(object):
         raise StopIteration
 
     def __del__(self):
-        #print >> sys.stderr, 'availdb cleanup', repr(self.popenob), repr(self.fp)
+        # print >> sys.stderr, 'availdb cleanup', repr(self.popenob), repr(self.fp)
         if self.popenob:
             # Clear the pipe before shutting it down
             while True:
@@ -482,6 +503,7 @@ class AvailDB(object):
         if self.fp:
             self.fp.close()
 
+
 def get_dpkg_database():
     try:
         fp = open(STATUSDB)
@@ -491,13 +513,15 @@ def get_dpkg_database():
         print >> sys.stderr, 'Unable to open', STATUSDB
         sys.exit(1)
 
+
 def get_avail_database():
-    #print >> sys.stderr, 'Searching available database'
+    # print >> sys.stderr, 'Searching available database'
     subp = subprocess.Popen(('apt-cache', 'dumpavail'), stdout=subprocess.PIPE)
     return AvailDB(popenob=subp)
 
+
 def available_package_description(package):
-    data = commands.getoutput('apt-cache show'+commands.mkarg(package))
+    data = commands.getoutput('apt-cache show' + commands.mkarg(package))
     data = data.decode('utf-8', 'replace')
     descre = re.compile('^Description(?:-.*)?: (.*)$')
     for line in data.split('\n'):
@@ -506,10 +530,11 @@ def available_package_description(package):
             return m.group(1)
     return None
 
+
 def get_source_name(package):
     packages = []
 
-    data = commands.getoutput('apt-cache showsrc'+commands.mkarg(package))
+    data = commands.getoutput('apt-cache showsrc' + commands.mkarg(package))
     data = data.decode('utf-8', 'replace')
     packre = re.compile(r'^Package: (.*)$')
     for line in data.split('\n'):
@@ -518,12 +543,13 @@ def get_source_name(package):
             return m.group(1)
     return None
 
+
 def get_source_package(package):
     packages = []
     retlist = []
     found = {}
 
-    data = commands.getoutput('apt-cache showsrc'+commands.mkarg(package))
+    data = commands.getoutput('apt-cache showsrc' + commands.mkarg(package))
     data = data.decode('utf-8', 'replace')
     binre = re.compile(r'^Binary: (.*)$')
     for line in data.split('\n'):
@@ -542,6 +568,7 @@ def get_source_package(package):
     retlist.sort()
     return retlist
 
+
 def get_package_info(packages, skip_notfound=False):
     if not packages:
         return []
@@ -559,11 +586,11 @@ def get_package_info(packages, skip_notfound=False):
 
     searchbits = [
         # Package regular expression
-        r'^(?P<hdr>Package):\s+('+'|'.join(searchpkgs)+')$',
+        r'^(?P<hdr>Package):\s+(' + '|'.join(searchpkgs) + ')$',
         # Provides regular expression
-        r'^(?P<hdr>Provides):\s+'+pkgname+r'*(?P<pkg>'+'|'.join(searchpkgs)+
-        r')(?:$|,\s+)'+pkgname+'*$'
-        ]
+        r'^(?P<hdr>Provides):\s+' + pkgname + r'*(?P<pkg>' + '|'.join(searchpkgs) +
+        r')(?:$|,\s+)' + pkgname + '*$'
+    ]
 
     groups = groupfor.values()
     found = {}
@@ -597,7 +624,7 @@ def get_package_info(packages, skip_notfound=False):
                 vers = versob.search(p).group('vers')
                 desc = descob.search(p).group('desc')
 
-                info = (pack,stat,vers,desc,provides)
+                info = (pack, stat, vers, desc, provides)
                 ret.append(info)
                 group = groupfor.get(pack)
                 if group:
@@ -613,18 +640,20 @@ def get_package_info(packages, skip_notfound=False):
         notfound = [x for x in group if x not in found]
         if len(notfound) == len(group):
             if group not in found:
-                ret.append( (' | '.join(group), 'pn', '<none>',
-                             '(no description available)', None) )
+                ret.append((' | '.join(group), 'pn', '<none>',
+                            '(no description available)', None))
 
     return ret
+
 
 def packages_providing(package):
     aret = get_package_info([((package,), package)], skip_notfound=True)
     ret = []
     for pkg in aret:
-        ret.append( (pkg[0], pkg[3]) )
+        ret.append((pkg[0], pkg[3]))
 
     return ret
+
 
 def get_dependency_info(package, depends, rel="depends on"):
     if not depends:
@@ -633,7 +662,7 @@ def get_dependency_info(package, depends, rel="depends on"):
     dependencies = []
     for dep in depends:
         for bit in dep:
-            dependencies.append( (tuple(dep), bit) )
+            dependencies.append((tuple(dep), bit))
 
     depinfo = "\nVersions of packages %s %s:\n" % (package, rel)
 
@@ -663,8 +692,8 @@ def get_dependency_info(package, depends, rel="depends on"):
     # columns)
     maxp = max([len(x[0]) for x in deplist])
     maxv = max([len(x[1]) for x in deplist])
-    widthp = min(maxp, 73-maxv)
-    widthv = min(maxv, 73-widthp)
+    widthp = min(maxp, 73 - maxv)
+    widthv = min(maxv, 73 - widthp)
 
     for (pack, vers, status) in deplist:
         # we format the string specifying to align it in a field of a given
@@ -677,6 +706,7 @@ def get_dependency_info(package, depends, rel="depends on"):
 
     return depinfo
 
+
 def get_changed_config_files(conffiles, nocompress=False):
     confinfo = {}
     changed = []
@@ -688,15 +718,19 @@ def get_changed_config_files(conffiles, nocompress=False):
             continue
 
         filemd5 = commands.getoutput('md5sum ' + commands.mkarg(filename)).split()[0]
-        if filemd5 == md5sum: continue
+        if filemd5 == md5sum:
+            continue
 
         changed.append(filename)
         thisinfo = 'changed:\n'
         for line in fp:
-            if not line: continue
+            if not line:
+                continue
 
-            if line == '\n' and not nocompress: continue
-            if line[0] == '#' and not nocompress: continue
+            if line == '\n' and not nocompress:
+                continue
+            if line[0] == '#' and not nocompress:
+                continue
 
             thisinfo += line
 
@@ -704,7 +738,9 @@ def get_changed_config_files(conffiles, nocompress=False):
 
     return confinfo, changed
 
+
 DISTORDER = ['oldstable', 'stable', 'testing', 'unstable', 'experimental']
+
 
 def get_debian_release_info():
     debvers = debinfo = verfile = warn = ''
@@ -713,7 +749,7 @@ def get_debian_release_info():
     if output:
         mre = re.compile('\s+(\d+)\s+.*$\s+release\s.*o=(Ubuntu|Debian|Debian Ports),a=([^,]+),', re.MULTILINE)
         found = {}
-        ## XXX: When Python 2.4 rolls around, rewrite this
+        # XXX: When Python 2.4 rolls around, rewrite this
         for match in mre.finditer(output):
             pword, distname = match.group(1, 3)
             if distname in DISTORDER:
@@ -738,12 +774,12 @@ def get_debian_release_info():
         print >> sys.stderr, 'Unable to open /etc/debian_version'
 
     if verfile:
-        debinfo += 'Debian Release: '+verfile+'\n'
+        debinfo += 'Debian Release: ' + verfile + '\n'
     if debvers:
-        debinfo += '  APT prefers '+debvers+'\n'
+        debinfo += '  APT prefers ' + debvers + '\n'
     if dists:
         # Should wrap this eventually...
-        #policystr = pprint.pformat(dists)
+        # policystr = pprint.pformat(dists)
         policystr = ', '.join([str(x) for x in dists])
         debinfo += '  APT policy: %s\n' % policystr
     if warn:
@@ -751,8 +787,10 @@ def get_debian_release_info():
 
     return debinfo
 
+
 def lsb_release_info():
     return commands.getoutput('lsb_release -a 2>/dev/null') + '\n'
+
 
 def get_arch():
     arch = commands.getoutput('COLUMNS=79 dpkg --print-architecture 2>/dev/null')
@@ -764,9 +802,11 @@ def get_arch():
         arch = re.sub(r'ppc', 'powerpc', arch)
     return arch
 
+
 def get_multiarch():
     out = commands.getoutput('COLUMNS=79 dpkg --print-foreign-architectures 2>/dev/null')
     return ', '.join(out.splitlines())
+
 
 def generate_blank_report(package, pkgversion, severity, justification,
                           depinfo, confinfo, foundfile='', incfiles='',
@@ -789,6 +829,7 @@ def generate_blank_report(package, pkgversion, severity, justification,
                               debsumsoutput=debsumsoutput, issource=issource)
     return unicode(rep)
 
+
 def get_cpu_cores():
     cpucount = 0
     try:
@@ -800,20 +841,23 @@ def get_cpu_cores():
     for line in fob:
         if line.startswith('processor'):
             cpucount += 1
-	#Alpha platform
-	if line.startswith('cpus detected'):
-	    cpucount = int(line.split()[-1])
+        # Alpha platform
+        if line.startswith('cpus detected'):
+            cpucount = int(line.split()[-1])
     fob.close()
 
     return max(cpucount, 1)
 
+
 class our_lex(shlex.shlex):
     def get_token(self):
         token = shlex.shlex.get_token(self)
-        if token is None or not len(token): return token
+        if token is None or not len(token):
+            return token
         if (token[0] == token[-1]) and token[0] in self.quotes:
             token = token[1:-1]
         return token
+
 
 USERFILE = os.path.expanduser('~/.reportbugrc')
 FILES = ('/etc/reportbug.conf', USERFILE)
@@ -825,6 +869,7 @@ CONFIG_ARGS = (
     'headers', 'interface', 'template', 'mode', 'check_available', 'query_src',
     'printonly', 'offline', 'check_uid', 'smtptls', 'smtpuser', 'smtppasswd',
     'paranoid', 'mbox_reader_cmd', 'max_attachment_size')
+
 
 class Mua:
     command = ""
@@ -843,6 +888,7 @@ class Mua:
     def get_name(self):
         return self.name
 
+
 class Gnus(Mua):
     name = "gnus"
 
@@ -858,21 +904,23 @@ class Gnus(Mua):
         return ui.system("emacsclient --no-wait --eval %s 2>/dev/null"
                          " || emacs --eval %s" % (elisp, elisp))
 
+
 MUA = {
-    'mutt' : Mua('mutt -H'),
-    'mh' : Mua('/usr/bin/mh/comp -use -file'),
-    'gnus' : Gnus(),
-    'claws-mail' : Mua('claws-mail --compose-from-file'),
-    }
+    'mutt': Mua('mutt -H'),
+    'mh': Mua('/usr/bin/mh/comp -use -file'),
+    'gnus': Gnus(),
+    'claws-mail': Mua('claws-mail --compose-from-file'),
+}
 MUA['nmh'] = MUA['mh']
 
 # TODO: convert them to class methods
 MUAVERSION = {
-    MUA['mutt'] : 'mutt -v',
-    MUA['mh'] : '/usr/bin/mh/comp -use -file',
-    MUA['gnus'] : 'emacs --version',
-    MUA['claws-mail'] : 'claws-mail --version',
-    }
+    MUA['mutt']: 'mutt -v',
+    MUA['mh']: '/usr/bin/mh/comp -use -file',
+    MUA['gnus']: 'emacs --version',
+    MUA['claws-mail']: 'claws-mail --version',
+}
+
 
 def mua_is_supported(mua):
     # check if the mua is supported by reportbug
@@ -893,6 +941,7 @@ def mua_is_supported(mua):
     else:
         return True
 
+
 def mua_exists(mua):
     # check if the mua is available on the system
     if mua == 'mh' or mua == MUA['mh']:
@@ -910,7 +959,8 @@ def mua_exists(mua):
     output = '/dev/null'
     if os.path.exists(output):
         try:
-            returnvalue = subprocess.call(MUAVERSION[mua_tmp], stdout=open(output, 'w'), stderr=subprocess.STDOUT, shell=True)
+            returnvalue = subprocess.call(MUAVERSION[mua_tmp], stdout=open(output, 'w'), stderr=subprocess.STDOUT,
+                                          shell=True)
         except (IOError, OSError):
             returnvalue = subprocess.call(MUAVERSION[mua_tmp], shell=True)
     else:
@@ -921,6 +971,7 @@ def mua_exists(mua):
     else:
         return True
 
+
 def mua_name(mua):
     # in case the user specifies only the mua name in --mua, returns the default options
     if mua in MUA:
@@ -928,8 +979,10 @@ def mua_name(mua):
     else:
         return mua
 
+
 def first_run():
     return not os.path.exists(USERFILE)
+
 
 def parse_config_files():
     args = {}
@@ -952,8 +1005,7 @@ def parse_config_files():
                     if token in debbugs.SEVERITIES.keys():
                         args['severity'] = token
                 elif token == 'header':
-                    args['headers'] = args.get('headers', []) + \
-                                      [lex.get_token()]
+                    args['headers'] = args.get('headers', []) + [lex.get_token()]
                 elif token in ('no-cc', 'cc'):
                     args['nocc'] = (token == 'no-cc')
                 elif token in ('no-compress', 'compress'):
@@ -993,8 +1045,7 @@ def parse_config_files():
                     if token in debbugs.SYSTEMS.keys():
                         args['bts'] = token
                 elif token == 'mirror':
-                    args['mirrors'] = args.get('mirrors', []) + \
-                                      [lex.get_token()]
+                    args['mirrors'] = args.get('mirrors', []) + [lex.get_token()]
                 elif token in ('no-check-available', 'check-available'):
                     args['check_available'] = (token == 'check-available')
                 elif token == 'reportbug_version':
@@ -1026,6 +1077,7 @@ def parse_config_files():
 
     return args
 
+
 def parse_bug_control_file(filename):
     submitas = submitto = None
     reportwith = []
@@ -1048,6 +1100,7 @@ def parse_bug_control_file(filename):
             supplemental += data.split(' ')
 
     return submitas, submitto, reportwith, supplemental
+
 
 def cleanup_msg(dmessage, headers, pseudos, type):
     pseudoheaders = []
@@ -1078,8 +1131,8 @@ def cleanup_msg(dmessage, headers, pseudos, type):
             # GNATS and debbugs have different ideas of what a pseudoheader
             # is...
             if mob and ((type == 'debbugs' and
-                         mob.group(1) not in PSEUDOHEADERS and
-                         mob.group(1) not in PSEUDOS) or
+                                 mob.group(1) not in PSEUDOHEADERS and
+                                 mob.group(1) not in PSEUDOS) or
                         (type == 'gnats' and mob.group(1)[0] != '>')):
                 newheaders.append(mob.groups())
                 lastpseudo = False
@@ -1126,13 +1179,14 @@ def cleanup_msg(dmessage, headers, pseudos, type):
             if header in pseudo_list:
                 ph2[header] = content
             else:
-                newheaders.append( (header, content) )
+                newheaders.append((header, content))
 
         for header in pseudo_list:
             if header in ph2:
                 ph += ['%s: %s' % (header, ph2[header])]
 
     return message, newheaders, ph
+
 
 def launch_mbox_reader(cmd, url, http_proxy, timeout):
     """Runs the command specified by cmd passing the mbox file
@@ -1154,10 +1208,11 @@ def launch_mbox_reader(cmd, url, http_proxy, timeout):
             error = os.system(cmd)
             if not error:
                 return
-        #fallback
+        # fallback
         os.system('mail -f ' + fname)
     finally:
         os.unlink(fname)
+
 
 def get_running_kernel_pkg():
     """Return the package of the currently running kernel, needed to force
@@ -1172,6 +1227,7 @@ def get_running_kernel_pkg():
         return 'kfreebsd-image-' + release
     else:
         return None
+
 
 def exec_and_parse_bugscript(handler, bugscript):
     """Execute and parse the output of the package bugscript, in particular
@@ -1217,6 +1273,7 @@ def exec_and_parse_bugscript(handler, bugscript):
     text = text.decode('utf-8', 'replace')
     return (rc, headers, pseudoheaders, text, attachments)
 
+
 def check_package_name(pkg):
     """Check the package name against Debian Policy:
     https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Source
@@ -1226,6 +1283,7 @@ def check_package_name(pkg):
     pkg_re = re.compile('^[a-z0-9][a-z0-9+-\.]+$')
 
     return True if pkg_re.match(pkg) else False
+
 
 def get_init_system():
     """Determines the init system on the current machine"""

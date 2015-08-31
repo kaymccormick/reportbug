@@ -7,7 +7,7 @@
 #
 # This program is freely distributable per the following license:
 #
-LICENSE="""\
+LICENSE = """\
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appears in all copies and that
@@ -27,6 +27,6 @@ __all__ = ['bugreport', 'utils', 'urlutils', 'checkbuildd', 'checkversions',
 
 VERSION_NUMBER = "6.6.4"
 
-VERSION = "reportbug "+VERSION_NUMBER
+VERSION = "reportbug " + VERSION_NUMBER
 COPYRIGHT = VERSION + '\nCopyright (C) 1999-2008 Chris Lawrence <lawrencc@debian.org>' + \
                       '\nCopyright (C) 2008-2015 Sandro Tosi <morph@debian.org>'

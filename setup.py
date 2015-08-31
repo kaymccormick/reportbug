@@ -24,5 +24,5 @@ setup(name='reportbug', version=reportbug.VERSION_NUMBER,
                   ('share/bug/reportbug', ['share/presubj', 'share/script',
                                            'share/control'])],
       license='MIT',
-      packages=['reportbug','reportbug.ui'],
+      packages=['reportbug', 'reportbug.ui'],
       scripts=['bin/reportbug', 'bin/querybts'])

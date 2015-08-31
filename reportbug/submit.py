@@ -5,19 +5,19 @@
 #
 # This program is freely distributable per the following license:
 #
-##  Permission to use, copy, modify, and distribute this software and its
-##  documentation for any purpose and without fee is hereby granted,
-##  provided that the above copyright notice appears in all copies and that
-##  both that copyright notice and this permission notice appear in
-##  supporting documentation.
-##
-##  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
-##  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
-##  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-##  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-##  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-##  SOFTWARE.
+#  Permission to use, copy, modify, and distribute this software and its
+#  documentation for any purpose and without fee is hereby granted,
+#  provided that the above copyright notice appears in all copies and that
+#  both that copyright notice and this permission notice appear in
+#  supporting documentation.
+#
+#  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
+#  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
+#  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+#  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+#  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+#  SOFTWARE.
 
 import sys
 import os
@@ -41,15 +41,16 @@ from __init__ import VERSION, VERSION_NUMBER
 from tempfiles import TempFile, open_write_safe, tempfile_prefix
 from exceptions import (
     NoMessage,
-    )
+)
 import ui.text_ui as ui
 from utils import get_email_addr
 
 quietly = False
 
-ascii_range = ''.join([chr(ai) for ai in range(32,127)])
-notascii = re.compile(r'[^'+re.escape(ascii_range)+']')
-notascii2 = re.compile(r'[^'+re.escape(ascii_range)+r'\s]')
+ascii_range = ''.join([chr(ai) for ai in range(32, 127)])
+notascii = re.compile(r'[^' + re.escape(ascii_range) + ']')
+notascii2 = re.compile(r'[^' + re.escape(ascii_range) + r'\s]')
+
 
 # Wrapper for MIMEText
 class BetterMIMEText(MIMEText):
@@ -59,6 +60,7 @@ class BetterMIMEText(MIMEText):
         # includes unprintable characters
         if notascii2.search(_text):
             self.set_param('charset', _charset)
+
 
 def encode_if_needed(text, charset, encoding='q'):
     needed = False
@@ -72,27 +74,32 @@ def encode_if_needed(text, charset, encoding='q'):
     else:
         return Header(text, 'us-ascii')
 
+
 def rfc2047_encode_address(addr, charset, mua=None):
     newlist = []
     addresses = rfc822.AddressList(addr).addresslist
     for (realname, address) in addresses:
         if realname:
-            newlist.append( email.Utils.formataddr(
+            newlist.append(email.Utils.formataddr(
                 (str(rfc2047_encode_header(realname, charset, mua)), address)))
         else:
-            newlist.append( address )
+            newlist.append(address)
     return ', '.join(newlist)
 
+
 def rfc2047_encode_header(header, charset, mua=None):
-    if mua: return header
-    #print repr(header), repr(charset)
+    if mua:
+        return header
+    # print repr(header), repr(charset)
 
     return encode_if_needed(header, charset)
+
 
 # Cheat for now.
 # ewrite() may put stuff on the status bar or in message boxes depending on UI
 def ewrite(*args):
     return quietly or ui.log_message(*args)
+
 
 def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpath=None):
     '''Sign message with pgp key.'''
@@ -118,10 +125,10 @@ def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpa
             signcmd = "gpg --local-user '%s' --clearsign " % pgp_addr
         else:
             signcmd = "gpg --local-user '%s' --use-agent --clearsign " % pgp_addr
-        signcmd += '--output '+commands.mkarg(file2)+ ' ' + commands.mkarg(file1)
+        signcmd += '--output ' + commands.mkarg(file2) + ' ' + commands.mkarg(file1)
     else:
         signcmd = "pgp -u '%s' -fast" % pgp_addr
-        signcmd += '<'+commands.mkarg(file1)+' >'+commands.mkarg(file2)
+        signcmd += '<' + commands.mkarg(file1) + ' >' + commands.mkarg(file2)
 
     try:
         os.system(signcmd)
@@ -145,6 +152,7 @@ def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpa
         body = None
     return body
 
+
 def mime_attach(body, attachments, charset, body_charset=None):
     mimetypes.init()
 
@@ -166,8 +174,8 @@ def mime_attach(body, attachments, charset, body_charset=None):
             continue
         ctype = None
         cset = charset
-        info = Popen(['file','--mime', '--brief', attachment],
-            stdout=PIPE, stderr=STDOUT).communicate()[0]
+        info = Popen(['file', '--mime', '--brief', attachment],
+                     stdout=PIPE, stderr=STDOUT).communicate()[0]
         if info:
             match = re.match(r'([^;, ]*)(,[^;]+)?(?:; )?(.*)', info)
             if match:
@@ -214,6 +222,7 @@ def mime_attach(body, attachments, charset, body_charset=None):
                         filename=os.path.basename(attachment))
         message.attach(part)
     return (message, failed)
+
 
 def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                 headers, package='x', charset="us-ascii", mailing=True,
@@ -320,7 +329,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             msgname = '/var/tmp/%s.bug' % package
         if os.path.exists(msgname):
             try:
-                os.rename(msgname, msgname+'~')
+                os.rename(msgname, msgname + '~')
             except OSError:
                 ewrite('Unable to rename existing %s as %s~\n',
                        msgname, msgname)
@@ -351,7 +360,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             envfrom = faddr
         ewrite("Sending message via %s...\n", mta)
         pipe = os.popen('%s -f %s -oi -oem %s' % (
-                mta, commands.mkarg(envfrom), jalist), 'w')
+            mta, commands.mkarg(envfrom), jalist), 'w')
         using_sendmail = True
 
     if smtphost:
@@ -369,8 +378,8 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                 # if we're using reportbug.debian.org, send mail to
                 # submit
                 if smtphost.lower() == 'reportbug.debian.org':
-                    conn = smtplib.SMTP(smtphost,587)
-                else: 
+                    conn = smtplib.SMTP(smtphost, 587)
+                else:
                     conn = smtplib.SMTP(smtphost)
                 response = conn.ehlo()
                 if not (200 <= response[0] <= 299):
@@ -401,8 +410,9 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                         tryagain = False
 
                 # In case of failure, ask to retry or to save & exit
-                if ui.yes_no('SMTP send failure: %s. Do you want to retry (or else save the report and exit)?' % x, 'Yes, please retry.',
-                         'No, save and exit.'):
+                if ui.yes_no('SMTP send failure: %s. Do you want to retry (or else save the report and exit)?' % x,
+                             'Yes, please retry.',
+                             'No, save and exit.'):
                     tryagain = True
                     continue
                 else:
@@ -451,8 +461,8 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                 ewrite("Mutt users should be aware it is mandatory to edit the draft before sending.\n")
                 mtitle = 'Report has not been sent yet; what do you want to do now?'
                 mopts = 'Eq'
-                moptsdesc = {'e' : 'Edit the message.',
-                'q' : 'Quit reportbug; will save the draft for future use.'}
+                moptsdesc = {'e': 'Edit the message.',
+                             'q': 'Quit reportbug; will save the draft for future use.'}
                 x = ui.select_options(mtitle, mopts, moptsdesc)
                 if x == 'q':
                     failed = True

@@ -3,10 +3,9 @@ import unittest2
 from reportbug import tempfiles
 import os.path
 
+
 class TestTempfiles(unittest2.TestCase):
-
     def test_tempfile_prefix(self):
-
         extra = 'dummystring'
 
         prefix = tempfiles.tempfile_prefix()
@@ -23,7 +22,6 @@ class TestTempfiles(unittest2.TestCase):
         self.assertIn(extra, prefix)
 
     def test_open_write_safe(self):
-
         filename = os.path.dirname(__file__) + '/tempfiletest'
         # binary file
         fd = tempfiles.open_write_safe(filename)
@@ -46,7 +44,6 @@ class TestTempfiles(unittest2.TestCase):
         tempfiles.cleanup_temp_file(filename)
 
     def test_TempFile(self):
-
         fd, filename = tempfiles.TempFile()
 
         self.assertIsNotNone(filename)

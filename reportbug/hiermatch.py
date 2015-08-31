@@ -6,6 +6,7 @@
 import re
 import exceptions
 
+
 def egrep_list(strlist, pattern_str, subindex=None):
     """Use the pattern_str to find any match in a list of strings."""
     """Return: a list of index for the matchs into the origin list."""
@@ -14,10 +15,10 @@ def egrep_list(strlist, pattern_str, subindex=None):
         return None
 
     try:
-        pat = re.compile(pattern_str, re.I|re.M)
+        pat = re.compile(pattern_str, re.I | re.M)
     except:
         raise exceptions.InvalidRegex
-    
+
     resultlist = []
     if subindex is None:
         subindex = range(len(strlist))
@@ -26,6 +27,7 @@ def egrep_list(strlist, pattern_str, subindex=None):
             resultlist.append(i)
     return resultlist
 
+
 def egrep_hierarchy(hier, pattern_str, subhier=None, nth=1):
     """Grep the nth item of a hierarchy [(x, [a, b]),...]."""
     """Return a subhier like [[n, m],[],...], n, m string index."""
@@ -33,7 +35,7 @@ def egrep_hierarchy(hier, pattern_str, subhier=None, nth=1):
 
     for i in range(len(hier)):
         if subhier:
-            if subhier[i]: # Only if have something to match.
+            if subhier[i]:  # Only if have something to match.
                 resultlist = egrep_list(hier[i][nth], pattern_str, subhier[i])
             else:
                 resultlist = []
@@ -42,6 +44,7 @@ def egrep_hierarchy(hier, pattern_str, subhier=None, nth=1):
 
         resulthier.append(resultlist)
     return resulthier
+
 
 def matched_hierarchy(hier, pattern_str):
     """Actually create a new hierarchy from a pattern matching."""
@@ -54,4 +57,3 @@ def matched_hierarchy(hier, pattern_str):
     return mhier
 
 # vim:ts=8:sw=4:expandtab:
-

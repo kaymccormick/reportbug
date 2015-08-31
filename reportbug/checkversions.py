@@ -7,19 +7,19 @@
 #
 # This program is freely distributable per the following license:
 #
-##  Permission to use, copy, modify, and distribute this software and its
-##  documentation for any purpose and without fee is hereby granted,
-##  provided that the above copyright notice appears in all copies and that
-##  both that copyright notice and this permission notice appear in
-##  supporting documentation.
-##
-##  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
-##  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
-##  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-##  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-##  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-##  SOFTWARE.
+#  Permission to use, copy, modify, and distribute this software and its
+#  documentation for any purpose and without fee is hereby granted,
+#  provided that the above copyright notice appears in all copies and that
+#  both that copyright notice and this permission notice appear in
+#  supporting documentation.
+#
+#  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
+#  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
+#  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+#  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+#  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+#  SOFTWARE.
 
 import sys
 import os
@@ -33,7 +33,7 @@ import utils
 from urlutils import open_url
 from reportbug.exceptions import (
     NoNetwork,
-    )
+)
 
 # needed to parse new.822
 from debian.deb822 import Deb822
@@ -42,6 +42,7 @@ from debian import debian_support
 RMADISON_URL = 'http://qa.debian.org/madison.php?package=%s&text=on'
 INCOMING_URL = 'http://incoming.debian.org/'
 NEWQUEUE_URL = 'http://ftp-master.debian.org/new.822'
+
 
 # The format is an unordered list
 
@@ -64,16 +65,18 @@ class BaseParser(sgmllib.SGMLParser):
     def save_end(self, mode=0):
         data = self.savedata
         self.savedata = None
-        if not mode and data is not None: data = ' '.join(data.split())
+        if not mode and data is not None:
+            data = ' '.join(data.split())
         return data
+
 
 class IncomingParser(sgmllib.SGMLParser):
     def __init__(self, package, arch='i386'):
         sgmllib.SGMLParser.__init__(self)
         self.found = []
         self.savedata = None
-        arch = r'(?:all|'+re.escape(arch)+')'
-        self.package = re.compile(re.escape(package)+r'_([^_]+)_'+arch+'.deb')
+        arch = r'(?:all|' + re.escape(arch) + ')'
+        self.package = re.compile(re.escape(package) + r'_([^_]+)_' + arch + '.deb')
 
     def start_a(self, attrs):
         for attrib, value in attrs:
@@ -84,16 +87,20 @@ class IncomingParser(sgmllib.SGMLParser):
             if mob:
                 self.found.append(mob.group(1))
 
+
 def compare_versions(current, upstream):
     """Return 1 if upstream is newer than current, -1 if current is
     newer than upstream, and 0 if the same."""
-    if not current or not upstream: return 0
+    if not current or not upstream:
+        return 0
     return debian_support.version_compare(upstream, current)
+
 
 def later_version(a, b):
     if compare_versions(a, b) > 0:
         return b
     return a
+
 
 def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='i386'):
     if not dists:
@@ -132,9 +139,10 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
 
     return versions
 
+
 def get_newqueue_available(package, timeout, dists=None, http_proxy=None, arch='i386'):
     if dists is None:
-        dists = ('unstable (new queue)', )
+        dists = ('unstable (new queue)',)
     try:
         page = open_url(NEWQUEUE_URL, http_proxy, timeout)
     except NoNetwork:
@@ -150,11 +158,12 @@ def get_newqueue_available(package, timeout, dists=None, http_proxy=None, arch='
     # iter over the entries, one paragraph at a time
     for para in Deb822.iter_paragraphs(page):
         if para['Source'] == package:
-            k = para['Distribution'] + ' (' + para['Queue']  + ')'
+            k = para['Distribution'] + ' (' + para['Queue'] + ')'
             # in case of multiple versions, choose the bigger
             versions[k] = max(para['Version'].split())
 
     return versions
+
 
 def get_incoming_version(package, timeout, http_proxy=None, arch='i386'):
     try:
@@ -186,6 +195,7 @@ def get_incoming_version(package, timeout, http_proxy=None, arch='i386'):
     del parser
     return None
 
+
 def check_available(package, version, timeout, dists=None,
                     check_incoming=True, check_newqueue=True,
                     http_proxy=None, arch='i386'):
@@ -199,11 +209,11 @@ def check_available(package, version, timeout, dists=None,
     avail.update(stuff)
     if check_newqueue:
         srcpackage = utils.get_source_name(package)
-	if srcpackage is None:
-	    srcpackage = package
+        if srcpackage is None:
+            srcpackage = package
         stuff = get_newqueue_available(srcpackage, timeout, dists, http_proxy, arch)
         avail.update(stuff)
-        #print gc.garbage, stuff
+        # print gc.garbage, stuff
 
     new = {}
     newer = 0

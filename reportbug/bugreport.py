@@ -6,19 +6,19 @@
 #
 # This program is freely distributable per the following license:
 #
-##  Permission to use, copy, modify, and distribute this software and its
-##  documentation for any purpose and without fee is hereby granted,
-##  provided that the above copyright notice appears in all copies and that
-##  both that copyright notice and this permission notice appear in
-##  supporting documentation.
-##
-##  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
-##  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
-##  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-##  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-##  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-##  SOFTWARE.
+#  Permission to use, copy, modify, and distribute this software and its
+#  documentation for any purpose and without fee is hereby granted,
+#  provided that the above copyright notice appears in all copies and that
+#  both that copyright notice and this permission notice appear in
+#  supporting documentation.
+#
+#  I DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL I
+#  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
+#  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+#  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+#  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+#  SOFTWARE.
 
 import os
 
@@ -31,12 +31,13 @@ from exceptions import *
 # to print errors
 import ui.text_ui as ui
 
+
 class bugreport(object):
     "Encapsulates a bug report into a convenient object we can pass around."
 
     # Default character set for str(x)
     charset = 'utf-8'
-    
+
     def __init__(self, package, subject='', body='', system='debian',
                  incfiles='', sysinfo=True,
                  followup=False, type='debbugs', mode=utils.MODE_STANDARD,
@@ -101,7 +102,7 @@ class bugreport(object):
 
         ph = getattr(self, 'pseudoheaders', None)
         if ph:
-            headers = u'\n'.join(ph)+u'\n'
+            headers = u'\n'.join(ph) + u'\n'
         else:
             headers = u''
 
@@ -117,7 +118,7 @@ class bugreport(object):
         # thinking about those systems that don't have 'specials' dict
         if self.mode < utils.MODE_ADVANCED and self.package not in \
                 debbugs.SYSTEMS[self.system].get('specials', {}).keys():
-            body = utils.NEWBIELINE+u'\n\n'+body
+            body = utils.NEWBIELINE + u'\n\n' + body
         elif not body:
             body = u'\n'
 
@@ -134,7 +135,7 @@ class bugreport(object):
                 a = getattr(self, attr, None)
                 if a:
                     headers += u'%s: %s\n' % (name, a)
-            
+
             report = u"%s: %s\n%s\n" % (reportto, self.package, headers)
         else:
             report = "Followup-For: Bug #%d\n%s: %s\n%s\n" % (
@@ -197,7 +198,7 @@ class bugreport(object):
 
     def __str__(self):
         return unicode(self).encode(charset, 'replace')
-        
+
     def __repr__(self):
         params = ['%s=%s' % (k, self.k) for k in dir(self)]
         return 'bugreport(%s)' % ', '.join(params)

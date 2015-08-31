@@ -4,6 +4,7 @@ import unittest2
 
 from reportbug import exceptions
 
+
 class TestExceptions(unittest2.TestCase):
 
     def test_raises_reportbug_exception(self):

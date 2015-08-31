@@ -6,6 +6,7 @@ from reportbug import utils
 from reportbug import ui
 from reportbug.ui import __LOADED_UIS as LOADED_UIS
 
+
 class TestUI(unittest2.TestCase):
 
     def test_ui(self):

@@ -8,9 +8,9 @@ from reportbug import utils
 from reportbug.ui import gtk2_ui as ui
 import debianbts
 
-class TestUIGTK2(unittest2.TestCase):
 
-    @attr('network') #marking the test as using network
+class TestUIGTK2(unittest2.TestCase):
+    @attr('network')  # marking the test as using network
     def test_bug_class(self):
         bug = debianbts.get_status(415801)[0]
 
@@ -32,7 +32,7 @@ class TestUIGTK2(unittest2.TestCase):
 # moved here to see if they can be interested somehow,
 # but to use them, we'd need to find a way to interact
 # programmatically with the GTK+ widgets
-#def test ():
+# def test ():
 #    # Write some tests here
 #    print get_password ("test")
 #    print select_options ('test', 'A', {'a': 'A test'})

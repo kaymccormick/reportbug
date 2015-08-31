@@ -9,6 +9,7 @@ test_strings_list = ['Beautiful is better than ugly.',
                      'Flat is better than nested.',
                      'Sparse is better than dense.']
 
+
 class TestHiermatch(unittest2.TestCase):
 
     def test_egrep_list(self):
