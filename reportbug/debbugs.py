@@ -387,6 +387,16 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     archs = None
     version = None
 
+    oldstable = utils.SUITE2CODENAME['oldstable']
+    oldstable_pu = oldstable + '-pu'
+    oldstable_backports = oldstable + '-backports'
+    oldstable_security = oldstable + '-security'
+    stable = utils.SUITE2CODENAME['stable']
+    stable_pu = stable + '-pu'
+    stable_backports = stable + '-backports'
+    stable_security = stable + '-security'
+    testing = utils.SUITE2CODENAME['testing']
+
     tag = ui.menu('What sort of request is this?  (If none of these '
                   'things mean anything to you, or you are trying to report '
                   'a bug in an existing package, please press Enter to '
@@ -395,8 +405,8 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
                       'britney': "testing migration script bugs",
                       'transition': "transition tracking",
                       'unblock': "unblock requests",
-                      'wheezy-pu': "wheezy proposed updates requests",
-                      'jessie-pu': "jessie proposed updates requests",
+                      oldstable_pu: "%s proposed updates requests" % oldstable,
+                      stable_pu: "%s proposed updates requests" % stable,
                       'rm': "Stable/Testing removal requests",
                       'other': "None of the other options",
                   }, 'Choose the request type: ', empty_ok=True)
@@ -441,7 +451,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         else:
             package = info[12] or package
 
-    if tag in ('binnmu', 'unblock', 'jessie-pu', 'wheezy-pu', 'rm'):
+    if tag in ('binnmu', 'unblock', stable_pu, oldstable_pu, 'rm'):
         # FIXME: pu/rm should lookup the version elsewhere
         version = info and info[0]
         if online and tag.endswith('-pu'):
@@ -480,13 +490,13 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     if tag == 'binnmu':
         suite = ui.menu("For which suite are you requesting this binNMU?"
                         "  Don't select anything for \"unstable\"", {
-                            'jessie': "",
-                            'jessie-backports': "",
-                            'jessie-security': "",
-                            'wheezy': "",
-                            'wheezy-backports': "",
-                            'wheezy-security': "",
-                            'stretch': "",
+                            stable: "",
+                            stable_backports: "",
+                            stable_security: "",
+                            oldstable: "",
+                            oldstable_backports: "",
+                            oldstable_security: "",
+                            testing: "",
                             'experimental': "",
                         }, 'Choose the suite: ', empty_ok=True)
         if not suite:
