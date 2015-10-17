@@ -2,8 +2,11 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
 
   * reportbug/utils.py
     - Update the SUITES2DISTS mapping for the jessie release; patch by Paul Wise
+  * man/querybts.1
+    - document http_proxy environment variable in querybts manpage; report and
+      patch by Jakub Wilk; Closes: #800092
 
- -- Sandro Tosi <morph@debian.org>  Sat, 17 Oct 2015 18:47:03 +0100
+ -- Sandro Tosi <morph@debian.org>  Sat, 17 Oct 2015 22:22:35 +0100
 
 reportbug (6.6.5) unstable; urgency=medium
 
