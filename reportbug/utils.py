@@ -89,8 +89,8 @@ NEWBIELINE = """Dear Maintainer,
 fhs_directories = ['/', '/usr', '/usr/share', '/var', '/usr/X11R6',
                    '/usr/man', '/usr/doc', '/usr/bin']
 
-# A map between suites and distributions names
-SUITES2DISTS = {'squeeze': 'oldoldstable',
+# A map between codenames and suites
+CODENAME2SUITE = {'squeeze': 'oldoldstable',
                 'wheezy': 'oldstable',
                 'jessie': 'stable',
                 'stretch': 'testing',

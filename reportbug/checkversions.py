@@ -134,7 +134,7 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
         if len(l) != 4:
             continue
         # map suites name (returned by madison) to dist name
-        dist = utils.SUITES2DISTS.get(l[2], l[2])
+        dist = utils.CODENAME2SUITE.get(l[2], l[2])
         versions[dist] = l[1]
 
     return versions
