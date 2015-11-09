@@ -94,6 +94,7 @@ CODENAME2SUITE = {'squeeze': 'oldoldstable',
                 'wheezy': 'oldstable',
                 'jessie': 'stable',
                 'stretch': 'testing',
+                'buster': 'next-testing',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
 SUITE2CODENAME = dict([(suite, codename) for codename, suite in CODENAME2SUITE.items())])
