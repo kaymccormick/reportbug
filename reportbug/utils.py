@@ -97,7 +97,7 @@ CODENAME2SUITE = {'squeeze': 'oldoldstable',
                 'buster': 'next-testing',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
-SUITE2CODENAME = dict([(suite, codename) for codename, suite in CODENAME2SUITE.items())])
+SUITE2CODENAME = dict([(suite, codename) for codename, suite in CODENAME2SUITE.items()])
 
 
 def realpath(filename):
