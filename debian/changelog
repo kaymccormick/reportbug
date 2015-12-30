@@ -7,8 +7,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
       patch by Jakub Wilk; Closes: #800092
   * Consolidate Debian release codenames handling in a single place, updating
     how release.d.o is using this information; Closes: #804504
+  * bin/reportbug
+    - rephrase slightly the orphan check warning; Closes: #544624
 
- -- Sandro Tosi <morph@debian.org>  Wed, 16 Dec 2015 06:38:42 +0000
+ -- Sandro Tosi <morph@debian.org>  Wed, 30 Dec 2015 19:39:57 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 

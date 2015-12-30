@@ -1769,8 +1769,8 @@ class UI(object):
                 ui.long_message('''\
 This package seems to be currently "orphaned"; it also seems you're a
 bit interested in this package, since you're reporting a bug against
-it, so you might consider adopting it.  Please be aware that your
-report may not be resolved for a while, because the package lacks an
+it, so you might consider being involved in the package maintenance in Debian and/or adopting it.  Please be aware that your
+report may not be resolved for a while, because the package seems to lack an
 active maintainer, but please GO ON and REPORT the bug, if there is
 one.
 
