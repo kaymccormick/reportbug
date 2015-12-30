@@ -44,6 +44,7 @@ from exceptions import (
 )
 import ui.text_ui as ui
 from utils import get_email_addr
+import errno
 
 quietly = False
 
@@ -311,7 +312,13 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
     message = message.as_string()
     if paranoid and not (template or printonly):
         pager = os.environ.get('PAGER', 'sensible-pager')
-        os.popen(pager, 'w').write(message)
+        try:
+            os.popen(pager, 'w').write(message)
+        except  Exception, e:
+            # if the PAGER exits before all the text has been sent,
+            # it'd send a SIGPIPE, so crash only if that's not the case
+            if e.errno != errno.EPIPE:
+                raise e
         if not ui.yes_no('Does your report seem satisfactory', 'Yes, send it.',
                          'No, don\'t send it.'):
             smtphost = mta = None

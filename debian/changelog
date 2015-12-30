@@ -9,8 +9,12 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     how release.d.o is using this information; Closes: #804504
   * bin/reportbug
     - rephrase slightly the orphan check warning; Closes: #544624
+  * reportbug/submit.py
+    - in paranoid mode, handle the case when the pager exists without having
+      processed all the text we are sending and it generates a SIGPIPE;
+      Closes: #777010, #686922
 
- -- Sandro Tosi <morph@debian.org>  Wed, 30 Dec 2015 19:39:57 +0000
+ -- Sandro Tosi <morph@debian.org>  Wed, 30 Dec 2015 23:28:27 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
