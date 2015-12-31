@@ -18,6 +18,8 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
       Closes: #777010, #686922
     - decode email addresses when printing the recipients recap at submit time;
       Closes: #546914
+    - dont escape a single dot line surrounded by newlines (the End-Of-Message
+      in SMTP), it is done by sendmail() automatically; Closes: #808742
   * debian/control
     - add dep on 'file' for python-reportbug; Closes: #803764
   * reportbug/ui/text_ui.py
@@ -26,7 +28,7 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - switch from gtkspell (now removed) to gtkspellcheck; Closes: #802387
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 14:15:42 +0000
+ -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 14:31:38 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 

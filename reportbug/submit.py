@@ -378,7 +378,6 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
 
     if smtphost:
         toaddrs = [x[1] for x in alist]
-        smtp_message = re.sub(r'(?m)^[.]', '..', message)
 
         tryagain = True
         refused = None
@@ -408,7 +407,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                             'Enter SMTP password for %s@%s: ' %
                             (smtpuser, smtphost))
                     conn.login(smtpuser, smtppasswd)
-                refused = conn.sendmail(fromaddr, toaddrs, smtp_message)
+                refused = conn.sendmail(fromaddr, toaddrs, message)
                 conn.quit()
             except (socket.error, smtplib.SMTPException), x:
                 # If wrong password, try again...
