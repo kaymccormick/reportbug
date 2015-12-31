@@ -18,8 +18,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
       Closes: #777010, #686922
     - decode email addresses when printing the recipients recap at submit time;
       Closes: #546914
+  * debian/control
+    - add dep on 'file' for python-reportbug; Closes: #803764
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 02:43:44 +0000
+ -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 12:55:54 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
