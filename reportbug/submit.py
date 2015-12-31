@@ -34,7 +34,7 @@ from email.MIMEAudio import MIMEAudio
 from email.MIMEImage import MIMEImage
 from email.MIMEBase import MIMEBase
 from email.MIMEMessage import MIMEMessage
-from email.Header import Header
+from email.Header import Header, decode_header
 import mimetypes
 
 from __init__ import VERSION, VERSION_NUMBER
@@ -94,6 +94,12 @@ def rfc2047_encode_header(header, charset, mua=None):
     # print repr(header), repr(charset)
 
     return encode_if_needed(header, charset)
+
+
+def decode_email_header(header):
+    # returns a list of 2-items tuples
+    decoded = decode_header(header)
+    return ' '.join([x[0] for x in decoded]).strip()
 
 
 # Cheat for now.
@@ -495,12 +501,12 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
         if len(addresses):
             ewrite("Copies sent to:\n")
             for address in addrs:
-                ewrite('  %s\n', address)
+                ewrite('  %s\n', decode_email_header(address))
 
         if debbugs_cc and rtype == 'debbugs':
             ewrite("Copies will be sent after processing to:\n")
             for address in cclist:
-                ewrite('  %s\n', address)
+                ewrite('  %s\n', decode_email_header(address))
 
     if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed \
             and mailing:

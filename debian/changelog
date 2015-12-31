@@ -16,8 +16,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     - in paranoid mode, handle the case when the pager exists without having
       processed all the text we are sending and it generates a SIGPIPE;
       Closes: #777010, #686922
+    - decode email addresses when printing the recipients recap at submit time;
+      Closes: #546914
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 01:37:17 +0000
+ -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 02:43:44 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
