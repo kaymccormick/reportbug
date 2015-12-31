@@ -30,7 +30,7 @@ except ImportError:
 global vte
 
 try:
-    import gtkspell
+    import gtkspellcheck
     has_spell = True
 except:
     has_spell = False
@@ -1145,7 +1145,7 @@ class EditorPage(Page):
         self.view.modify_font(pango.FontDescription("Monospace"))
         self.view.set_wrap_mode(gtk.WRAP_WORD)
         if has_spell:
-            gtkspell.Spell(self.view)
+            gtkspellcheck.SpellChecker(self.view)
         self.info_buffer = self.view.get_buffer()
         scrolled = create_scrollable(self.view)
         vbox.pack_start(scrolled)
@@ -1160,7 +1160,7 @@ class EditorPage(Page):
 
         if not has_spell:
             box = gtk.EventBox()
-            label = gtk.Label("Please install <b>python-gtkspell</b> to enable spell checking")
+            label = gtk.Label("Please install <b>python-gtkspellcheck</b> to enable spell checking")
             label.set_use_markup(True)
             label.set_line_wrap(True)
             label.set_selectable(True)

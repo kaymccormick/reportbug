@@ -23,8 +23,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/ui/text_ui.py
     - dont crash when selecting "Providing additional information" after
       filtering the bugs list more than once; Closes: #804130
+  * reportbug/ui/gtk2_ui.py
+    - switch from gtkspell (now removed) to gtkspellcheck; Closes: #802387
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 13:22:18 +0000
+ -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 14:15:42 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
