@@ -946,7 +946,7 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
                         # Do filter. Recursive done.
                         retval = search_bugs(hierarchy, bts, queryonly, mirrors, http_proxy, timeout, screen,
                                              title, package, mbox_reader_cmd)
-                        if retval == "FilterEnd":
+                        if isinstance(retval, basestring) and retval in ["FilterEnd", "Top"]:
                             continue
                         else:
                             return retval

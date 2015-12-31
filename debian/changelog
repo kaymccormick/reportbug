@@ -20,8 +20,11 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
       Closes: #546914
   * debian/control
     - add dep on 'file' for python-reportbug; Closes: #803764
+  * reportbug/ui/text_ui.py
+    - dont crash when selecting "Providing additional information" after
+      filtering the bugs list more than once; Closes: #804130
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 12:55:54 +0000
+ -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 13:22:18 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
