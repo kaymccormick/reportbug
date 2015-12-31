@@ -1831,7 +1831,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                         "\nSend modified configuration files", 'Ynd',
                         {'y': 'Send your modified configuration files.',
                          'n': "Don't send modified configuration files.",
-                         'd': 'Display modified configuration files.'})
+                         'd': 'Display modified configuration files (exit with "q").'})
                     if x == 'n':
                         for f in changed:
                             confinfo[f] = 'changed [not included]'
