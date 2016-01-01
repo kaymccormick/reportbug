@@ -1,7 +1,7 @@
 # Text user interface for reportbug
 #   Written by Chris Lawrence <lawrencc@debian.org>
 #   (C) 2001-08 Chris Lawrence
-#   Copyright (C) 2008-2015 Sandro Tosi <morph@debian.org>
+#   Copyright (C) 2008-2016 Sandro Tosi <morph@debian.org>
 #
 # This program is freely distributable per the following license:
 #
