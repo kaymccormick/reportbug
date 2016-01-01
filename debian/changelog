@@ -31,8 +31,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     - switch from gtkspell (now removed) to gtkspellcheck; Closes: #802387
   * man/querybts.1
     - remove reference to BROWSER env variable, we use xdg-open; Closes: #690759
+  * reportbug/urlutils.py
+    - remove handling of X11BROWSER and CONSOLEBROWSER, obsolete
 
- -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 14:46:50 +0000
+ -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 14:52:18 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 

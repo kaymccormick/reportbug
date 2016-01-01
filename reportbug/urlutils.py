@@ -177,14 +177,3 @@ def launch_browser(url):
     if webbrowser:
         webbrowser.open(url)
         return
-
-    X11BROWSER = os.environ.get('X11BROWSER', 'mozilla-firefox')
-    CONSOLEBROWSER = os.environ.get('CONSOLEBROWSER', 'lynx')
-
-    if ('DISPLAY' in os.environ and
-            not os.system('command -v ' + X11BROWSER + ' &> /dev/null')):
-        cmd = "%s %s &" % (X11BROWSER, commands.mkarg(url))
-    else:
-        cmd = "%s %s" % (CONSOLEBROWSER, commands.mkarg(url))
-
-    os.system(cmd)
