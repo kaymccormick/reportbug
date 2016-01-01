@@ -38,13 +38,6 @@ License: GPL-any
     On Debian systems, the complete text of the GNU General Public License
     can be found in file "/usr/share/common-licenses/GPL".
 
-Files: checks/compare_pseudo-pkgs_lists.py
-Copyright:
-    © 2008 Sandro Tosi <morph@debian.org>
-License: PD
-    checks/compare_pseudo-pkgs_lists.py was placed in public domain by Sandro
-    Tosi <morph@debian.org>
-
 Files: reportbug/ui/gtk2_ui.py
 Copyright:
     Copyright (C) 2006 Philipp Kern <pkern@debian.org>
