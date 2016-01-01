@@ -12,6 +12,8 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     - where there are modified conffiles, clarify the menu entry to view such
       files that a "q" is required to exit it, making it more clear in the GTK
       UI; Closes: #732334
+    - default '--exitprompt' to False, should avoid a spurious message in GTK UI
+      when reporting additional information; Closes: #745514
   * reportbug/submit.py
     - in paranoid mode, handle the case when the pager exists without having
       processed all the text we are sending and it generates a SIGPIPE;
@@ -28,7 +30,7 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - switch from gtkspell (now removed) to gtkspellcheck; Closes: #802387
 
- -- Sandro Tosi <morph@debian.org>  Thu, 31 Dec 2015 14:31:38 +0000
+ -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 14:17:29 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 

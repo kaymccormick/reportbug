@@ -987,7 +987,7 @@ def main():
                       dest='querydpkg', help='check whether the specified '
                                              'package is installed when filing a report (default)')
     parser.add_option('--exit-prompt', action='store_true', dest='exitprompt',
-                      help='prompt before exiting')
+                      help='prompt before exiting', default=False)
     parser.add_option('--paranoid', action='store_true', dest='paranoid',
                       help='show contents of message before sending')
     parser.add_option('--no-paranoid', action='store_false', dest='paranoid',
