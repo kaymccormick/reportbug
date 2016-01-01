@@ -102,7 +102,7 @@ class handlepasswd(urllib2.HTTPPasswordMgrWithDefaultRealm):
 _opener = None
 
 
-def urlopen(url, proxies=None, data=None):
+def urlopen(url, proxies=None, timeout=60, data=None):
     global _opener
 
     if not proxies:
@@ -130,7 +130,7 @@ def urlopen(url, proxies=None, data=None):
         # print _opener.handlers
         urllib2.install_opener(_opener)
 
-    return _opener.open(req)
+    return _opener.open(req, timeout=timeout)
 
 
 # Global useful URL opener; returns None if the page is absent, otherwise
@@ -145,7 +145,7 @@ def open_url(url, http_proxy=None, timeout=60):
         proxies['http'] = http_proxy
 
     try:
-        page = urlopen(url, proxies)
+        page = urlopen(url, proxies, timeout)
     except urllib2.HTTPError, x:
         if x.code in (404, 500, 503):
             return None
