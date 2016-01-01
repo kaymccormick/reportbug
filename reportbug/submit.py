@@ -376,6 +376,12 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             mta, commands.mkarg(envfrom), jalist), 'w')
         using_sendmail = True
 
+    # saving a backup of the report
+    backupfh, backupname = TempFile(prefix=tempfile_prefix(package, 'backup'), dir=draftpath)
+    ewrite('Saving a backup of the report at %s\n', backupname)
+    backupfh.write(message)
+    backupfh.close()
+
     if smtphost:
         toaddrs = [x[1] for x in alist]
 

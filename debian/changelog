@@ -27,6 +27,8 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     - print the "If you want to provide additional information" text only if an
       email is specified in sysinfo, this prevents a crash if we are sending
       reports to a non-debbugs instance; Closes: #789332
+    - save a backup of the bug report, that will prevent data loss in case of
+      crash or unexpected errors; Closes: #736214
   * debian/control
     - add dep on 'file' for python-reportbug; Closes: #803764
   * reportbug/ui/text_ui.py
@@ -41,7 +43,7 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/ui/*
     - dont crash if we cant access the BTS: Closes: #694634
 
- -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 18:24:59 +0000
+ -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 19:36:06 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
