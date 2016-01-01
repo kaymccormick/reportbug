@@ -52,6 +52,8 @@ STATUSDB = os.path.join(DPKGLIB, 'status')
 PSEUDOHEADERS = ('Package', 'Source', 'Version', 'Severity', 'File', 'Tags',
                  'Justification', 'Followup-For', 'Owner', 'User', 'Usertags',
                  'Forwarded', 'Control')
+# These pseudo-headers can be repeated in the report
+REPEATABLE_PSEUDOHEADERS = ['Control',]
 
 MODES = {'novice': 'Offer simple prompts, bypassing technical questions.',
          'standard': 'Offer more extensive prompts, including asking about '
@@ -1168,6 +1170,7 @@ def cleanup_msg(dmessage, headers, pseudos, type):
                 ph += [header]
     else:
         ph2 = {}
+        repeatable_ph = []
         # generate a list of pseudoheaders, but without duplicates
         # we take the list of pseudoheaders defined in reportbug and add
         # the ones passed by the user (if not already present). We are not using
@@ -1180,13 +1183,17 @@ def cleanup_msg(dmessage, headers, pseudos, type):
         for header, content in pseudoheaders:
             # if either in the canonical pseudo-headers list or in those passed on the command line
             if header in pseudo_list:
-                ph2[header] = content
+                if header not in REPEATABLE_PSEUDOHEADERS:
+                    ph2[header] = content
+                else:
+                    repeatable_ph += ['%s: %s' % (header, content)]
             else:
                 newheaders.append((header, content))
 
         for header in pseudo_list:
             if header in ph2:
                 ph += ['%s: %s' % (header, ph2[header])]
+        ph.extend(repeatable_ph)
 
     return message, newheaders, ph
 

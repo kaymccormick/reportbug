@@ -429,6 +429,8 @@ User: release.debian.org@packages.debian.org
 Usertags: unblock
 Severity: normal
 Morph: cool
+Control: testcontrol1
+Control: testcontrol2
 Continuation:
  header
 
@@ -448,7 +450,7 @@ Kernel: Linux 2.6.31-1-amd64 (SMP w/4 CPU cores)
 Locale: LANG=en_US.UTF-8, LC_CTYPE=en_US.UTF-8 (charmap=UTF-8)
 Shell: /bin/sh linked to /bin/bash"""
         header = [u'X-Debbugs-CC: reportbug@packages.qa.debian.org']
-        pseudos = ['Morph: cool']
+        pseudos = ['Morph: cool', 'Control: testcontrol1', 'Control: testcontrol2']
         rtype = 'debbugs'
         body, headers, pseudo = utils.cleanup_msg(message, header, pseudos,
                                                   rtype)
@@ -469,6 +471,10 @@ Shell: /bin/sh linked to /bin/bash"""
         self.assertIn('User', p)
         self.assertIn('Usertags', p)
         self.assertIn('Morph', p)
+
+        # bts687679, verify 2 'Control' pseudo-headers are present
+        for ph in pseudos:
+            self.assertIn(ph, pseudo)
 
     @attr('network')  # marking the test as using network
     def test_generate_blank_report(self):

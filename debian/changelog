@@ -2,6 +2,8 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
 
   * reportbug/utils.py
     - Update the SUITES2DISTS mapping for the jessie release; patch by Paul Wise
+    - 'Control' pseudo-header can be repeated/present multiple times in the
+      report; Closes: #687679
   * man/querybts.1
     - document http_proxy environment variable in querybts manpage; report and
       patch by Jakub Wilk; Closes: #800092
@@ -37,7 +39,7 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/urlutils.py
     - remove handling of X11BROWSER and CONSOLEBROWSER, obsolete
 
- -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 15:10:09 +0000
+ -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 17:37:06 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
