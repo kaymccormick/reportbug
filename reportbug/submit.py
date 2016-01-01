@@ -507,7 +507,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             for address in cclist:
                 ewrite('  %s\n', decode_email_header(address))
 
-    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and not failed \
+    if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and 'email' in sysinfo and not failed \
             and mailing:
         ewrite('\n')
         ui.final_message(
