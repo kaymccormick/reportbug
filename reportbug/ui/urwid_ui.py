@@ -579,7 +579,13 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
         (count, sectitle, hierarchy) = debbugs.get_reports(
             package, timeout, bts, mirrors=mirrors, version=version,
             http_proxy=http_proxy, archived=archived, source=source)
+    except Exception, e:
+        ui.run_wrapper(nullfunc)
+        long_message('Unable to connect to %s BTS.', sysinfo['name'],
+                     title=title)
+        raise NoBugs
 
+    try:
         if not count:
             ui.run_wrapper(nullfunc)
             if hierarchy is None:
@@ -640,10 +646,6 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                         result = res
                         break
 
-    except (IOError, NoNetwork):
-        ui.run_wrapper(nullfunc)
-        long_message('Unable to connect to %s BTS.', sysinfo['name'],
-                     title=title)
     except NoPackage:
         ui.run_wrapper(nullfunc)
         long_message('No record of this package found.', title=title)

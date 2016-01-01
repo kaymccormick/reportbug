@@ -38,8 +38,10 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
     - remove reference to BROWSER env variable, we use xdg-open; Closes: #690759
   * reportbug/urlutils.py
     - remove handling of X11BROWSER and CONSOLEBROWSER, obsolete
+  * reportbug/ui/*
+    - dont crash if we cant access the BTS: Closes: #694634
 
- -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 17:37:06 +0000
+ -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 18:24:59 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 

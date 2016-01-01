@@ -907,7 +907,11 @@ class HandleBTSQueryPage(TreePage):
             (count, sectitle, hierarchy) = debbugs.get_reports(
                 package, timeout, bts, mirrors=mirrors, version=version,
                 http_proxy=http_proxy, archived=archived, source=source)
+        except:
+            error_dialog("Unable to connect to %s BTS." % sysinfo['name'])
+            raise NoBugs
 
+        try:
             if not count:
                 if hierarchy is None:
                     raise NoPackage
@@ -931,8 +935,6 @@ class HandleBTSQueryPage(TreePage):
 
                 return(report, sectitle), {}
 
-        except(IOError, NoNetwork):
-            error_dialog("Unable to connect to %s BTS." % sysinfo['name'])
         except NoPackage:
             error_dialog('No record of this package found.')
             raise NoPackage

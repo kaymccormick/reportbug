@@ -534,7 +534,17 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
         (count, title, hierarchy) = debbugs.get_reports(
             package, timeout, bts, mirrors=mirrors, version=version,
             source=source, http_proxy=http_proxy, archived=archived)
+    except Exception, e:
+        ewrite('Unable to connect to %s BTS (error: "%s"); ' % (debbugs.SYSTEMS[bts]['name'], repr(e)))
+        res = select_options('continue', 'yN',
+                             {'y': 'Keep going.',
+                              'n': 'Abort.'})
+        if res == 'n':
+            raise NoNetwork
+        else:
+            raise NoBugs
 
+    try:
         # If there's no report, then skip all the rest
         if not count:
             if hierarchy is None:
@@ -599,13 +609,6 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                            mirrors, http_proxy, timeout, screen, title, package,
                            mbox_reader_cmd)
 
-    except (IOError, NoNetwork):
-        ewrite('Unable to connect to %s BTS; ', debbugs.SYSTEMS[bts]['name'])
-        res = select_options('continue', 'yN',
-                             {'y': 'Keep going.',
-                              'n': 'Abort.'})
-        if res == 'n':
-            raise NoNetwork
     except NoPackage:
         long_message('No record of this package found.')
         raise NoPackage
