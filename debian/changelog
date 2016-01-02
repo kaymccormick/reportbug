@@ -1,4 +1,4 @@
-reportbug (6.6.6) UNRELEASED; urgency=medium
+reportbug (6.6.6) unstable; urgency=medium
 
   * reportbug/utils.py
     - Update the SUITES2DISTS mapping for the jessie release; patch by Paul Wise
@@ -45,7 +45,7 @@ reportbug (6.6.6) UNRELEASED; urgency=medium
   * reportbug/ui/*
     - dont crash if we cant access the BTS: Closes: #694634
 
- -- Sandro Tosi <morph@debian.org>  Fri, 01 Jan 2016 23:25:31 +0000
+ -- Sandro Tosi <morph@debian.org>  Sat, 02 Jan 2016 01:47:46 +0000
 
 reportbug (6.6.5) unstable; urgency=medium
 
