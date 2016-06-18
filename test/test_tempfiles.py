@@ -1,10 +1,10 @@
-import unittest2
+import unittest
 
 from reportbug import tempfiles
 import os.path
 
 
-class TestTempfiles(unittest2.TestCase):
+class TestTempfiles(unittest.TestCase):
     def test_tempfile_prefix(self):
         extra = 'dummystring'
 

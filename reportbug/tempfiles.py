@@ -56,9 +56,9 @@ if hasattr(os, 'O_BINARY'):
 # Based on python-1.5.2/Lib/tempfile.py
 def open_write_safe(filename, mode='w+b', bufsize=-1):
     if 'b' in mode:
-        fd = os.open(filename, _bin_openflags, 0600)
+        fd = os.open(filename, _bin_openflags, 0o600)
     else:
-        fd = os.open(filename, _text_openflags, 0600)
+        fd = os.open(filename, _text_openflags, 0o600)
 
     try:
         return os.fdopen(fd, mode, bufsize)
