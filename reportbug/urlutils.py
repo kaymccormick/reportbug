@@ -21,22 +21,22 @@
 #  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 #  SOFTWARE.
 
-import httplib
-import urllib
-import urllib2
+import http.client
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import getpass
 import re
 import socket
-import commands
+import subprocess
 import os
 import sys
 import webbrowser
 
-from exceptions import (
+from .exceptions import (
     NoNetwork,
 )
 
-from __init__ import VERSION_NUMBER
+from .__init__ import VERSION_NUMBER
 
 UA_STR = 'reportbug/' + VERSION_NUMBER + ' (Debian)'
 
@@ -46,7 +46,7 @@ def decode(page):
     # print page.info().headers
     encoding = page.info().get("Content-Encoding")
     if encoding in ('gzip', 'x-gzip', 'deflate'):
-        from cStringIO import StringIO
+        from io import StringIO
         # cannot seek in socket descriptors, so must get content now
         content = page.read()
         if encoding == 'deflate':
@@ -56,9 +56,9 @@ def decode(page):
             import gzip
             fp = gzip.GzipFile('', 'rb', 9, StringIO(content))
         # remove content-encoding header
-        headers = httplib.HTTPMessage(StringIO(""))
+        headers = http.client.HTTPMessage(StringIO(""))
         ceheader = re.compile(r"(?i)content-encoding:")
-        for h in page.info().keys():
+        for h in list(page.info().keys()):
             if not ceheader.match(h):
                 headers[h] = page.info()[h]
         newpage = urllib.addinfourl(fp, headers, page.geturl())
@@ -71,28 +71,28 @@ def decode(page):
     return page
 
 
-class HttpWithGzipHandler(urllib2.HTTPHandler):
+class HttpWithGzipHandler(urllib.request.HTTPHandler):
     "support gzip encoding"
 
     def http_open(self, req):
-        return decode(urllib2.HTTPHandler.http_open(self, req))
+        return decode(urllib.request.HTTPHandler.http_open(self, req))
 
 
-if hasattr(httplib, 'HTTPS'):
-    class HttpsWithGzipHandler(urllib2.HTTPSHandler):
+if hasattr(http.client, 'HTTPS'):
+    class HttpsWithGzipHandler(urllib.request.HTTPSHandler):
         "support gzip encoding"
 
         def https_open(self, req):
-            return decode(urllib2.HTTPSHandler.https_open(self, req))
+            return decode(urllib.request.HTTPSHandler.https_open(self, req))
 
 
-class handlepasswd(urllib2.HTTPPasswordMgrWithDefaultRealm):
+class handlepasswd(urllib.request.HTTPPasswordMgrWithDefaultRealm):
     def find_user_password(self, realm, authurl):
-        user, password = urllib2.HTTPPasswordMgrWithDefaultRealm.find_user_password(self, realm, authurl)
+        user, password = urllib.request.HTTPPasswordMgrWithDefaultRealm.find_user_password(self, realm, authurl)
         if user is not None:
             return user, password
 
-        user = raw_input('Enter username for %s at %s: ' % (realm, authurl))
+        user = input('Enter username for %s at %s: ' % (realm, authurl))
         password = getpass.getpass(
             "Enter password for %s in %s at %s: " % (user, realm, authurl))
         self.add_password(realm, authurl, user, password)
@@ -106,29 +106,29 @@ def urlopen(url, proxies=None, timeout=60, data=None):
     global _opener
 
     if not proxies:
-        proxies = urllib.getproxies()
+        proxies = urllib.request.getproxies()
 
     headers = {'User-Agent': UA_STR,
                'Accept-Encoding': 'gzip;q=1.0, deflate;q=0.9, identity;q=0.5'}
 
-    req = urllib2.Request(url, data, headers)
+    req = urllib.request.Request(url, data, headers)
 
-    proxy_support = urllib2.ProxyHandler(proxies)
+    proxy_support = urllib.request.ProxyHandler(proxies)
     if _opener is None:
         pwd_manager = handlepasswd()
         handlers = [proxy_support,
-                    urllib2.UnknownHandler, HttpWithGzipHandler,
-                    urllib2.HTTPBasicAuthHandler(pwd_manager),
-                    urllib2.ProxyBasicAuthHandler(pwd_manager),
-                    urllib2.HTTPDigestAuthHandler(pwd_manager),
-                    urllib2.ProxyDigestAuthHandler(pwd_manager),
-                    urllib2.HTTPDefaultErrorHandler, urllib2.HTTPRedirectHandler,
+                    urllib.request.UnknownHandler, HttpWithGzipHandler,
+                    urllib.request.HTTPBasicAuthHandler(pwd_manager),
+                    urllib.request.ProxyBasicAuthHandler(pwd_manager),
+                    urllib.request.HTTPDigestAuthHandler(pwd_manager),
+                    urllib.request.ProxyDigestAuthHandler(pwd_manager),
+                    urllib.request.HTTPDefaultErrorHandler, urllib.request.HTTPRedirectHandler,
                     ]
-        if hasattr(httplib, 'HTTPS'):
+        if hasattr(http.client, 'HTTPS'):
             handlers.append(HttpsWithGzipHandler)
-        _opener = urllib2.build_opener(*handlers)
+        _opener = urllib.request.build_opener(*handlers)
         # print _opener.handlers
-        urllib2.install_opener(_opener)
+        urllib.request.install_opener(_opener)
 
     return _opener.open(req, timeout=timeout)
 
@@ -140,28 +140,28 @@ def open_url(url, http_proxy=None, timeout=60):
     # in #572316 we set a user-configurable timeout
     socket.setdefaulttimeout(timeout)
 
-    proxies = urllib.getproxies()
+    proxies = urllib.request.getproxies()
     if http_proxy:
         proxies['http'] = http_proxy
 
     try:
         page = urlopen(url, proxies, timeout)
-    except urllib2.HTTPError, x:
+    except urllib.error.HTTPError as x:
         if x.code in (404, 500, 503):
             return None
         else:
             raise
-    except (socket.gaierror, socket.error, urllib2.URLError), x:
+    except (socket.gaierror, socket.error, urllib.error.URLError) as x:
         raise NoNetwork
-    except IOError, data:
+    except IOError as data:
         if data and data[0] == 'http error' and data[1] == 404:
             return None
         else:
             raise NoNetwork
     except TypeError:
-        print >> sys.stderr, "http_proxy environment variable must be formatted as a valid URI"
+        print("http_proxy environment variable must be formatted as a valid URI", file=sys.stderr)
         raise NoNetwork
-    except httplib.HTTPException, exc:
+    except http.client.HTTPException as exc:
         exc_name = exc.__class__.__name__
         message = "Failed to open %(url)r (%(exc_name)s: %(exc)s)" % vars()
         raise NoNetwork(message)
@@ -170,7 +170,7 @@ def open_url(url, http_proxy=None, timeout=60):
 
 def launch_browser(url):
     if not os.system('command -v xdg-open >/dev/null 2>&1'):
-        cmd = 'xdg-open' + commands.mkarg(url)
+        cmd = 'xdg-open' + subprocess.mkarg(url)
         os.system(cmd)
         return
 
