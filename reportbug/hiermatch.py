@@ -4,7 +4,7 @@
 #   Copyright (C) 2008-2016 Sandro Tosi <morph@debian.org>
 
 import re
-import exceptions
+from . import exceptions
 
 
 def egrep_list(strlist, pattern_str, subindex=None):
@@ -21,7 +21,7 @@ def egrep_list(strlist, pattern_str, subindex=None):
 
     resultlist = []
     if subindex is None:
-        subindex = range(len(strlist))
+        subindex = list(range(len(strlist)))
     for i in subindex:
         if pat.search(strlist[i]):
             resultlist.append(i)

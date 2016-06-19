@@ -1,4 +1,4 @@
-import unittest2
+import unittest
 
 from reportbug import hiermatch, exceptions
 
@@ -10,7 +10,7 @@ test_strings_list = ['Beautiful is better than ugly.',
                      'Sparse is better than dense.']
 
 
-class TestHiermatch(unittest2.TestCase):
+class TestHiermatch(unittest.TestCase):
 
     def test_egrep_list(self):
         res = hiermatch.egrep_list(None, '')
