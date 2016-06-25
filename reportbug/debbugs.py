@@ -21,37 +21,36 @@
 #  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 #  SOFTWARE.
 
-import utils
+from . import utils
 import sys
 import mailbox
 import email
 import email.parser
-import email.Errors
-import cStringIO
-import sgmllib
+import email.errors
+import io
 import glob
 import os
 import re
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import textwrap
 import pprint
 # SOAP interface to Debian BTS
 import debianbts
 from collections import defaultdict
 
-import checkversions
-from exceptions import (
+from . import checkversions
+from .exceptions import (
     NoNetwork,
     QuertBTSError,
 )
-from urlutils import open_url
+from .urlutils import open_url
 
 
 def msgfactory(fp):
     try:
         return email.message_from_file(fp)
-    except email.Errors.MessageParseError:
+    except email.errors.MessageParseError:
         # Don't return None since that will
         # stop the mailbox iterator
         return ''
@@ -455,7 +454,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         # FIXME: pu/rm should lookup the version elsewhere
         version = info and info[0]
         if online and tag.endswith('-pu'):
-            version = checkversions.get_versions_available(package, timeout, (tag[:-3],)).values()[0]
+            version = list(checkversions.get_versions_available(package, timeout, (tag[:-3],)).values())[0]
         if version:
             cont = ui.select_options(
                 "Latest version seems to be %s, is this the proper one ?" % (version),
@@ -552,7 +551,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
             good = ".depends ~ " + j(listgood)
             bad = ".depends ~ " + j(listbad)
 
-        body += textwrap.dedent(u"""\
+        body += textwrap.dedent("""\
 
                Ben file:
 
@@ -568,7 +567,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
         body = ''
     elif tag == 'unblock':
         subject = 'unblock: %s/%s' % (package, version)
-        body = textwrap.dedent(u"""\
+        body = textwrap.dedent("""\
                 Please unblock package %s
 
                 (explain the reason for the unblock here)
@@ -587,7 +586,7 @@ def handle_debian_release(package, bts, ui, fromaddr, timeout, online=True, http
     return (subject, severity, headers, pseudos, body, query)
 
 
-itp_template = textwrap.dedent(u"""\
+itp_template = textwrap.dedent("""\
     * Package name    : %(package)s
       Version         : x.y.z
       Upstream Author : Name <somebody@example.org>
@@ -671,7 +670,7 @@ def handle_wnpp(package, bts, ui, fromaddr, timeout, online=True, http_proxy=Non
 
         if tag == 'ITP':
             headers.append('X-Debbugs-CC: debian-devel@lists.debian.org')
-            pseudos.append(u'Owner: %s' % fromaddr.decode('utf-8', 'replace'))
+            pseudos.append('Owner: %s' % fromaddr.decode('utf-8', 'replace'))
             ui.log_message('Your report will be carbon-copied to debian-devel, '
                            'per Debian policy.\n')
 
@@ -731,13 +730,13 @@ def dpkg_infofunc():
     multiarch = utils.get_multiarch()
     if debarch:
         if utsmachine == debarch:
-            debinfo = u'Architecture: %s\n' % debarch
+            debinfo = 'Architecture: %s\n' % debarch
         else:
-            debinfo = u'Architecture: %s (%s)\n' % (debarch, utsmachine)
+            debinfo = 'Architecture: %s (%s)\n' % (debarch, utsmachine)
     else:
-        debinfo = u'Architecture: ? (%s)\n' % utsmachine
+        debinfo = 'Architecture: ? (%s)\n' % utsmachine
     if multiarch:
-        debinfo += u'Foreign Architectures: %s\n' % multiarch
+        debinfo += 'Foreign Architectures: %s\n' % multiarch
     debinfo += '\n'
     return debinfo
 
@@ -752,7 +751,7 @@ def ubuntu_infofunc():
 
 def generic_infofunc():
     utsmachine = os.uname()[4]
-    return utils.lsb_release_info() + u'Architecture: %s\n\n' % utsmachine
+    return utils.lsb_release_info() + 'Architecture: %s\n\n' % utsmachine
 
 
 # Supported servers
@@ -868,7 +867,7 @@ def cgi_package_url(system, package, archived=False, source=False,
     if version:
         query['version'] = str(version)
 
-    qstr = urllib.urlencode(query)
+    qstr = urllib.parse.urlencode(query)
     # print qstr
     return '%spkgreport.cgi?%s' % (root, qstr)
 
@@ -877,7 +876,7 @@ def cgi_package_url(system, package, archived=False, source=False,
 def package_url(system, package, mirrors=None, source=False,
                 repeatmerged=True):
     btsroot = get_btsroot(system, mirrors)
-    package = urllib.quote_plus(package.lower())
+    package = urllib.parse.quote_plus(package.lower())
     return btsroot + ('db/pa/l%s.html' % package)
 
 
@@ -918,7 +917,7 @@ def parse_bts_url(url):
 # Dynamically add any additional systems found
 for origin in glob.glob('/etc/dpkg/origins/*'):
     try:
-        fp = file(origin)
+        fp = open(origin)
         system = os.path.basename(origin)
         SYSTEMS[system] = SYSTEMS.get(system, {'otherpkgs': {},
                                                'query-dpkg': True,
@@ -948,198 +947,6 @@ for origin in glob.glob('/etc/dpkg/origins/*'):
         fp.close()
     except IOError:
         pass
-
-
-# For summary pages, we want to keep:
-#
-# - Contents of <title>...</title>
-# - Contents of <h2>...</h2>
-# - Contents of each <li>
-#
-# For individual bugs, we want to keep:
-# - Contents of <title>...</title>
-# - Contents of every <pre>...</pre> after a <h2>....</h2> tag.
-
-class BTSParser(sgmllib.SGMLParser):
-    def __init__(self, mode='summary', cgi=False, followups=False):
-        import warnings
-        warnings.warn('BTSParse is Deprecated, report a bug if you see this',
-                      DeprecationWarning)
-        sgmllib.SGMLParser.__init__(self)
-        self.hierarchy = []
-        self.lidata = None
-        self.lidatalist = None
-        self.savedata = None
-        self.title = None
-        self.bugcount = 0
-        self.mode = mode
-        self.cgi = cgi
-        self.followups = followups
-        self.inbuglist = self.intrailerinfo = False
-        self.bugtitle = None
-        if followups:
-            self.preblock = []
-        else:
-            self.preblock = ''
-        self.endh2 = False
-
-    # --- Formatter interface, taking care of 'savedata' mode;
-    # shouldn't need to be overridden
-
-    def handle_data(self, data):
-        if self.savedata is not None:
-            self.savedata += data
-
-    # --- Hooks to save data; shouldn't need to be overridden
-
-    def save_bgn(self):
-        self.savedata = ''
-
-    def save_end(self, mode=False):
-        data = self.savedata
-        if not mode and data:
-            data = ' '.join(data.split())
-        self.savedata = None
-        return data
-
-    def start_h1(self, attrs):
-        self.save_bgn()
-        self.oldmode = self.mode
-        self.mode = 'title'
-
-    def end_h1(self):
-        self.title = self.save_end()
-        self.mode = self.oldmode
-
-    def start_h2(self, attrs):
-        if self.lidata:
-            self.check_li()
-
-        self.save_bgn()
-
-    def end_h2(self):
-        if self.mode == 'summary':
-            hiertitle = self.save_end()
-            if 'bug' in hiertitle:
-                self.hierarchy.append((hiertitle, []))
-        self.endh2 = True  # We are at the end of a title, flag <pre>
-
-    def start_ul(self, attrs):
-        if self.mode == 'summary':
-            for k, v in attrs:
-                if k == 'class' and v == 'bugs':
-                    self.inbuglist = True
-
-    def end_ul(self):
-        if self.inbuglist:
-            self.check_li()
-
-        self.inbuglist = False
-
-    def do_br(self, attrs):
-        if self.mode == 'title':
-            self.savedata = ""
-        elif self.mode == 'summary' and self.inbuglist and not self.intrailerinfo:
-            self.bugtitle = self.save_end()
-            self.intrailerinfo = True
-            self.save_bgn()
-
-    def check_li(self):
-        if self.mode == 'summary':
-            if not self.intrailerinfo:
-                self.bugtitle = self.save_end()
-                trailinfo = ''
-            else:
-                trailinfo = self.save_end()
-
-            match = re.search(r'fixed:\s+([\w.+~-]+(\s+[\w.+~:-]+)?)', trailinfo)
-            if match:
-                title = self.bugtitle
-                bits = re.split(r':\s+', title, 1)
-                if len(bits) > 1:
-                    buginfo = '%s [FIXED %s]: %s' % (
-                        bits[0], match.group(1), bits[1])
-                else:
-                    if title.endswith(':'):
-                        title = title[:-1]
-
-                    buginfo = '%s [FIXED %s]' % (title, match.group(1))
-            else:
-                buginfo = self.bugtitle
-
-            self.lidatalist.append(buginfo)
-            self.bugcount += 1
-
-            self.lidata = self.intrailerinfo = False
-
-    def do_li(self, attrs):
-        if self.mode == 'summary' and self.inbuglist:
-            if self.lidata:
-                self.check_li()
-
-            self.lidata = True
-            if self.hierarchy:
-                self.lidatalist = self.hierarchy[-1][1]
-            else:
-                self.lidatalist = []
-            self.save_bgn()
-
-    def start_pre(self, attrs):
-        "Save <pre> when we follow a </h2>"
-        if self.followups:
-            if not self.endh2:
-                return
-        else:
-            if self.cgi and self.preblock:
-                return
-
-        self.save_bgn()
-
-    def end_pre(self):
-        if self.followups:
-            if not self.endh2:
-                return
-            self.endh2 = False  # Done with a report, reset </h2>.
-            stuff = self.save_end(1)
-            if not self.cgi:
-                self.preblock.insert(0, stuff)
-            else:
-                self.preblock.append(stuff)
-        elif not (self.preblock and self.cgi):
-            self.preblock = self.save_end(1)
-
-    def reorganize(self):
-        if not self.hierarchy:
-            return
-
-        newhierarchy = []
-        fixed = []
-        fixedfinder = re.compile(r'\[FIXED ([^\]]+)\]')
-        resolvedfinder = re.compile(r'Resolved')
-
-        for (title, buglist) in self.hierarchy:
-            if 'Resolved' in title:
-                newhierarchy.append((title, buglist))
-                continue
-
-            bugs = []
-            for bug in buglist:
-                if fixedfinder.search(bug):
-                    fixed.append(bug)
-                else:
-                    bugs.append(bug)
-
-            if bugs:
-                title = ' '.join(title.split()[:-2])
-                if len(bugs) != 1:
-                    title += ' (%d bugs)' % len(bugs)
-                else:
-                    title += ' (1 bug)'
-
-                newhierarchy.append((title, bugs))
-
-        if fixed:
-            self.hierarchy = [('Bugs fixed in subsequent releases (%d bugs)' % len(fixed), fixed)] + newhierarchy
 
 
 # TODO: to be removed
@@ -1193,7 +1000,7 @@ def parse_mbox_report(number, url, http_proxy, timeout, followups=False):
         return None
 
     # Make this seekable
-    wholefile = cStringIO.StringIO(page.read())
+    wholefile = io.StringIO(page.read())
 
     try:
         page.fp._sock.recv = None
@@ -1244,60 +1051,6 @@ def parse_mbox_report(number, url, http_proxy, timeout, followups=False):
     return (title, output)
 
 
-def get_cgi_reports(package, timeout, system='debian', http_proxy='',
-                    archived=False, source=False, version=None):
-    try:
-        page = open_url(cgi_package_url(system, package, archived, source,
-                                        version=version), http_proxy, timeout)
-    except:
-        raise NoNetwork
-
-    if not page:
-        return (0, None, None)
-
-    # content = page.read()
-    # if 'Maintainer' not in content:
-    #    return (0, None, None)
-
-    parser = BTSParser(cgi=True)
-    for line in page:
-        try:
-            line = line.decode('utf-8')  # BTS pages are encoded in utf-8
-        except UnicodeDecodeError:
-            # page has a bad char
-            line = line.decode('utf-8', 'replace')
-        parser.feed(line)
-    parser.close()
-    try:
-        page.fp._sock.recv = None
-    except:
-        pass
-    page.close()
-
-    # Reorganize hierarchy to put recently-fixed bugs at top
-    parser.reorganize()
-
-    # Morph @ 2008-08-15; due to BTS output format changes
-    try:
-        parser.hierarchy.remove(('Select bugs', []))
-    except:
-        pass
-
-    data = (parser.bugcount, parser.title, parser.hierarchy)
-    del parser
-
-    return data
-
-
-def get_cgi_report(number, timeout, system='debian', http_proxy='', archived=False,
-                   followups=False):
-    number = int(number)
-
-    url = cgi_report_url(system, number, archived='no', mbox=True)
-    return parse_mbox_report(number, url, http_proxy, timeout, followups)
-    # return parse_html_report(number, url, http_proxy, followups, cgi=True)
-
-
 def get_btsroot(system, mirrors=None):
     if mirrors:
         alternates = SYSTEMS[system].get('mirrors')
@@ -1310,14 +1063,14 @@ def get_btsroot(system, mirrors=None):
 def get_reports(package, timeout, system='debian', mirrors=None, version=None,
                 http_proxy='', archived=False, source=False):
     if system == 'debian':
-        if isinstance(package, basestring):
+        if isinstance(package, str):
             if source:
                 pkg_filter = 'src'
             else:
                 pkg_filter = 'package'
             bugs = debianbts.get_bugs(pkg_filter, package)
         else:
-            bugs = map(int, package)
+            bugs = list(map(int, package))
 
         try:
             # retrieve bugs and generate the hierarchy
@@ -1344,7 +1097,7 @@ def get_reports(package, timeout, system='debian', mirrors=None, version=None,
         return (len(bugs), 'Bug reports for %s' % package, hier)
 
     # XXX: is the code below used at all now? can we remove it?
-    if isinstance(package, basestring):
+    if isinstance(package, str):
         if SYSTEMS[system].get('cgiroot'):
             try:
                 result = get_cgi_reports(package, timeout, system, http_proxy, archived,
