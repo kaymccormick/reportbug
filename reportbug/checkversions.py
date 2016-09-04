@@ -24,13 +24,13 @@
 import sys
 import os
 import re
-import urllib2
-import sgmllib
+import urllib.request, urllib.error, urllib.parse
 import gc
 import time
+import gzip
 
-import utils
-from urlutils import open_url
+from . import utils
+from .urlutils import open_url
 from reportbug.exceptions import (
     NoNetwork,
 )
@@ -38,54 +38,30 @@ from reportbug.exceptions import (
 # needed to parse new.822
 from debian.deb822 import Deb822
 from debian import debian_support
+from functools import reduce
 
-RMADISON_URL = 'http://qa.debian.org/madison.php?package=%s&text=on'
+RMADISON_URL = 'https://qa.debian.org/madison.php?package=%s&text=on'
 INCOMING_URL = 'http://incoming.debian.org/'
 NEWQUEUE_URL = 'http://ftp-master.debian.org/new.822'
 
 
-# The format is an unordered list
-
-class BaseParser(sgmllib.SGMLParser):
-    def __init__(self):
-        sgmllib.SGMLParser.__init__(self)
-        self.savedata = None
-
-    # --- Formatter interface, taking care of 'savedata' mode;
-    # shouldn't need to be overridden
-
-    def handle_data(self, data):
-        if self.savedata is not None:
-            self.savedata = self.savedata + data
-
-    # --- Hooks to save data; shouldn't need to be overridden
-    def save_bgn(self):
-        self.savedata = ''
-
-    def save_end(self, mode=0):
-        data = self.savedata
-        self.savedata = None
-        if not mode and data is not None:
-            data = ' '.join(data.split())
-        return data
-
-
-class IncomingParser(sgmllib.SGMLParser):
-    def __init__(self, package, arch='i386'):
-        sgmllib.SGMLParser.__init__(self)
-        self.found = []
-        self.savedata = None
-        arch = r'(?:all|' + re.escape(arch) + ')'
-        self.package = re.compile(re.escape(package) + r'_([^_]+)_' + arch + '.deb')
-
-    def start_a(self, attrs):
-        for attrib, value in attrs:
-            if attrib.lower() != 'href':
-                continue
-
-            mob = self.package.match(value)
-            if mob:
-                self.found.append(mob.group(1))
+## This needs to be adapted now that incoming is an APT repository
+# class IncomingParser(sgmllib.SGMLParser):
+#     def __init__(self, package, arch='i386'):
+#         sgmllib.SGMLParser.__init__(self)
+#         self.found = []
+#         self.savedata = None
+#         arch = r'(?:all|' + re.escape(arch) + ')'
+#         self.package = re.compile(re.escape(package) + r'_([^_]+)_' + arch + '.deb')
+#
+#     def start_a(self, attrs):
+#         for attrib, value in attrs:
+#             if attrib.lower() != 'href':
+#                 continue
+#
+#             mob = self.package.match(value)
+#             if mob:
+#                 self.found.append(mob.group(1))
 
 
 def compare_versions(current, upstream):
@@ -117,15 +93,14 @@ def get_versions_available(package, timeout, dists=None, http_proxy=None, arch='
         page = open_url(url)
     except NoNetwork:
         return {}
-    except urllib2.HTTPError, x:
-        print >> sys.stderr, "Warning:", x
+    except urllib.error.HTTPError as x:
+        print("Warning:", x, file=sys.stderr)
         return {}
     if not page:
         return {}
 
     # read the content of the page, remove spaces, empty lines
-    content = page.read().replace(' ', '').strip()
-    page.close()
+    content = page.replace(' ', '').strip()
 
     versions = {}
     for line in content.split('\n'):
@@ -147,8 +122,8 @@ def get_newqueue_available(package, timeout, dists=None, http_proxy=None, arch='
         page = open_url(NEWQUEUE_URL, http_proxy, timeout)
     except NoNetwork:
         return {}
-    except urllib2.HTTPError, x:
-        print >> sys.stderr, "Warning:", x
+    except urllib.error.HTTPError as x:
+        print("Warning:", x, file=sys.stderr)
         return {}
     if not page:
         return {}
@@ -170,21 +145,21 @@ def get_incoming_version(package, timeout, http_proxy=None, arch='i386'):
         page = open_url(INCOMING_URL, http_proxy, timeout)
     except NoNetwork:
         return None
-    except urllib2.HTTPError, x:
-        print >> sys.stderr, "Warning:", x
+    except urllib.error.HTTPError as x:
+        print("Warning:", x, file=sys.stderr)
         return None
     if not page:
         return None
 
-    parser = IncomingParser(package, arch)
-    for line in page:
-        parser.feed(line)
-    parser.close()
-    try:
-        page.fp._sock.recv = None
-    except:
-        pass
-    page.close()
+    # parser = IncomingParser(package, arch)
+    # for line in page:
+    #     parser.feed(line)
+    # parser.close()
+    # try:
+    #     page.fp._sock.recv = None
+    # except:
+    #     pass
+    # page.close()
 
     if parser.found:
         found = parser.found

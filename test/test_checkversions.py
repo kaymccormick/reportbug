@@ -1,4 +1,4 @@
-import unittest2
+import unittest
 
 from reportbug import checkversions
 from nose.plugins.attrib import attr
@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 import mock
 
 
-class TestCheckversions(unittest2.TestCase):
+class TestCheckversions(unittest.TestCase):
     def test_compare_versions(self):
         # <current, upstream>
         # 1 upstream newer than current
@@ -34,7 +34,7 @@ class TestCheckversions(unittest2.TestCase):
         self.assertEqual(checkversions.later_version('1.2.4', '1.2.3'), '1.2.4')
 
 
-class TestNewQueue(unittest2.TestCase):
+class TestNewQueue(unittest.TestCase):
     def test_bts704040(self):
         # return an iterable object, so that Deb822 (what parses the result)
         # will work
@@ -62,14 +62,14 @@ Source: aaa
 
         res = checkversions.get_newqueue_available('procps', 60)
 
-        self.assertEqual(res.keys()[0], u'experimental (new)')
-        self.assertEqual(res[u'experimental (new)'], u'1:3.3.7-1')
+        self.assertEqual(list(res.keys())[0], 'experimental (new)')
+        self.assertEqual(res['experimental (new)'], '1:3.3.7-1')
 
         # restore the original checkversions.open_url() method
         checkversions.open_url = save_open_url
 
 
-class TestVersionAvailable(unittest2.TestCase):
+class TestVersionAvailable(unittest.TestCase):
     @attr('network')  # marking the test as using network
     def test_bts642032(self):
         vers = checkversions.get_versions_available('reportbug', 60)
@@ -94,4 +94,4 @@ class TestVersionAvailable(unittest2.TestCase):
     def test_codenames(self):
         vers = checkversions.get_versions_available('reportbug', 60, ['sid'])
         self.assertEqual(1, len(vers))
-        self.assertEqual(vers.keys()[0], 'unstable')
+        self.assertEqual(list(vers.keys())[0], 'unstable')
