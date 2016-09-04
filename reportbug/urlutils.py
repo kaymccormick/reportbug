@@ -31,6 +31,7 @@ import subprocess
 import os
 import sys
 import webbrowser
+import requests
 
 from .exceptions import (
     NoNetwork,
@@ -111,26 +112,28 @@ def urlopen(url, proxies=None, timeout=60, data=None):
     headers = {'User-Agent': UA_STR,
                'Accept-Encoding': 'gzip;q=1.0, deflate;q=0.9, identity;q=0.5'}
 
-    req = urllib.request.Request(url, data, headers)
+    return requests.get(url, headers).text
 
-    proxy_support = urllib.request.ProxyHandler(proxies)
-    if _opener is None:
-        pwd_manager = handlepasswd()
-        handlers = [proxy_support,
-                    urllib.request.UnknownHandler, HttpWithGzipHandler,
-                    urllib.request.HTTPBasicAuthHandler(pwd_manager),
-                    urllib.request.ProxyBasicAuthHandler(pwd_manager),
-                    urllib.request.HTTPDigestAuthHandler(pwd_manager),
-                    urllib.request.ProxyDigestAuthHandler(pwd_manager),
-                    urllib.request.HTTPDefaultErrorHandler, urllib.request.HTTPRedirectHandler,
-                    ]
-        if hasattr(http.client, 'HTTPS'):
-            handlers.append(HttpsWithGzipHandler)
-        _opener = urllib.request.build_opener(*handlers)
-        # print _opener.handlers
-        urllib.request.install_opener(_opener)
-
-    return _opener.open(req, timeout=timeout)
+    # req = urllib.request.Request(url, data, headers)
+    #
+    # proxy_support = urllib.request.ProxyHandler(proxies)
+    # if _opener is None:
+    #     pwd_manager = handlepasswd()
+    #     handlers = [proxy_support,
+    #                 urllib.request.UnknownHandler, HttpWithGzipHandler,
+    #                 urllib.request.HTTPBasicAuthHandler(pwd_manager),
+    #                 urllib.request.ProxyBasicAuthHandler(pwd_manager),
+    #                 urllib.request.HTTPDigestAuthHandler(pwd_manager),
+    #                 urllib.request.ProxyDigestAuthHandler(pwd_manager),
+    #                 urllib.request.HTTPDefaultErrorHandler, urllib.request.HTTPRedirectHandler,
+    #                 ]
+    #     if hasattr(http.client, 'HTTPS'):
+    #         handlers.append(HttpsWithGzipHandler)
+    #     _opener = urllib.request.build_opener(*handlers)
+    #     # print _opener.handlers
+    #     urllib.request.install_opener(_opener)
+    #
+    # return _opener.open(req, timeout=timeout)
 
 
 # Global useful URL opener; returns None if the page is absent, otherwise
