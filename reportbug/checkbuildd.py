@@ -21,11 +21,10 @@
 #  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 #  SOFTWARE.
 
-import sgmllib
-import commands
+from html.parser import HTMLParser
 
-import utils
-from urlutils import open_url
+from . import utils
+from .urlutils import open_url
 from reportbug.exceptions import (
     NoNetwork,
 )
@@ -34,9 +33,9 @@ BUILDD_URL = 'https://buildd.debian.org/build.php?arch=%s&pkg=%s'
 
 
 # Check for successful in a 'td' block
-class BuilddParser(sgmllib.SGMLParser):
+class BuilddParser(HTMLParser):
     def __init__(self):
-        sgmllib.SGMLParser.__init__(self)
+        HTMLParser.__init__(self)
         self.versions = {}
         self.savedata = None
         self.found_succeeded = False
@@ -59,13 +58,15 @@ class BuilddParser(sgmllib.SGMLParser):
             data = ' '.join(data.split())
         return data
 
-    def start_td(self, attrs):
-        self.save_bgn()
+    def handle_starttag(self, tag, attrs):
+        if tag == 'td':
+            self.save_bgn()
 
-    def end_td(self):
-        data = self.save_end()
-        if data and 'successful' in data.lower():
-            self.found_succeeded = True
+    def handle_endtag(self, tag):
+        if tag == 'td':
+            data = self.save_end()
+            if data and 'successful' in data.lower():
+                self.found_succeeded = True
 
 
 def check_built(src_package, timeout, arch=None, http_proxy=None):
@@ -82,8 +83,6 @@ def check_built(src_package, timeout, arch=None, http_proxy=None):
         return False
 
     parser = BuilddParser()
-    parser.feed(page.read())
-    parser.close()
-    page.close()
+    parser.feed(page)
 
     return parser.found_succeeded
