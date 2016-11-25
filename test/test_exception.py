@@ -1,11 +1,9 @@
-from __future__ import with_statement
-
-import unittest2
+import unittest
 
 from reportbug import exceptions
 
 
-class TestExceptions(unittest2.TestCase):
+class TestExceptions(unittest.TestCase):
 
     def test_raises_reportbug_exception(self):
         with self.assertRaises(exceptions.reportbug_exception):
