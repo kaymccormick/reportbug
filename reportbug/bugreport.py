@@ -22,14 +22,14 @@
 
 import os
 
-import utils
-import debbugs
-import commands
+from . import utils
+from . import debbugs
+import subprocess
 
-from exceptions import *
+from .exceptions import *
 
 # to print errors
-import ui.text_ui as ui
+from .ui import text_ui as ui
 
 
 class bugreport(object):
@@ -43,7 +43,7 @@ class bugreport(object):
                  followup=False, type='debbugs', mode=utils.MODE_STANDARD,
                  debsumsoutput=None, issource=False, **props):
         self.type = type
-        for (k, v) in props.iteritems():
+        for (k, v) in props.items():
             setattr(self, k, v)
         self.package = package
         self.subject = subject
@@ -79,7 +79,7 @@ class bugreport(object):
 
     def __unicode__(self):
         un = os.uname()
-        debinfo = u''
+        debinfo = ''
         shellpath = utils.realpath('/bin/sh')
         init = utils.get_init_system()
 
@@ -90,7 +90,7 @@ class bugreport(object):
             if setting == 'LANG':
                 env = langsetting
             else:
-                env = '%s (charmap=%s)' % (os.environ.get(setting, langsetting), commands.getoutput("locale charmap"))
+                env = '%s (charmap=%s)' % (os.environ.get(setting, langsetting), subprocess.getoutput("locale charmap"))
 
                 if allsetting and env:
                     env = "%s (ignored: LC_ALL set to %s)" % (env, allsetting)
@@ -102,25 +102,24 @@ class bugreport(object):
 
         ph = getattr(self, 'pseudoheaders', None)
         if ph:
-            headers = u'\n'.join(ph) + u'\n'
+            headers = '\n'.join(ph) + '\n'
         else:
-            headers = u''
+            headers = ''
 
         version = getattr(self, 'version', None)
         if version:
-            headers += u'Version: %s\n' % version
+            headers += 'Version: %s\n' % version
 
-        body = getattr(self, 'body', u'')
-        body = body.decode('utf8')
+        body = getattr(self, 'body', '')
 
         # add NEWBIELINE only if it's less than advanced and the package is not
         # one of the specials (f.e. those with a dedicated function) also
         # thinking about those systems that don't have 'specials' dict
         if self.mode < utils.MODE_ADVANCED and self.package not in \
-                debbugs.SYSTEMS[self.system].get('specials', {}).keys():
-            body = utils.NEWBIELINE + u'\n\n' + body
+                list(debbugs.SYSTEMS[self.system].get('specials', {}).keys()):
+            body = utils.NEWBIELINE + '\n\n' + body
         elif not body:
-            body = u'\n'
+            body = '\n'
 
         if self.issource:
             reportto = 'Source'
@@ -131,12 +130,12 @@ class bugreport(object):
             for (attr, name) in dict(severity='Severity',
                                      justification='Justification',
                                      tags='Tags',
-                                     filename='File').iteritems():
+                                     filename='File').items():
                 a = getattr(self, attr, None)
                 if a:
-                    headers += u'%s: %s\n' % (name, a)
+                    headers += '%s: %s\n' % (name, a)
 
-            report = u"%s: %s\n%s\n" % (reportto, self.package, headers)
+            report = "%s: %s\n%s\n" % (reportto, self.package, headers)
         else:
             report = "Followup-For: Bug #%d\n%s: %s\n%s\n" % (
                 self.followup, reportto, self.package, headers)
@@ -170,20 +169,20 @@ class bugreport(object):
                     uname_string = '%s (%s)' % (uname_string, '; '.join(kinfo))
 
         if uname_string:
-            debinfo += u'Kernel: %s\n' % uname_string
+            debinfo += 'Kernel: %s\n' % uname_string
 
         if locinfo:
-            debinfo += u'Locale: %s\n' % locinfo
+            debinfo += 'Locale: %s\n' % locinfo
         if shellpath != '/bin/sh':
-            debinfo += u'Shell: /bin/sh linked to %s\n' % shellpath
+            debinfo += 'Shell: /bin/sh linked to %s\n' % shellpath
         if init:
-            debinfo += u'Init: %s\n' % init
+            debinfo += 'Init: %s\n' % init
 
         # Don't include system info for certain packages
         if self.sysinfo:
-            report = u"%s%s%s\n-- System Information:\n%s" % (report, body, self.incfiles, debinfo)
+            report = "%s%s%s\n-- System Information:\n%s" % (report, body, self.incfiles, debinfo)
         else:
-            report = u"%s%s%s" % (report, body, self.incfiles)
+            report = "%s%s%s" % (report, body, self.incfiles)
 
         if hasattr(self, 'depinfo'):
             report += self.depinfo
@@ -192,12 +191,12 @@ class bugreport(object):
 
         # add debsums output to the bug report
         if self.debsumsoutput:
-            report += u"\n-- debsums errors found:\n%s\n" % self.debsumsoutput
+            report += "\n-- debsums errors found:\n%s\n" % self.debsumsoutput
 
         return report
 
     def __str__(self):
-        return unicode(self).encode(charset, 'replace')
+        return self.__unicode__()
 
     def __repr__(self):
         params = ['%s=%s' % (k, self.k) for k in dir(self)]

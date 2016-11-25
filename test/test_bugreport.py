@@ -1,4 +1,4 @@
-import unittest2
+import unittest
 
 from reportbug import utils
 from reportbug import debbugs
@@ -7,7 +7,7 @@ from nose.plugins.attrib import attr
 import debianbts
 
 
-class TestBugreport(unittest2.TestCase):
+class TestBugreport(unittest.TestCase):
     # TODO: differentiate for all possible cases? f.e. sysinfo True/False and then change if 'System Information' in self.text?
 
     def test_bugreport(self):
@@ -22,7 +22,7 @@ class TestBugreport(unittest2.TestCase):
 
     # verify that for special packages, we don't add the report template
     def test_bts643785(self):
-        for package in debbugs.SYSTEMS['debian'].get('specials', {}).keys():
+        for package in list(debbugs.SYSTEMS['debian'].get('specials', {}).keys()):
             self.report = bugreport(package=package, mode=utils.MODE_NOVICE)
             self.text = self.report.__unicode__()
             self.assertNotIn(utils.NEWBIELINE, self.text)
