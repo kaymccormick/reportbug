@@ -27,20 +27,20 @@ import platform
 
 try:
     import pwd
-    from tempfiles import TempFile, tempfile_prefix, cleanup_temp_file
-except ImportError, e:
+    from .tempfiles import TempFile, tempfile_prefix, cleanup_temp_file
+except ImportError as e:
     if platform.system() == 'Windows':
         pass
     else:
-        print e
+        print(e)
         sys.exit(1)
-import commands
 import shlex
-import rfc822
+import email
 import socket
 import subprocess
+import pipes
 
-from urlutils import open_url
+from .urlutils import open_url
 from string import ascii_letters, digits
 
 # Paths for dpkg
@@ -66,13 +66,13 @@ MODES = {'novice': 'Offer simple prompts, bypassing technical questions.',
                    'Debian\'s policies and operating procedures.'}
 MODELIST = ['novice', 'standard', 'advanced', 'expert']
 for mode in MODELIST:
-    exec 'MODE_%s=%d' % (mode.upper(), MODELIST.index(mode))
+    exec('MODE_%s=%d' % (mode.upper(), MODELIST.index(mode)))
 del mode
 
 # moved here since it needs the MODE_* vars to be defined
-import debbugs
+from . import debbugs
 # it needs to be imported after debbugs
-import ui.text_ui as ui
+from .ui import text_ui as ui
 
 from reportbug.ui import AVAILABLE_UIS
 
@@ -99,7 +99,7 @@ CODENAME2SUITE = {'squeeze': 'oldoldstable',
                 'buster': 'next-testing',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
-SUITE2CODENAME = dict([(suite, codename) for codename, suite in CODENAME2SUITE.items()])
+SUITE2CODENAME = dict([(suite, codename) for codename, suite in list(CODENAME2SUITE.items())])
 
 
 def realpath(filename):
@@ -115,7 +115,7 @@ def realpath(filename):
             resolved = os.readlink(component)
             (dir, file) = os.path.split(component)
             resolved = os.path.normpath(os.path.join(dir, resolved))
-            newpath = apply(os.path.join, [resolved] + bits[i:])
+            newpath = os.path.join(*[resolved] + bits[i:])
             return realpath(newpath)
 
     return filename
@@ -171,7 +171,7 @@ def glob_escape(filename):
 
 
 def search_pipe(searchfile, use_dlocate=True):
-    arg = commands.mkarg(searchfile)
+    arg = pipes.quote(searchfile)
     if use_dlocate and os.path.exists('/usr/bin/dlocate'):
         pipe = os.popen('COLUMNS=79 dlocate -S %s 2>/dev/null' % arg)
     else:
@@ -239,7 +239,7 @@ def find_rewritten(username):
     for filename in ['/etc/email-addresses']:
         if os.path.exists(filename):
             try:
-                fp = file(filename)
+                fp = open(filename)
             except IOError:
                 continue
             for line in fp:
@@ -251,7 +251,7 @@ def find_rewritten(username):
                     if name.strip() == username:
                         return alias.strip()
                 except ValueError:
-                    print 'Invalid entry in %s' % filename
+                    print('Invalid entry in %s' % filename)
                     return None
 
 
@@ -272,8 +272,7 @@ def check_email_addr(addr):
 
 
 def get_email_addr(addr):
-    addr = rfc822.AddressList(addr)
-    return addr.addresslist[0]
+    return email.utils.getaddresses([addr,])[0]
 
 
 def get_email(email='', realname=''):
@@ -290,7 +289,7 @@ def get_user_id(email='', realname='', charset='utf-8'):
 
     if '@' not in email:
         if os.path.exists('/etc/mailname'):
-            domainname = file('/etc/mailname').readline().strip()
+            domainname = open('/etc/mailname').readline().strip()
         else:
             domainname = socket.getfqdn()
 
@@ -311,17 +310,11 @@ def get_user_id(email='', realname='', charset='utf-8'):
     if not realname:
         return email
 
-    # Decode the realname from the charset -
-    # but only if it is not already in Unicode
-    if isinstance(realname, str):
-        realname = realname.decode(charset, 'replace')
-
     if re.match(r'[\w\s]+$', realname):
-        return u'%s <%s>' % (realname, email)
+        return '%s <%s>' % (realname, email)
 
-    addr = rfc822.dump_address_pair((realname, email))
-    if isinstance(addr, str):
-        addr = addr.decode('utf-8', 'replace')
+    addr = email.utils.formataddr((realname, email))
+
     return addr
 
 
@@ -363,16 +356,13 @@ def get_package_status(package, avail=False):
     except OSError:
         os.chdir('/')
 
-    packarg = commands.mkarg(package)
+    packarg = pipes.quote(package)
     if avail:
-        output = commands.getoutput(
+        output = subprocess.getoutput(
             "COLUMNS=79 dpkg --print-avail %s 2>/dev/null" % packarg)
     else:
-        output = commands.getoutput(
+        output = subprocess.getoutput(
             "COLUMNS=79 dpkg --status %s 2>/dev/null" % packarg)
-
-    # dpkg output is in UTF-8 format
-    output = output.decode('utf-8', 'replace')
 
     for line in output.split(os.linesep):
         line = line.rstrip()
@@ -474,8 +464,8 @@ class AvailDB(object):
     def __iter__(self):
         return self
 
-    def next(self):
-        chunk = u''
+    def __next__(self):
+        chunk = ''
         while True:
             if self.popenob:
                 if self.popenob.returncode:
@@ -487,7 +477,7 @@ class AvailDB(object):
 
             if line == '\n':
                 return chunk
-            chunk += line.decode('utf-8', 'replace')
+            chunk += str(line)
 
         if chunk:
             return chunk
@@ -515,7 +505,7 @@ def get_dpkg_database():
         if fp:
             return AvailDB(fp=fp)
     except IOError:
-        print >> sys.stderr, 'Unable to open', STATUSDB
+        print('Unable to open', STATUSDB, file=sys.stderr)
         sys.exit(1)
 
 
@@ -526,8 +516,7 @@ def get_avail_database():
 
 
 def available_package_description(package):
-    data = commands.getoutput('apt-cache show' + commands.mkarg(package))
-    data = data.decode('utf-8', 'replace')
+    data = subprocess.getoutput('apt-cache show ' + pipes.quote(package))
     descre = re.compile('^Description(?:-.*)?: (.*)$')
     for line in data.split('\n'):
         m = descre.match(line)
@@ -539,8 +528,7 @@ def available_package_description(package):
 def get_source_name(package):
     packages = []
 
-    data = commands.getoutput('apt-cache showsrc' + commands.mkarg(package))
-    data = data.decode('utf-8', 'replace')
+    data = subprocess.getoutput('apt-cache showsrc ' + pipes.quote(package))
     packre = re.compile(r'^Package: (.*)$')
     for line in data.split('\n'):
         m = packre.match(line)
@@ -554,8 +542,7 @@ def get_source_package(package):
     retlist = []
     found = {}
 
-    data = commands.getoutput('apt-cache showsrc' + commands.mkarg(package))
-    data = data.decode('utf-8', 'replace')
+    data = subprocess.getoutput('apt-cache showsrc ' + pipes.quote(package))
     binre = re.compile(r'^Binary: (.*)$')
     for line in data.split('\n'):
         m = binre.match(line)
@@ -597,7 +584,7 @@ def get_package_info(packages, skip_notfound=False):
         r')(?:$|,\s+)' + pkgname + '*$'
     ]
 
-    groups = groupfor.values()
+    groups = list(groupfor.values())
     found = {}
 
     searchobs = [re.compile(x, re.MULTILINE) for x in searchbits]
@@ -680,7 +667,7 @@ def get_dependency_info(package, depends, rel="depends on"):
             if not packs[pkg][4]:
                 packs[pkg] = info
 
-    deplist = packs.values()
+    deplist = list(packs.values())
     deplist.sort()
 
     deplist2 = []
@@ -717,12 +704,12 @@ def get_changed_config_files(conffiles, nocompress=False):
     changed = []
     for (filename, md5sum) in conffiles:
         try:
-            fp = file(filename)
-        except IOError, msg:
+            fp = open(filename)
+        except IOError as msg:
             confinfo[filename] = msg
             continue
 
-        filemd5 = commands.getoutput('md5sum ' + commands.mkarg(filename)).split()[0]
+        filemd5 = subprocess.getoutput('md5sum ' + pipes.quote(filename)).split()[0]
         if filemd5 == md5sum:
             continue
 
@@ -739,7 +726,7 @@ def get_changed_config_files(conffiles, nocompress=False):
 
             thisinfo += line
 
-        confinfo[filename] = thisinfo.decode('utf-8', 'replace')
+        confinfo[filename] = thisinfo
 
     return confinfo, changed
 
@@ -750,7 +737,7 @@ DISTORDER = ['oldstable', 'stable', 'testing', 'unstable', 'experimental']
 def get_debian_release_info():
     debvers = debinfo = verfile = warn = ''
     dists = []
-    output = commands.getoutput('apt-cache policy 2>/dev/null')
+    output = subprocess.getoutput('apt-cache policy 2>/dev/null')
     if output:
         mre = re.compile('\s+(\d+)\s+.*$\s+release\s.*o=(Ubuntu|Debian|Debian Ports),a=([^,]+),', re.MULTILINE)
         found = {}
@@ -765,7 +752,7 @@ def get_debian_release_info():
             found[(pri, dist, distname)] = True
 
         if found:
-            dists = found.keys()
+            dists = list(found.keys())
             dists.sort()
             dists.reverse()
             dists = [(x[0], x[2]) for x in dists]
@@ -776,7 +763,7 @@ def get_debian_release_info():
         verfile = fob.readline().strip()
         fob.close()
     except IOError:
-        print >> sys.stderr, 'Unable to open /etc/debian_version'
+        print('Unable to open /etc/debian_version', file=sys.stderr)
 
     if verfile:
         debinfo += 'Debian Release: ' + verfile + '\n'
@@ -794,11 +781,11 @@ def get_debian_release_info():
 
 
 def lsb_release_info():
-    return commands.getoutput('lsb_release -a 2>/dev/null') + '\n'
+    return subprocess.getoutput('lsb_release -a 2>/dev/null') + '\n'
 
 
 def get_arch():
-    arch = commands.getoutput('COLUMNS=79 dpkg --print-architecture 2>/dev/null')
+    arch = subprocess.getoutput('COLUMNS=79 dpkg --print-architecture 2>/dev/null')
     if not arch:
         un = os.uname()
         arch = un[4]
@@ -809,7 +796,7 @@ def get_arch():
 
 
 def get_multiarch():
-    out = commands.getoutput('COLUMNS=79 dpkg --print-foreign-architectures 2>/dev/null')
+    out = subprocess.getoutput('COLUMNS=79 dpkg --print-foreign-architectures 2>/dev/null')
     return ', '.join(out.splitlines())
 
 
@@ -819,7 +806,7 @@ def generate_blank_report(package, pkgversion, severity, justification,
                           subject='', tags='', body='', mode=MODE_EXPERT,
                           pseudos=None, debsumsoutput=None, issource=False):
     # For now...
-    import bugreport
+    from . import bugreport
 
     sysinfo = (package not in ('wnpp', 'ftp.debian.org'))
 
@@ -832,7 +819,7 @@ def generate_blank_report(package, pkgversion, severity, justification,
                               system=system, depinfo=depinfo, sysinfo=sysinfo,
                               confinfo=confinfo, incfiles=incfiles,
                               debsumsoutput=debsumsoutput, issource=issource)
-    return unicode(rep)
+    return str(rep)
 
 
 def get_cpu_cores():
@@ -840,7 +827,7 @@ def get_cpu_cores():
     try:
         fob = open('/proc/cpuinfo')
     except IOError:
-        print >> sys.stderr, 'Unable to open /proc/cpuinfo'
+        print('Unable to open /proc/cpuinfo', file=sys.stderr)
         return 0
 
     for line in fob:
@@ -888,7 +875,7 @@ class Mua:
         mua = self.command
         if '%s' not in mua:
             mua += ' %s'
-        return ui.system(mua % commands.mkarg(filename)[1:])
+        return ui.system(mua % pipes.quote(filename)[1:])
 
     def get_name(self):
         return self.name
@@ -905,7 +892,7 @@ class Gnus(Mua):
                       (load-file "/usr/share/reportbug/reportbug.el")
                       (tfheen-reportbug-insert-template "%s"))"""
         filename = re.sub("[\"\\\\]", "\\\\\\g<0>", filename)
-        elisp = commands.mkarg(elisp % filename)
+        elisp = pipes.quote(elisp % filename)
         return ui.system("emacsclient --no-wait --eval %s 2>/dev/null"
                          " || emacs --eval %s" % (elisp, elisp))
 
@@ -994,8 +981,8 @@ def parse_config_files():
     for filename in FILES:
         if os.path.exists(filename):
             try:
-                lex = our_lex(file(filename), posix=True)
-            except IOError, msg:
+                lex = our_lex(open(filename), posix=True)
+            except IOError as msg:
                 continue
 
             lex.wordchars = lex.wordchars + '-.@/:<>'
@@ -1007,7 +994,7 @@ def parse_config_files():
                     args['sendto'] = token
                 elif token == 'severity':
                     token = lex.get_token().lower()
-                    if token in debbugs.SEVERITIES.keys():
+                    if token in list(debbugs.SEVERITIES.keys()):
                         args['severity'] = token
                 elif token == 'header':
                     args['headers'] = args.get('headers', []) + [lex.get_token()]
@@ -1026,7 +1013,7 @@ def parse_config_files():
                                'smtppasswd', 'justification', 'keyid',
                                'mbox_reader_cmd'):
                     bit = lex.get_token()
-                    args[token] = bit.decode('utf-8', 'replace')
+                    args[token] = bit
                 elif token in ('no-smtptls', 'smtptls'):
                     args['smtptls'] = (token == 'smtptls')
                 elif token == 'sign':
@@ -1039,15 +1026,15 @@ def parse_config_files():
                         args['sign'] = ''
                 elif token == 'ui':
                     token = lex.get_token().lower()
-                    if token in AVAILABLE_UIS.keys():
+                    if token in list(AVAILABLE_UIS.keys()):
                         args['interface'] = token
                 elif token == 'mode':
                     arg = lex.get_token().lower()
-                    if arg in MODES.keys():
+                    if arg in list(MODES.keys()):
                         args[token] = arg
                 elif token == 'bts':
                     token = lex.get_token().lower()
-                    if token in debbugs.SYSTEMS.keys():
+                    if token in list(debbugs.SYSTEMS.keys()):
                         args['bts'] = token
                 elif token == 'mirror':
                     args['mirrors'] = args.get('mirrors', []) + [lex.get_token()]
@@ -1087,7 +1074,7 @@ def parse_bug_control_file(filename):
     submitas = submitto = None
     reportwith = []
     supplemental = []
-    fh = file(filename)
+    fh = open(filename)
     for line in fh:
         line = line.strip()
         parts = line.split(': ')
@@ -1245,8 +1232,8 @@ def exec_and_parse_bugscript(handler, bugscript):
 
     fh, filename = TempFile()
     fh.close()
-    rc = os.system('LC_ALL=C %s %s %s' % (handler, commands.mkarg(bugscript),
-                                          commands.mkarg(filename)))
+    rc = os.system('LC_ALL=C %s %s %s' % (handler, pipes.quote(bugscript),
+                                          pipes.quote(filename)))
 
     isheaders = False
     ispseudoheaders = False
@@ -1280,7 +1267,6 @@ def exec_and_parse_bugscript(handler, bugscript):
     fp.close()
     cleanup_temp_file(filename)
 
-    text = text.decode('utf-8', 'replace')
     return (rc, headers, pseudoheaders, text, attachments)
 
 
