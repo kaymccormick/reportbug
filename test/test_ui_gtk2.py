@@ -1,6 +1,6 @@
 """ Unit test for reportbug.ui.gtk2_ui module """
 
-import unittest2
+import unittest
 
 from nose.plugins.attrib import attr
 
@@ -9,7 +9,7 @@ from reportbug.ui import gtk2_ui as ui
 import debianbts
 
 
-class TestUIGTK2(unittest2.TestCase):
+class TestUIGTK2(unittest.TestCase):
     @attr('network')  # marking the test as using network
     def test_bug_class(self):
         bug = debianbts.get_status(415801)[0]

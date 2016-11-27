@@ -20,7 +20,16 @@
 #  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 #  SOFTWARE.
 
+from reportbug.exceptions import UINotImportable
+
 try:
+    # use a PyGTK compatibility layer
+    # https://wiki.gnome.org/Projects/PyGObject/IntrospectionPorting
+    from gi import pygtkcompat
+
+    pygtkcompat.enable()
+    pygtkcompat.enable_gtk(version='3.0')
+
     import gtk
     import gobject
     import pango
@@ -35,14 +44,14 @@ try:
 except:
     has_spell = False
 
-gtk.set_interactive(0)
+#gtk.set_interactive(0)
 gtk.gdk.threads_init()
 
 import sys
 import re
 import os
 import traceback
-from Queue import Queue
+from queue import Queue
 import threading
 import textwrap
 
@@ -222,13 +231,13 @@ class Bug(object):
     """Encapsulate a bug report for the GTK+ UI"""
     def __init__(self, bug):
         self.id = bug.bug_num
-        self.tag = u', '.join(bug.tags)
+        self.tag = ', '.join(bug.tags)
         self.package = bug.package
         self.status = bug.pending
         self.reporter = bug.originator
         self.date = bug.date
         self.severity = bug.severity
-        self.version = u', '.join(bug.found_versions)
+        self.version = ', '.join(bug.found_versions)
         self.filed_date = bug.date
         self.modified_date = bug.log_modified
         self.info = bug.subject
@@ -852,7 +861,7 @@ class MenuPage(TreePage):
                         iter = self.model.append((highlight(option), text))
                         if option == default:
                             default_iter = iter
-            for option, desc in options.iteritems():
+            for option, desc in options.items():
                 if not order or option not in order:
                     text = ' '.join(desc.split())
                     iter = self.model.append((highlight(option), text))
@@ -892,7 +901,7 @@ class HandleBTSQueryPage(TreePage):
             # do we need to make a dialog for this?
             return
 
-        if isinstance(package, basestring):
+        if isinstance(package, str):
             pkgname = package
             if source:
                 pkgname += '(source)'
@@ -931,7 +940,7 @@ class HandleBTSQueryPage(TreePage):
                     # XXX: this needs to be fixed in debianbts; Bugreport are
                     # not sortable(on bug_num) - see #639458
                     sorted(buglist, reverse=latest_first)
-                    report.append((category, map(Bug, buglist)))
+                    report.append((category, list(map(Bug, buglist))))
 
                 return(report, sectitle), {}
 
@@ -966,7 +975,7 @@ class HandleBTSQueryPage(TreePage):
         scrolled = create_scrollable(self.view)
         self.columns = ['ID', 'Tag', 'Package', 'Description', 'Status', 'Submitter', 'Date', 'Severity', 'Version',
                         'Filed date', 'Modified date']
-        for col in zip(self.columns, range(len(self.columns))):
+        for col in zip(self.columns, list(range(len(self.columns)))):
             column = gtk.TreeViewColumn(col[0], gtk.CellRendererText(), text=col[1])
             column.set_reorderable(True)
             self.view.append_column(column)
@@ -1543,7 +1552,7 @@ def create_forwarder(parent, klass):
         op = klass(parent)
         try:
             args, kwargs = op.sync_pre_operation(*args, **kwargs)
-        except SyncReturn, e:
+        except SyncReturn as e:
             return e.result
         application.run_once_in_main_thread(op.execute_operation, *args, **kwargs)
         return application.get_last_value()
@@ -1551,7 +1560,7 @@ def create_forwarder(parent, klass):
 
 
 def forward_operations(parent, operations):
-    for operation, klass in operations.iteritems():
+    for operation, klass in operations.items():
         globals()[operation] = create_forwarder(parent, klass)
 
 
