@@ -21,7 +21,7 @@
 
 import sys
 import os
-import commands
+import subprocess
 import re
 import math
 import string
@@ -30,6 +30,7 @@ import glob
 import getpass
 import textwrap
 import locale
+from functools import reduce
 try:
     import readline
 except ImportError:
@@ -47,7 +48,7 @@ ISATTY = sys.stdin.isatty()
 charset = 'us-ascii'
 
 try:
-    r, c = commands.getoutput('stty size').split()
+    r, c = subprocess.getoutput('stty size').split()
     rows, columns = int(r) or 24, int(c) or 79
 except:
     rows, columns = 24, 79
@@ -60,7 +61,7 @@ def ewrite(message, *args):
     if args:
         message = message % args
 
-    if isinstance(message, unicode):
+    if isinstance(message, str):
         message = message.encode(charset, 'replace')
 
     sys.stderr.write(message)
@@ -152,9 +153,9 @@ def our_raw_input(prompt=None, completions=None, completer=None):
 
     try:
         if istty:
-            ret = raw_input(prompt)
+            ret = eval(input(prompt))
         else:
-            ret = raw_input()
+            ret = eval(input())
     except EOFError:
         ewrite('\nUser interrupt (^D).\n')
         raise SystemExit
@@ -268,8 +269,8 @@ def get_string(prompt, options=None, title=None, empty_ok=False, force_prompt=Fa
             response = our_raw_input('> ', options, completer)
 
     # Translate the response into a Unicode string
-    if response is not None and not isinstance(response, unicode):
-        response = unicode(response, charset, 'replace')
+    if response is not None and not isinstance(response, str):
+        response = str(response, charset, 'replace')
 
     return response
 
@@ -342,13 +343,13 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
                     del options[key]
 
             # Append anything out of order
-            options = options.items()
+            options = list(options.items())
             options.sort()
             for option in options:
                 olist.append(option)
             options = olist
         else:
-            options = options.items()
+            options = list(options.items())
             options.sort()
 
     if multiple:
@@ -356,10 +357,10 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
         default = 'none'
         extras += ['done']
 
-    allowed = map(lambda x: x[0], options)
+    allowed = [x[0] for x in options]
     allowed = allowed + extras
 
-    maxlen_name = min(max(map(len, allowed)), columns / 3)
+    maxlen_name = min(max(list(map(len, allowed))), columns / 3)
     digits = int(math.ceil(math.log10(len(options) + 1)))
 
     i = 1
@@ -396,14 +397,14 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
         if response in allowed or (response == default and response):
             if multiple:
                 if response == 'done':
-                    return selected.keys()
+                    return list(selected.keys())
                 elif response == 'none':
                     return []
                 elif selected.get(response):
                     del selected[response]
                 else:
                     selected[response] = 1
-                ewrite('- selected: %s\n' % ', '.join(selected.keys()))
+                ewrite('- selected: %s\n' % ', '.join(list(selected.keys())))
                 if len(selected):
                     default = 'done'
                 else:
@@ -461,7 +462,7 @@ def show_report(number, system, mirrors,
             try:
                 fd.write(text)
                 fd.close()
-            except IOError, x:
+            except IOError as x:
                 if x.errno == errno.EPIPE:
                     pass
                 else:
@@ -484,7 +485,7 @@ def show_report(number, system, mirrors,
                             'e': 'Launch e-mail client to read full log.',
                             'b': 'Launch web browser to read full log.',
                             'q': "I'm bored; quit please."},
-                           allow_numbers=range(1, len(messages) + 1))
+                           allow_numbers=list(range(1, len(messages) + 1)))
         if x == 'x':
             return buginfo
         elif x == 'q':
@@ -521,7 +522,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
     if source:
         srcstr = " (source)"
 
-    if isinstance(package, basestring):
+    if isinstance(package, str):
         long_message('Querying %s BTS for reports on %s%s...\n',
                      debbugs.SYSTEMS[bts]['name'], package, srcstr)
     else:
@@ -534,7 +535,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
         (count, title, hierarchy) = debbugs.get_reports(
             package, timeout, bts, mirrors=mirrors, version=version,
             source=source, http_proxy=http_proxy, archived=archived)
-    except Exception, e:
+    except Exception as e:
         ewrite('Unable to connect to %s BTS (error: "%s"); ' % (debbugs.SYSTEMS[bts]['name'], repr(e)))
         res = select_options('continue', 'yN',
                              {'y': 'Keep going.',
@@ -567,7 +568,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                 for bug in entry[1]:
                     msg = "#%d  %s" % (bug.bug_num, bug.subject)
                     msg = msg.encode(charset, 'replace')
-                    print msg
+                    print(msg)
             sys.exit(0)
 
         for entry in hierarchy:
@@ -589,7 +590,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                 # and at the same time create a list of bugs numbers
                 bugs_numbers.append(bug.bug_num)
             # then we sort both the lists
-            hierarchy_new.append((entry_new, ["#%d  %s" % (k, bugs_new[k]) for k in sorted(bugs_new.keys(), reverse=latest_first)]))
+            hierarchy_new.append((entry_new, ["#%d  %s" % (k, bugs_new[k]) for k in sorted(list(bugs_new.keys()), reverse=latest_first)]))
             bugs.extend(sorted(bugs_numbers, reverse=latest_first))
 
         # replace old hierarchy with hierarchy_new
@@ -618,8 +619,8 @@ def browse_bugs(hierarchy, count, bugs, bts, queryonly, mirrors,
                 http_proxy, timeout, screen, title, package, mbox_reader_cmd):
     try:
         output_encoding = locale.getpreferredencoding()
-    except locale.Error, msg:
-        print msg
+    except locale.Error as msg:
+        print(msg)
         sys.exit(1)
     endcount = catcount = 0
     scount = startcount = 1
@@ -671,7 +672,7 @@ def browse_bugs(hierarchy, count, bugs, bts, queryonly, mirrors,
                 pstr = rstr + "Is the bug you found listed above"
                 if queryonly:
                     pstr = rstr + "What would you like to do next"
-                allowed = bugs + range(1, count + 1)
+                allowed = bugs + list(range(1, count + 1))
                 helptext = {
                     'y': 'Problem already reported; optionally add extra information.',
                     'n': 'Problem not listed above; possibly check more.',
@@ -731,7 +732,7 @@ def browse_bugs(hierarchy, count, bugs, bts, queryonly, mirrors,
                         # Do filter. Recursive done.
                         retval = search_bugs(hierarchy, bts, queryonly, mirrors, http_proxy, timeout, screen, title,
                                              package, mbox_reader_cmd)
-                        if isinstance(retval, basestring) and retval in ["FilterEnd", "Top"]:
+                        if isinstance(retval, str) and retval in ["FilterEnd", "Top"]:
                             continue
                         else:
                             return retval
@@ -812,8 +813,8 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
 
     try:
         output_encoding = locale.getpreferredencoding()
-    except locale.Error, msg:
-        print msg
+    except locale.Error as msg:
+        print(msg)
         sys.exit(1)
 
     pattern = our_raw_input('Enter the search pattern (a Perl-compatible regular expression)\n'
@@ -888,7 +889,7 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
                 pstr = rstr + "Is the bug you found listed above"
                 if queryonly:
                     pstr = rstr + "What would you like to do next"
-                allowed = bugs + range(1, count + 1)
+                allowed = bugs + list(range(1, count + 1))
                 helptext = {
                     'y': 'Problem already reported; optionally add extra information.',
                     'n': 'Problem not listed above; possibly check more.',
@@ -949,7 +950,7 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
                         # Do filter. Recursive done.
                         retval = search_bugs(hierarchy, bts, queryonly, mirrors, http_proxy, timeout, screen,
                                              title, package, mbox_reader_cmd)
-                        if isinstance(retval, basestring) and retval in ["FilterEnd", "Top"]:
+                        if isinstance(retval, str) and retval in ["FilterEnd", "Top"]:
                             continue
                         else:
                             return retval
