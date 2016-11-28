@@ -61,9 +61,6 @@ def ewrite(message, *args):
     if args:
         message = message % args
 
-    if isinstance(message, str):
-        message = message.encode(charset, 'replace')
-
     sys.stderr.write(message)
     sys.stderr.flush()
 
