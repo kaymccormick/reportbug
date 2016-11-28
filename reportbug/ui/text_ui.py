@@ -564,7 +564,6 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                 # second item is a list of bugs report
                 for bug in entry[1]:
                     msg = "#%d  %s" % (bug.bug_num, bug.subject)
-                    msg = msg.encode(charset, 'replace')
                     print(msg)
             sys.exit(0)
 
@@ -686,7 +685,7 @@ def browse_bugs(hierarchy, count, bugs, bts, queryonly, mirrors,
 
                 while 1:
                     for line in lastpage:
-                        sys.stderr.write(line.encode(output_encoding, "replace"))
+                        sys.stderr.write(line)
                     x = select_options(pstr, options, helptext,
                                        allow_numbers=allowed)
                     if x == 'n':
@@ -905,7 +904,7 @@ def search_bugs(hierarchyfull, bts, queryonly, mirrors,
 
                 while 1:
                     for line in lastpage:
-                        sys.stderr.write(line.encode(output_encoding, "replace"))
+                        sys.stderr.write(line)
                     x = select_options(pstr, options, helptext,
                                        allow_numbers=allowed)
                     if x == 'n':
