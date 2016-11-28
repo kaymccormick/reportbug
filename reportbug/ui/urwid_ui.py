@@ -31,7 +31,7 @@ from reportbug.exceptions import (
     NoPackage, NoBugs, NoNetwork, NoReport,
 )
 from reportbug.urlutils import launch_browser
-from text_ui import (
+from .text_ui import (
     ewrite,
     spawn_editor,
     system
@@ -170,7 +170,7 @@ class dialog(object):
                     k = self.view.keypress(size, k)
                     if k:
                         self.unhandled_key(size, k)
-        except buttonpush, e:
+        except buttonpush as e:
             return self.on_exit(e.args[0])
 
     def on_exit(self, exitcode):
@@ -421,13 +421,13 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
                     del options[key]
 
             # Append anything out of order
-            options = options.items()
+            options = list(options.items())
             options.sort()
             for option in options:
                 olist.append(option)
             options = olist
         else:
-            options = options.items()
+            options = list(options.items())
             options.sort()
 
     opts = []
@@ -561,7 +561,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
     if not ui:
         ui = initialize_urwid_ui()
 
-    if isinstance(package, basestring):
+    if isinstance(package, str):
         pkgname = package
         if source:
             pkgname += ' (source)'
@@ -579,7 +579,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
         (count, sectitle, hierarchy) = debbugs.get_reports(
             package, timeout, bts, mirrors=mirrors, version=version,
             http_proxy=http_proxy, archived=archived, source=source)
-    except Exception, e:
+    except Exception as e:
         ui.run_wrapper(nullfunc)
         long_message('Unable to connect to %s BTS.', sysinfo['name'],
                      title=title)
@@ -610,7 +610,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                         done = '  [RESOLVED]'
                     buglist_tmp[bug.bug_num] = bug.subject + done
                 # append the sorted list of bugs for this severity
-                map(buglist.append, [(str(k), buglist_tmp[k]) for k in sorted(buglist_tmp, reverse=latest_first)])
+                list(map(buglist.append, [(str(k), buglist_tmp[k]) for k in sorted(buglist_tmp, reverse=latest_first)]))
 
             p = buglist[1][0]
             # scr.popWindow()
