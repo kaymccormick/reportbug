@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python3
 # -*- python -*-
 # querybts - Examine the state of a debbugs server
 #   Written by Chris Lawrence <lawrencc@debian.org>
@@ -55,7 +55,7 @@ def main():
 
     # parse config file to update default options
     args = utils.parse_config_files()
-    for option, arg in args.items():
+    for option, arg in list(args.items()):
         if option in ('system', 'mirrors', 'interface', 'http_proxy',
                       'mbox_reader_cmd'):
             defaults[option] = arg
@@ -86,7 +86,7 @@ def main():
     parser.add_option('--timeout', type="int", dest='timeout', default=60,
                       help='Specify the network timeout, in seconds [default: %default].')
     parser.add_option('-u', '--ui', '--interface', dest='interface',
-                      help='Specify the user interface to use; available values: %s ' % ', '.join(AVAILABLE_UIS.keys()))
+                      help='Specify the user interface to use; available values: %s ' % ', '.join(list(AVAILABLE_UIS.keys())))
     parser.add_option('-w', '--web', action='store_true', dest='use_browser',
                       help='Use a web browser instead of the internal interface.')
     parser.add_option('--mbox-reader-cmd', dest='mbox_reader_cmd',
@@ -102,7 +102,7 @@ def main():
     # interface must be one of those supported
     if options.interface not in AVAILABLE_UIS:
         parser.error('Allowed arguments to --ui: \n' +
-                     '\n'.join(['  %s  (%s)' % (key, value) for key, value in AVAILABLE_UIS.iteritems()]))
+                     '\n'.join(['  %s  (%s)' % (key, value) for key, value in AVAILABLE_UIS.items()]))
     else:
         # prepare the UI and import it
         global ui, ui_mode
@@ -111,11 +111,11 @@ def main():
             lib_package = __import__('reportbug.ui', fromlist=[iface])
             ui = getattr(lib_package, iface)
             ui_mode = options.interface
-        except UINotImportable, msg:
+        except UINotImportable as msg:
             ui.long_message('*** Unable to import %s interface: %s '
                             'Falling back to %s interface.\n',
                             options.interface, msg, ui_mode)
-            print
+            print()
 
     # initialize the selected UI
     ui.initialize()
@@ -169,16 +169,16 @@ def main():
                     try:
                         report = urlutils.open_url(url, timeout=options.timeout)
                         sys.stdout.write(report.read())
-                    except urlutils.urllib2.URLError, ex:
-                        print >> sys.stderr, "Error while accessing mbox report (%s)." % ex
+                    except urlutils.urllib2.URLError as ex:
+                        print("Error while accessing mbox report (%s)." % ex, file=sys.stderr)
             else:
                 num = int(m.group(1))
                 url = debbugs.get_report_url(options.system, num, options.archived, mbox=True)
                 try:
                     report = urlutils.open_url(url, timeout=options.timeout)
                     sys.stdout.write(report.read())
-                except urlutils.urllib2.URLError, ex:
-                    print >> sys.stderr, "Error while accessing mbox report (%s)." % ex
+                except urlutils.urllib2.URLError as ex:
+                    print("Error while accessing mbox report (%s)." % ex, file=sys.stderr)
                     sys.exit(1)
         return
 
@@ -240,9 +240,9 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print "querybts: exiting due to user interrupt."
-    except debbugs.Error, x:
-        print 'error accessing BTS: ' + str(x)
+        print("querybts: exiting due to user interrupt.")
+    except debbugs.Error as x:
+        print('error accessing BTS: ' + str(x))
     except SystemExit:
         pass
     except:
