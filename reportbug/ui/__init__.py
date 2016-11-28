@@ -34,7 +34,7 @@ AVAILABLE_UIS = {}
 # List of already loaded ui, we can give back to requestors
 __LOADED_UIS = {}
 
-for uis in UIS.keys():
+for uis in list(UIS.keys()):
     try:
         # let's try to import the ui...
         ui_module = __import__('reportbug.ui', fromlist=[uis + '_ui'])
@@ -52,8 +52,8 @@ def getUI(ui):
     """Returns the requested UI, or default to text if not available"""
 
     if ui in __LOADED_UIS:
-        print "loading %s" % ui
+        print("loading %s" % ui)
         return __LOADED_UIS[ui]
     else:
-        print "defaulting to text ui"
+        print("defaulting to text ui")
         return __LOADED_UIS['text']
