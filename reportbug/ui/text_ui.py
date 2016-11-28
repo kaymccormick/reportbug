@@ -150,9 +150,9 @@ def our_raw_input(prompt=None, completions=None, completer=None):
 
     try:
         if istty:
-            ret = eval(input(prompt))
+            ret = input(prompt)
         else:
-            ret = eval(input())
+            ret = input()
     except EOFError:
         ewrite('\nUser interrupt (^D).\n')
         raise SystemExit
