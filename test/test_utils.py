@@ -531,7 +531,7 @@ class TestConfig(unittest.TestCase):
             'envelopefrom': 'reportbug-maint@lists.alioth.debian.org',
             'headers': ['X-Reportbug-Testsuite: this is the test suite'],
             'http_proxy': 'http://proxy.example.com:3128/',
-            'interface': 'text',
+            'interface': 'gtk2',
             'keyid': 'deadbeef',
             'max_attachment_size': 1024000,
             'mbox_reader_cmd': 'mutt -f %s',
