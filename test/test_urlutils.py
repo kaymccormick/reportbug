@@ -11,5 +11,4 @@ class TestNetwork(unittest.TestCase):
     def test_open_url(self):
 
         page = urlutils.open_url('https://bugs.debian.org/reportbug')
-        content = page.read()
-        self.assertIsNotNone(page.info().keys())
+        self.assertIsNotNone(page)
