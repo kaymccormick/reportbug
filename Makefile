@@ -1,6 +1,6 @@
 #! /usr/bin/make -f
 
-NOSETESTS = nosetests test -v --stop
+NOSETESTS = nosetests3 test -v --stop
 nosetests_cmd = $(NOSETESTS) ${NOSETESTS_OPTS}
 
 .PHONY: tests
