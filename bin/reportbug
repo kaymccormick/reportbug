@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python3
 # -*- python -*-
 # reportbug - Report a bug in the Debian distribution.
 #   Written by Chris Lawrence <lawrencc@debian.org>
@@ -25,15 +25,16 @@ DEFAULT_BTS = 'debian'
 
 import sys
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+#reload(sys)
+#sys.setdefaultencoding("utf-8")
 
 import os
 import optparse
 import re
 import locale
-import commands
-import rfc822
+import subprocess
+import shlex
+import email
 import gettext
 import textwrap
 # for blogging of attachments file
@@ -143,16 +144,16 @@ def include_file_in_report(message, message_filename,
         try:
             fp = open(include_filename)
             message += '\n*** %s\n%s' % (
-                include_filename.decode(charset, 'replace'),
-                fp.read().decode(charset, 'replace'))
+                include_filename,
+                fp.read())
             fp.close()
             fp, temp_filename = TempFile(
                 prefix=tempfile_prefix(package_name), dir=draftpath)
-            fp.write(message.encode(charset, 'replace'))
+            fp.write(message)
             fp.close()
             os.unlink(message_filename)
             message_filename = temp_filename
-        except (IOError, OSError), exc:
+        except (IOError, OSError) as exc:
             ui.display_failure('Unable to attach file %s\n%s\n',
                                include_filename, str(exc))
     else:
@@ -191,7 +192,7 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
                     stopmsg(filename)
                     sys.exit(1)
 
-            message = open(filename).read().decode(charset, 'replace')
+            message = open(filename).read()
             changed = True
 
         prompt = 'Submit this report on %s (e to edit)' % package
@@ -302,7 +303,7 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
             if ed:
                 editor = ed
         elif x == 'm':
-            mailers = [(x, '') for x in utils.MUA.keys()]
+            mailers = [(x, '') for x in list(utils.MUA.keys())]
             mailers.sort()
             mailer = ui.menu('Choose a mailer for your report', mailers,
                              'Select mailer: ', default='', empty_ok=True)
@@ -338,9 +339,9 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
             skip_editing = True
             if x == 'l':
                 pager = os.environ.get('PAGER', 'sensible-pager')
-                os.popen(pager, 'w').write(message.encode(charset, 'replace'))
+                os.popen(pager, 'w').write(message)
             else:
-                sys.stdout.write(message.encode(charset, 'replace'))
+                sys.stdout.write(message)
         elif x == 't':
             newtaglist = []
             skip_editing = True
@@ -363,7 +364,7 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
                 if 'patch' in newtaglist:
                     patch = True
                 message = message.replace(oldtags, newtags)
-                open(filename, 'w').write(message.encode(charset, 'replace'))
+                open(filename, 'w').write(message)
         elif x == 's':
             skip_editing = True
             ccemail = ui.get_string(
@@ -402,13 +403,13 @@ def find_package_for(filename, notatty=False, pathonly=False):
         ewrite("No packages match.\n")
         return (filename, None)
     elif len(packages) > 1:
-        packlist = packages.items()
+        packlist = list(packages.items())
         packlist.sort()
 
         if notatty:
-            print "Please re-run reportbug selecting one of these packages:"
+            print("Please re-run reportbug selecting one of these packages:")
             for pkg, files in packlist:
-                print "  " + pkg
+                print("  " + pkg)
             sys.exit(1)
 
         packs = []
@@ -424,7 +425,7 @@ def find_package_for(filename, notatty=False, pathonly=False):
             package = None
         return (filename, package)
     else:
-        package = packages.keys()[0]
+        package = list(packages.keys())[0]
         ewrite("Using package '%s'.\n", package)
         return (filename, package)
 
@@ -443,7 +444,7 @@ def get_other_package_name(others):
                      "have found a problem, or choose one of these bug "
                      "categories:", others, "Enter a package: ", any_ok=True,
                      default='')
-    if isinstance(result, basestring):
+    if result:
         return result
     else:
         return None
@@ -461,11 +462,11 @@ def get_package_name(bts='debian', mode=MODE_EXPERT):
               "please contact debian-user@lists.debian.org for assistance."
 
     options = []
-    pkglist = commands.getoutput('apt-cache pkgnames')
+    pkglist = subprocess.getoutput('apt-cache pkgnames')
     if pkglist:
         options += pkglist.split()
     if others:
-        options += others.keys()
+        options += list(others.keys())
 
     package = None
     while package is None:
@@ -582,23 +583,16 @@ def offer_configuration(options):
     def_realname, def_email = utils.get_email()
 
     try:
-        def_email = def_email.encode(charset, 'replace')
-    except UnicodeDecodeError:
-        def_email = ''
-
-    try:
         if options.realname:
-            realname = options.realname.encode(charset, 'replace')
+            realname = options.realname
         else:
-            realname = def_realname.encode(charset, 'replace')
+            realname = def_realname
     except UnicodeDecodeError:
         realname = ''
 
     realname = ui.get_string('What real name should be used for sending bug '
                              'reports?', default=realname, force_prompt=True)
-    if isinstance(realname, basestring):
-        realname = realname.decode(charset, 'replace')
-        realname = realname.replace('"', '\\"')
+    realname = realname.replace('"', '\\"')
 
     is_addr_ok = False
     while not is_addr_ok:
@@ -669,83 +663,83 @@ def offer_configuration(options):
 
     try:
         fd = os.open(utils.USERFILE, os.O_WRONLY | os.O_TRUNC | os.O_CREAT,
-                     0600)
-    except OSError, x:
+                     0o600)
+    except OSError as x:
         efail('Unable to save %s; most likely, you do not have a '
               'home directory.  Please fix this before using '
               'reportbug again.\n', utils.USERFILE)
 
     fp = os.fdopen(fd, 'w')
-    print >> fp, '# reportbug preferences file'
-    print >> fp, '# character encoding: %s' % charset
-    print >> fp, '# Version of reportbug this preferences file was written by'
-    print >> fp, 'reportbug_version "%s"' % VERSION_NUMBER
-    print >> fp, '# default operating mode: one of:',
-    print >> fp, ', '.join(utils.MODELIST)
-    print >> fp, 'mode %s' % mode
-    print >> fp, '# default user interface'
-    print >> fp, 'ui %s' % interface
-    print >> fp, '# offline setting - comment out to be online'
+    print('# reportbug preferences file', file=fp)
+    print('# character encoding: %s' % charset, file=fp)
+    print('# Version of reportbug this preferences file was written by', file=fp)
+    print('reportbug_version "%s"' % VERSION_NUMBER, file=fp)
+    print('# default operating mode: one of:', end=' ', file=fp)
+    print(', '.join(utils.MODELIST), file=fp)
+    print('mode %s' % mode, file=fp)
+    print('# default user interface', file=fp)
+    print('ui %s' % interface, file=fp)
+    print('# offline setting - comment out to be online', file=fp)
     if not online:
-        print >> fp, 'offline'
+        print('offline', file=fp)
     else:
-        print >> fp, '#offline'
-    print >> fp, '# name and email setting (if non-default)'
+        print('#offline', file=fp)
+    print('# name and email setting (if non-default)', file=fp)
     rn = 'realname "%s"'
     em = 'email "%s"'
     email_addy = (from_addr or options.email or def_email)
     email_name = (realname or options.realname or def_realname)
 
     if email_name != def_realname:
-        print >> fp, rn % email_name.encode(charset, 'replace')
+        print(rn % email_name, file=fp)
     else:
-        print >> fp, '# ' + (rn % email_name.encode(charset, 'replace'))
+        print('# ' + (rn % email_name), file=fp)
 
     if email_addy != def_email:
-        print >> fp, em % email_addy
+        print(em % email_addy, file=fp)
     else:
-        print >> fp, '# ' + (em % email_addy)
+        print('# ' + (em % email_addy), file=fp)
 
     uid = os.getuid()
     if uid < MIN_USER_ID:
-        print >> fp, '# Suppress user ID check for this user'
-        print >> fp, 'no-check-uid'
+        print('# Suppress user ID check for this user', file=fp)
+        print('no-check-uid', file=fp)
 
     if smtphost:
-        print >> fp, '# Send all outgoing mail via the following host'
-        print >> fp, 'smtphost "%s"' % smtphost
+        print('# Send all outgoing mail via the following host', file=fp)
+        print('smtphost "%s"' % smtphost, file=fp)
         if smtpuser:
-            print >> fp, 'smtpuser "%s"' % smtpuser
-            print >> fp, '#smtppasswd "my password here"'
+            print('smtpuser "%s"' % smtpuser, file=fp)
+            print('#smtppasswd "my password here"', file=fp)
         else:
-            print >> fp, '# If you need to enter a user name and password:'
-            print >> fp, '#smtpuser "my username here"'
-            print >> fp, '#smtppasswd "my password here"'
+            print('# If you need to enter a user name and password:', file=fp)
+            print('#smtpuser "my username here"', file=fp)
+            print('#smtppasswd "my password here"', file=fp)
         if smtptls:
-            print >> fp, '# Enable TLS for the SMTP host'
-            print >> fp, 'smtptls'
+            print('# Enable TLS for the SMTP host', file=fp)
+            print('smtptls', file=fp)
         else:
-            print >> fp, '# Enable this option if you need TLS for the SMTP host'
-            print >> fp, '#smtptls'
+            print('# Enable this option if you need TLS for the SMTP host', file=fp)
+            print('#smtptls', file=fp)
 
     if http_proxy:
-        print >> fp, '# Your proxy server address'
-        print >> fp, 'http_proxy "%s"' % http_proxy
+        print('# Your proxy server address', file=fp)
+        print('http_proxy "%s"' % http_proxy, file=fp)
 
     if stupidmode:
-        print >> fp, '# Disable fallback mode by commenting out the following:'
-        print >> fp, 'no-cc'
-        print >> fp, 'header "X-Debbugs-CC: %s"' % email_addy
-        print >> fp, 'smtphost reportbug.debian.org'
+        print('# Disable fallback mode by commenting out the following:', file=fp)
+        print('no-cc', file=fp)
+        print('header "X-Debbugs-CC: %s"' % email_addy, file=fp)
+        print('smtphost reportbug.debian.org', file=fp)
     else:
-        print >> fp, '# If nothing else works, remove the # at the beginning'
-        print >> fp, '# of the following three lines:'
-        print >> fp, '#no-cc'
-        print >> fp, '#header "X-Debbugs-CC: %s"' % email_addy
-        print >> fp, '#smtphost reportbug.debian.org'
+        print('# If nothing else works, remove the # at the beginning', file=fp)
+        print('# of the following three lines:', file=fp)
+        print('#no-cc', file=fp)
+        print('#header "X-Debbugs-CC: %s"' % email_addy, file=fp)
+        print('#smtphost reportbug.debian.org', file=fp)
 
-    print >> fp, '# You can add other settings after this line.  See'
-    print >> fp, '# /etc/reportbug.conf for a full listing of options.'
+    print('# You can add other settings after this line.  See', file=fp)
+    print('# /etc/reportbug.conf for a full listing of options.', file=fp)
     fp.close()
     ui.final_message('Default preferences file written.  To reconfigure, '
                      're-run reportbug with the "--configure" option.\n')
@@ -786,8 +780,8 @@ def main():
 
     try:
         locale.setlocale(locale.LC_ALL, '')
-    except locale.Error, x:
-        print >> sys.stderr, '*** Warning:', x
+    except locale.Error as x:
+        print('*** Warning:', x, file=sys.stderr)
 
     charset = locale.nl_langinfo(locale.CODESET)
     # It would be nice if there were some canonical character set conversion
@@ -806,10 +800,8 @@ def main():
     # and configuration files.  When we need to adjust a value, we first say
     # "foo = options.foo" and then refer to just `foo'.
     args = utils.parse_config_files()
-    for option, arg in args.items():
+    for option, arg in list(args.items()):
         if option in utils.CONFIG_ARGS:
-            if isinstance(arg, unicode):
-                arg = arg.encode(charset, 'replace')
             defaults[option] = arg
         else:
             sys.stderr.write('Warning: untranslated token "%s"\n' % option)
@@ -936,7 +928,7 @@ def main():
     parser.add_option('-u', '--interface', '--ui', action='callback',
                       callback=verify_option, type='string', dest='interface',
                       callback_args=('Valid user interfaces',
-                                     AVAILABLE_UIS.keys()),
+                                     list(AVAILABLE_UIS.keys())),
                       help='choose which user interface to use')
     parser.add_option('-Q', '--query-only', action='store_true',
                       dest='queryonly', help='only query the BTS')
@@ -948,7 +940,7 @@ def main():
     parser.add_option('-B', '--bts', action='callback', dest='bts',
                       callback=verify_option, type='string',
                       callback_args=('Valid bug tracking systems',
-                                     debbugs.SYSTEMS.keys()),
+                                     list(debbugs.SYSTEMS.keys())),
                       help='choose BTS to file the report with')
     parser.add_option('-S', '--severity', action='callback',
                       callback=verify_option, type='string', dest='severity',
@@ -967,7 +959,7 @@ def main():
                                                         'mode for reportbug', callback=verify_option,
                       type='string', dest='mode',
                       callback_args=('Permitted operating modes',
-                                     utils.MODES.keys()))
+                                     list(utils.MODES.keys())))
     parser.add_option('-v', '--verify', action='store_true', help='verify '
                                                                   'integrity of installed package using debsums')
     parser.add_option('--no-verify', action='store_false', dest='verify',
@@ -1042,14 +1034,14 @@ def main():
         any_missing = False
         for attachment in options.attachments:
             if not os.path.exists(os.path.expanduser(attachment)):
-                print 'The attachment file %s does not exist.' % attachment
+                print('The attachment file %s does not exist.' % attachment)
                 any_missing = True
             elif check_attachment_size(attachment, options.max_attachment_size):
-                print 'The attachment file %s size is bigger than the maximum of %d bytes: reduce ' \
-                      'its size else the report cannot be sent' % (attachment, options.max_attachment_size)
+                print('The attachment file %s size is bigger than the maximum of %d bytes: reduce ' \
+                      'its size else the report cannot be sent' % (attachment, options.max_attachment_size))
                 any_missing = True
         if any_missing:
-            print "The above files can't be attached; exiting"
+            print("The above files can't be attached; exiting")
             sys.exit(1)
 
     if options.keyid and not options.sign:
@@ -1059,7 +1051,7 @@ def main():
     if options.draftpath:
         options.draftpath = os.path.expanduser(options.draftpath)
         if not os.path.exists(options.draftpath):
-            print "The directory % does not exist; exiting." % options.draftpath
+            print("The directory % does not exist; exiting." % options.draftpath)
             sys.exit(1)
 
     if options.mua and not options.template:
@@ -1083,7 +1075,7 @@ def main():
         try:
             lib_package = __import__('reportbug.ui', fromlist=[iface])
             newui = getattr(lib_package, iface)
-        except UINotImportable, msg:
+        except UINotImportable as msg:
             ui.long_message('*** Unable to import %s interface: %s '
                             'Falling back to text interface.\n',
                             interface, msg)
@@ -1138,9 +1130,9 @@ class UI(object):
             offer_configuration(self.options)
             sys.exit(0)
         elif self.options.license:
-            print COPYRIGHT
-            print
-            print LICENSE
+            print(COPYRIGHT)
+            print()
+            print(LICENSE)
             sys.exit(0)
 
         # These option values may get adjusted below, so give them a variable name.
@@ -1155,9 +1147,6 @@ class UI(object):
         severity = self.options.severity
         smtphost = self.options.smtphost
         subject = self.options.subject
-        # decode subject (if present) using the current charset
-        if subject:
-            subject = subject.decode(charset, 'replace')
         bts = self.options.bts or 'debian'
         sysinfo = debbugs.SYSTEMS[bts]
         rtype = self.options.type or sysinfo.get('type')
@@ -1174,9 +1163,9 @@ class UI(object):
         elif self.options.bodyfile:
             try:
                 if check_attachment_size(self.options.bodyfile, self.options.max_attachment_size):
-                    print 'Body file %s size bigger than the maximum of %d bytes: ' \
+                    print('Body file %s size bigger than the maximum of %d bytes: ' \
                           'reduce its size else the report cannot be sent' % (
-                              self.options.bodyfile, self.options.max_attachment_size)
+                              self.options.bodyfile, self.options.max_attachment_size))
                     raise Exception
                 body = open(self.options.bodyfile).read()
             except:
@@ -1322,7 +1311,7 @@ class UI(object):
             ewrite('Note: bug reports are publicly archived (including the email address of the submitter).\n')
 
         try:
-            blah = u'hello'.encode(charset)
+            blah = 'hello'
         except LookupError:
             ui.display_failure(
                 'Unable to use specified character set "%s"; you probably need '
@@ -1334,8 +1323,7 @@ class UI(object):
                    "Please change your locale if this is incorrect.\n\n", charset)
 
         fromaddr = utils.get_user_id(self.options.email, self.options.realname, charset)
-        ewrite("Using '%s' as your from address.\n", fromaddr.encode(charset, 'replace'))
-        fromaddr = fromaddr.encode('utf-8')
+        ewrite("Using '%s' as your from address.\n", fromaddr)
         if self.options.debugmode:
             sendto = fromaddr
 
@@ -1357,14 +1345,14 @@ class UI(object):
                 ewrite('Exiting per user request.\n')
                 sys.exit(1)
 
-        incfiles = u""
+        incfiles = ""
         if self.options.include:
             for f in self.options.include:
                 if os.path.exists(f):
                     fp = open(f)
-                    incfiles = u'%s\n*** %s\n%s' % (
-                        incfiles, f.decode('utf-8', 'replace'),
-                        fp.read().decode('utf-8', 'replace'))
+                    incfiles = '%s\n*** %s\n%s' % (
+                        incfiles, f,
+                        fp.read())
                     fp.close()
                 else:
                     ewrite("Can't find %s to include!\n", f)
@@ -1377,7 +1365,7 @@ class UI(object):
         suggests = []
         conffiles = []
         reportinfo = None
-        isvirtual = (package in sysinfo.get('otherpkgs', {}).keys() and
+        isvirtual = (package in list(sysinfo.get('otherpkgs', {}).keys()) and
                      package not in sysinfo.get('nonvirtual', []))
         issource = installed = usedavail = False
         status = None
@@ -1414,7 +1402,7 @@ class UI(object):
 
         if not pkgversion and self.options.querydpkg and \
                 sysinfo.get('query-dpkg', True) and \
-                package not in debbugs.SYSTEMS[bts].get('otherpkgs').keys():
+                package not in list(debbugs.SYSTEMS[bts].get('otherpkgs').keys()):
             ewrite("Getting status for %s...\n", package)
             status = utils.get_package_status(package)
 
@@ -1600,8 +1588,8 @@ class UI(object):
         if (pkgavail and self.options.verify and os.path.exists('/usr/bin/debsums')
                 and not self.options.kudos and state == 'installed'):
             ewrite('Verifying package integrity...\n')
-            rc, output = commands.getstatusoutput('/usr/bin/debsums --ignore-permissions -s' +
-                                                  commands.mkarg(package))
+            rc, output = subprocess.getstatusoutput('/usr/bin/debsums --ignore-permissions -s ' +
+                                                  shlex.quote(package))
             debsumsoutput = output
 
             if rc and not notatty:
@@ -1646,7 +1634,7 @@ class UI(object):
 
             if avail:
                 availtext = ''
-                availlist = avail.keys()
+                availlist = list(avail.keys())
                 availlist.sort()
                 for rel in availlist:
                     availtext += '  %s: %s\n' % (rel, avail[rel])
@@ -1670,7 +1658,7 @@ class UI(object):
             if origin.lower() == bts:
                 ewrite("Package originates from %s.\n", vendor or origin)
                 reportinfo = None
-            elif origin.lower() in debbugs.SYSTEMS.keys():
+            elif origin.lower() in list(debbugs.SYSTEMS.keys()):
                 ewrite("Package originates from %s; overriding your system "
                        "selection.\n", vendor or origin)
                 bts = origin.lower()
@@ -1688,7 +1676,7 @@ class UI(object):
             ewrite("Will use %s protocol talking to %s.\n", rtype, submitto)
             dontquery = True
         else:
-            lsbr = commands.getoutput('lsb_release -si 2>/dev/null')
+            lsbr = subprocess.getoutput('lsb_release -si 2>/dev/null')
             if lsbr:
                 distro = lsbr.strip().lower()
                 if distro in debbugs.SYSTEMS:
@@ -1763,8 +1751,8 @@ class UI(object):
             bccaddr = os.environ.get('MAILBCC', fromaddr)
 
         if maintainer:
-            mstr = u"Maintainer for %s is '%s'.\n" % (package, maintainer)
-            ewrite(mstr.encode(charset, 'replace'))
+            mstr = "Maintainer for %s is '%s'.\n" % (package, maintainer)
+            ewrite(mstr)
             if 'qa.debian.org' in maintainer:
                 ui.long_message('''\
 This package seems to be currently "orphaned"; it also seems you're a
@@ -1842,36 +1830,34 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                     else:
                         break
 
-        conftext = u''
+        conftext = ''
         if confinfo:
-            conftext = u'\n-- Configuration Files:\n'
-            files = confinfo.keys()
+            conftext = '\n-- Configuration Files:\n'
+            files = list(confinfo.keys())
             files.sort()
             for f in files:
-                conftext = conftext + u'%s %s\n' % (f, confinfo[f])
+                conftext = conftext + '%s %s\n' % (f, confinfo[f])
 
         if (self.options.debconf and os.path.exists('/usr/bin/debconf-show') and
                 not self.options.kudos and installed):
             showpkgs = package
             if reportwith:
                 showpkgs += ' ' + ' '.join(reportwith)
-            (status, output) = commands.getstatusoutput(
+            (status, output) = subprocess.getstatusoutput(
                 'DEBCONF_SYSTEMRC=1 DEBCONF_NOWARNINGS=yes '
                 '/usr/bin/debconf-show %s' % showpkgs)
             if status:
                 conftext += '\n-- debconf-show failed\n'
             elif output:
-                output = output.decode('utf-8', 'replace')
-                outstr = output.encode(charset, 'replace')
                 if (notatty or ui.yes_no("*** The following debconf settings were detected:\n" +
-                                         outstr + "\nInclude these settings in your report",
+                                         output + "\nInclude these settings in your report",
                                          'Send your debconf settings.',
                                          "Don't send your debconf settings.", nowrap=True)):
-                    conftext += u'\n-- debconf information:\n%s\n' % output
+                    conftext += '\n-- debconf information:\n%s\n' % output
                 else:
-                    conftext += u'\n-- debconf information excluded\n'
+                    conftext += '\n-- debconf information excluded\n'
             else:
-                conftext += u'\n-- no debconf information\n'
+                conftext += '\n-- no debconf information\n'
 
         ewrite('\n')
         prompted = False
@@ -1961,7 +1947,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                                        'Please select a severity level: ',
                                        default=default, order=debbugs.SEVLIST)
                     # urwid has a cancel and a quit button that return < 0
-                    if severity < 0:
+                    if isinstance(severity, int) and severity < 0:
                         sys.exit()
 
             if rtype == 'gnats':
@@ -2088,10 +2074,10 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                 attachments += bugscript_attachments
             addinfo = None
             if not self.options.noconf:
-                addinfo = u"\n-- Package-specific info:\n" + text
+                addinfo = "\n-- Package-specific info:\n" + text
 
             if addinfo and incfiles:
-                incfiles = addinfo + u"\n" + incfiles
+                incfiles = addinfo + "\n" + incfiles
             elif addinfo:
                 incfiles = addinfo
 
@@ -2102,11 +2088,11 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
 
         # Prepare bug report
         if self.options.kudos:
-            message = u'\n\n'
+            message = '\n\n'
             if not mua:
                 SIGFILE = os.path.join(HOMEDIR, '.signature')
                 try:
-                    message = u"\n\n-- \n" + open(SIGFILE).read().decode('utf-8', 'replace')
+                    message = "\n\n-- \n" + open(SIGFILE).read()
                 except IOError:
                     pass
         else:
@@ -2145,16 +2131,16 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
             except TypeError:
                 sendto = sysinfo['email']
 
-            sendto = rfc822.dump_address_pair((sysinfo['name'] +
+            sendto = email.utils.formataddr((sysinfo['name'] +
                                                ' Bug Tracking System', sendto))
 
         mailing = not (mua or self.options.printonly or self.options.template)
-        message = u"Subject: %s\n%s" % (subject, message)
+        message = "Subject: %s\n%s" % (subject, message)
         justsave = False
 
         if mailing:
             fh, filename = TempFile(prefix=tfprefix, dir=self.options.draftpath)
-            fh.write(message.encode(charset, 'replace'))
+            fh.write(message)
             fh.close()
             oldmua = mua or self.options.mua
             if not self.options.body and not self.options.bodyfile:
@@ -2169,7 +2155,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
             if mua:
                 mailing = False
             elif not sendto:
-                print message,
+                print(message, end=' ')
                 cleanup_temp_file(filename)
                 return
 
@@ -2247,5 +2233,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         ewrite("\nreportbug: exiting due to user interrupt.\n")
-    except debbugs.Error, x:
+    except debbugs.Error as x:
         ewrite('error accessing BTS: %s\n' % x)
