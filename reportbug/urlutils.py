@@ -27,7 +27,7 @@ import urllib.request, urllib.error, urllib.parse
 import getpass
 import re
 import socket
-import subprocess
+import shlex
 import os
 import sys
 import webbrowser
@@ -173,7 +173,7 @@ def open_url(url, http_proxy=None, timeout=60):
 
 def launch_browser(url):
     if not os.system('command -v xdg-open >/dev/null 2>&1'):
-        cmd = 'xdg-open' + subprocess.mkarg(url)
+        cmd = 'xdg-open ' + shlex.quote(url)
         os.system(cmd)
         return
 
