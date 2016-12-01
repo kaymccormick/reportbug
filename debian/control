@@ -4,17 +4,16 @@ Priority: standard
 Maintainer: Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>
 Uploaders: Sandro Tosi <morph@debian.org>, Chris Lawrence <lawrencc@debian.org>
 Standards-Version: 3.9.6
-Build-Depends: debhelper (>= 9), python (>= 2.5), dh-python
-Build-Depends-Indep: python-nose, python-setuptools, python-mock
-X-Python-Version: >= 2.6
+Build-Depends: debhelper (>= 9), python3, dh-python
+Build-Depends-Indep: python3-nose, python3-setuptools, python3-mock
 Vcs-Git: git://anonscm.debian.org/reportbug/reportbug.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=reportbug/reportbug.git
 Homepage: http://alioth.debian.org/projects/reportbug/
 
 Package: reportbug
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, apt, python-reportbug (= ${source:Version})
-Suggests: postfix | exim4 | mail-transport-agent, gnupg | pgp, debconf-utils (>> 1.1.0), debsums (>= 2.0.47), file (>> 1.30), dlocate, python-urwid, python-gtk2, python-vte, python-gtkspellcheck, xdg-utils, emacs23-bin-common | emacs24-bin-common, claws-mail (>= 3.8.0)
+Depends: ${misc:Depends}, ${python3:Depends}, apt, python3-reportbug (= ${source:Version})
+Suggests: postfix | exim4 | mail-transport-agent, gnupg | pgp, debconf-utils (>> 1.1.0), debsums (>= 2.0.47), file (>> 1.30), dlocate, python3-urwid, python3-gi, python3-gtkspellcheck, xdg-utils, emacs23-bin-common | emacs24-bin-common, claws-mail (>= 3.8.0)
 Description: reports bugs in the Debian distribution
  reportbug is a tool designed to make the reporting of bugs in Debian
  and derived distributions relatively painless.  Its features include:
@@ -34,10 +33,10 @@ Description: reports bugs in the Debian distribution
  This package also includes the "querybts" script for browsing the
  Debian bug tracking system.
 
-Package: python-reportbug
+Package: python3-reportbug
 Section: python
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, apt, python3-debian, python3-debianbts (>= 1.13), file
+Depends: ${misc:Depends}, ${python3:Depends}, apt, python3-debian, python3-debianbts (>= 1.13), file
 Suggests: reportbug
 Description: Python modules for interacting with bug tracking systems
  reportbug is a tool designed to make the reporting of bugs in Debian
