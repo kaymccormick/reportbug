@@ -5,7 +5,7 @@
 
 VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | sed 's/^Version: \([^+]*\).*/\1/')
 DISTRO := $(shell dpkg-parsechangelog | egrep '^Distribution:' | sed 's/^Distribution: \([^+]*\).*/\1/')
-REPORTBUG_VERSION := $(shell python -c "import reportbug; print reportbug.VERSION_NUMBER")
+REPORTBUG_VERSION := $(shell python3 -c "import reportbug; print(reportbug.VERSION_NUMBER)")
 
 %:
 	dh $@ --with=python3
