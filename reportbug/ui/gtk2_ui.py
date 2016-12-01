@@ -1185,7 +1185,7 @@ class EditorPage(Page):
     def switch_out(self):
         global report_message
         report_message = self.get_value()[0]
-        f = file(self.filename, "w")
+        f = open(self.filename, "w")
         f.write(report_message)
         f.close()
 
@@ -1204,7 +1204,6 @@ class EditorPage(Page):
 
         self.report.set_subject(subject)
         message = self.report.create_message(info)
-        message = message.decode(self.charset, 'replace')
         return(message, message != self.message)
 
     def handle_first_info(self):
