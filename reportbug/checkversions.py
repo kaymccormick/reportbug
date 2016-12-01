@@ -161,13 +161,13 @@ def get_incoming_version(package, timeout, http_proxy=None, arch='i386'):
     #     pass
     # page.close()
 
-    if parser.found:
-        found = parser.found
-        del parser
-        return reduce(later_version, found, '0')
+    #if parser.found:
+    #    found = parser.found
+    #    del parser
+    #    return reduce(later_version, found, '0')
 
     del page
-    del parser
+    #del parser
     return None
 
 
