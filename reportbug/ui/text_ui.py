@@ -265,10 +265,6 @@ def get_string(prompt, options=None, title=None, empty_ok=False, force_prompt=Fa
         else:
             response = our_raw_input('> ', options, completer)
 
-    # Translate the response into a Unicode string
-    if response is not None and not isinstance(response, str):
-        response = str(response, charset, 'replace')
-
     return response
 
 
@@ -1027,7 +1023,7 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
 
     # Move the cursor for lazy buggers like me; add your editor here...
     ourline = 0
-    for (lineno, line) in enumerate(file(filename)):
+    for (lineno, line) in enumerate(open(filename)):
         if line == '\n' and not ourline:
             ourline = lineno + 2
 
@@ -1065,7 +1061,7 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
     if '&' in editor:
         return (None, 1)
 
-    newmessage = file(filename).read().decode(charset, 'replace')
+    newmessage = open(filename).read()
 
     if newmessage == message:
         ewrite('No changes were made in the editor.\n')
