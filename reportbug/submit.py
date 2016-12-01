@@ -22,28 +22,27 @@
 import sys
 import os
 import re
-import commands
+import shlex
 from subprocess import Popen, STDOUT, PIPE
-import rfc822
+import email
 import smtplib
 import socket
 import email
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEAudio import MIMEAudio
-from email.MIMEImage import MIMEImage
-from email.MIMEBase import MIMEBase
-from email.MIMEMessage import MIMEMessage
-from email.Header import Header, decode_header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.audio import MIMEAudio
+from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from email.mime.message import MIMEMessage
 import mimetypes
 
-from __init__ import VERSION, VERSION_NUMBER
-from tempfiles import TempFile, open_write_safe, tempfile_prefix
-from exceptions import (
+from .__init__ import VERSION, VERSION_NUMBER
+from .tempfiles import TempFile, open_write_safe, tempfile_prefix
+from .exceptions import (
     NoMessage,
 )
-import ui.text_ui as ui
-from utils import get_email_addr
+from .ui import text_ui as ui
+from .utils import get_email_addr
 import errno
 
 quietly = False
@@ -51,55 +50,6 @@ quietly = False
 ascii_range = ''.join([chr(ai) for ai in range(32, 127)])
 notascii = re.compile(r'[^' + re.escape(ascii_range) + ']')
 notascii2 = re.compile(r'[^' + re.escape(ascii_range) + r'\s]')
-
-
-# Wrapper for MIMEText
-class BetterMIMEText(MIMEText):
-    def __init__(self, _text, _subtype='plain', _charset=None):
-        MIMEText.__init__(self, _text, _subtype, 'us-ascii')
-        # Only set the charset paraemeter to non-ASCII if the body
-        # includes unprintable characters
-        if notascii2.search(_text):
-            self.set_param('charset', _charset)
-
-
-def encode_if_needed(text, charset, encoding='q'):
-    needed = False
-
-    if notascii.search(text):
-        # Fall back on something vaguely sensible if there are high chars
-        # and the encoding is us-ascii
-        if charset == 'us-ascii':
-            charset = 'iso-8859-15'
-        return Header(text, charset)
-    else:
-        return Header(text, 'us-ascii')
-
-
-def rfc2047_encode_address(addr, charset, mua=None):
-    newlist = []
-    addresses = rfc822.AddressList(addr).addresslist
-    for (realname, address) in addresses:
-        if realname:
-            newlist.append(email.Utils.formataddr(
-                (str(rfc2047_encode_header(realname, charset, mua)), address)))
-        else:
-            newlist.append(address)
-    return ', '.join(newlist)
-
-
-def rfc2047_encode_header(header, charset, mua=None):
-    if mua:
-        return header
-    # print repr(header), repr(charset)
-
-    return encode_if_needed(header, charset)
-
-
-def decode_email_header(header):
-    # returns a list of 2-items tuples
-    decoded = decode_header(header)
-    return ' '.join([x[0] for x in decoded]).strip()
 
 
 # Cheat for now.
@@ -132,14 +82,14 @@ def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpa
             signcmd = "gpg --local-user '%s' --clearsign " % pgp_addr
         else:
             signcmd = "gpg --local-user '%s' --use-agent --clearsign " % pgp_addr
-        signcmd += '--output ' + commands.mkarg(file2) + ' ' + commands.mkarg(file1)
+        signcmd += '--output ' + shlex.quote(file2) + ' ' + shlex.quote(file1)
     else:
         signcmd = "pgp -u '%s' -fast" % pgp_addr
-        signcmd += '<' + commands.mkarg(file1) + ' >' + commands.mkarg(file2)
+        signcmd += '<' + shlex.quote(file1) + ' >' + shlex.quote(file2)
 
     try:
         os.system(signcmd)
-        x = file(file2, 'r')
+        x = open(file2, 'r')
         signedbody = x.read()
         x.close()
 
@@ -164,7 +114,7 @@ def mime_attach(body, attachments, charset, body_charset=None):
     mimetypes.init()
 
     message = MIMEMultipart('mixed')
-    bodypart = BetterMIMEText(body, _charset=(body_charset or charset))
+    bodypart = MIMEText(body)
     bodypart.add_header('Content-Disposition', 'inline')
     message.preamble = 'This is a multi-part MIME message sent by reportbug.\n\n'
     message.epilogue = ''
@@ -172,9 +122,9 @@ def mime_attach(body, attachments, charset, body_charset=None):
     failed = False
     for attachment in attachments:
         try:
-            fp = file(attachment)
+            fp = open(attachment)
             fp.close()
-        except EnvironmentError, x:
+        except EnvironmentError as x:
             ewrite("Warning: opening '%s' failed: %s.\n", attachment,
                    x.strerror)
             failed = True
@@ -182,7 +132,8 @@ def mime_attach(body, attachments, charset, body_charset=None):
         ctype = None
         cset = charset
         info = Popen(['file', '--mime', '--brief', attachment],
-                     stdout=PIPE, stderr=STDOUT).communicate()[0]
+                     stdout=PIPE, stderr=STDOUT).communicate()[0].decode('ascii')
+        print(info)
         if info:
             match = re.match(r'([^;, ]*)(,[^;]+)?(?:; )?(.*)', info)
             if match:
@@ -202,25 +153,24 @@ def mime_attach(body, attachments, charset, body_charset=None):
 
         maintype, subtype = ctype.split('/', 1)
         if maintype == 'text':
-            fp = file(attachment, 'rU')
-            part = BetterMIMEText(fp.read(), _subtype=subtype,
-                                  _charset=cset)
+            fp = open(attachment, 'rU')
+            part = MIMEText(fp.read())
             fp.close()
         elif maintype == 'message':
-            fp = file(attachment, 'rb')
+            fp = open(attachment, 'rb')
             part = MIMEMessage(email.message_from_file(fp),
                                _subtype=subtype)
             fp.close()
         elif maintype == 'image':
-            fp = file(attachment, 'rb')
+            fp = open(attachment, 'rb')
             part = MIMEImage(fp.read(), _subtype=subtype)
             fp.close()
         elif maintype == 'audio':
-            fp = file(attachment, 'rb')
+            fp = open(attachment, 'rb')
             part = MIMEAudio(fp.read(), _subtype=subtype)
             fp.close()
         else:
-            fp = file(attachment, 'rb')
+            fp = open(attachment, 'rb')
             part = MIMEBase(maintype, subtype)
             part.set_payload(fp.read())
             fp.close()
@@ -252,12 +202,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
     if kudos and smtphost == 'reportbug.debian.org':
         smtphost = 'packages.debian.org'
 
-    body_charset = charset
-    if isinstance(body, unicode):
-        # Since the body is Unicode, utf-8 seems like a sensible body encoding
-        # to choose pretty much all the time.
-        body = body.encode('utf-8', 'replace')
-        body_charset = 'utf-8'
+    body_charset = 'utf-8'
 
     tfprefix = tempfile_prefix(package)
     if attachments and not mua:
@@ -266,47 +211,43 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             ewrite("Error: Message creation failed, not sending\n")
             mua = mta = smtphost = None
     else:
-        message = BetterMIMEText(body, _charset=body_charset)
+        message = MIMEText(body)
 
     # Standard headers
-    message['From'] = rfc2047_encode_address(fromaddr, 'utf-8', mua)
-    message['To'] = rfc2047_encode_address(sendto, charset, mua)
+    message['From'] = fromaddr
+    message['To'] = sendto
 
     for (header, value) in headers:
-        if header in ['From', 'To', 'Cc', 'Bcc', 'X-Debbugs-CC', 'Reply-To',
-                      'Mail-Followup-To']:
-            message[header] = rfc2047_encode_address(value, charset, mua)
-        else:
-            message[header] = rfc2047_encode_header(value, charset, mua)
+            message[header] = value
 
     if ccaddr:
-        message['Cc'] = rfc2047_encode_address(ccaddr, charset, mua)
+        message['Cc'] = ccaddr
 
     if bccaddr:
-        message['Bcc'] = rfc2047_encode_address(bccaddr, charset, mua)
+        message['Bcc'] = bccaddr
 
     replyto = os.environ.get("REPLYTO", replyto)
     if replyto:
-        message['Reply-To'] = rfc2047_encode_address(replyto, charset, mua)
+        message['Reply-To'] = replyto
 
     if mailing:
-        message['Message-ID'] = email.Utils.make_msgid('reportbug')
+        message['Message-ID'] = email.utils.make_msgid('reportbug')
         message['X-Mailer'] = VERSION
-        message['Date'] = email.Utils.formatdate(localtime=True)
+        message['Date'] = email.utils.formatdate(localtime=True)
     elif mua and not (printonly or template):
         message['X-Reportbug-Version'] = VERSION_NUMBER
 
     addrs = [str(x) for x in (message.get_all('To', []) +
                               message.get_all('Cc', []) +
                               message.get_all('Bcc', []))]
-    alist = email.Utils.getaddresses(addrs)
+    alist = email.utils.getaddresses(addrs)
 
     cclist = [str(x) for x in message.get_all('X-Debbugs-Cc', [])]
-    debbugs_cc = email.Utils.getaddresses(cclist)
+    debbugs_cc = email.utils.getaddresses(cclist)
     if cclist:
         del message['X-Debbugs-Cc']
         addrlist = ', '.join(cclist)
-        message['X-Debbugs-Cc'] = rfc2047_encode_address(addrlist, charset, mua)
+        message['X-Debbugs-Cc'] = addrlist
 
     # Drop any Bcc headers from the message to be sent
     if not outfile and not mua:
@@ -320,7 +261,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
         pager = os.environ.get('PAGER', 'sensible-pager')
         try:
             os.popen(pager, 'w').write(message)
-        except  Exception, e:
+        except  Exception as e:
             # if the PAGER exits before all the text has been sent,
             # it'd send a SIGPIPE, so crash only if that's not the case
             if e.errno != errno.EPIPE:
@@ -363,17 +304,17 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
         except OSError:
             os.chdir('/')
 
-        malist = [commands.mkarg(a[1]) for a in alist]
+        malist = [shlex.quote(a[1]) for a in alist]
         jalist = ' '.join(malist)
 
-        faddr = rfc822.parseaddr(fromaddr)[1]
+        faddr = email.utils.parseaddr(fromaddr)[1]
         if envelopefrom:
-            envfrom = rfc822.parseaddr(envelopefrom)[1]
+            envfrom = email.utils.parseaddr(envelopefrom)[1]
         else:
             envfrom = faddr
         ewrite("Sending message via %s...\n", mta)
         pipe = os.popen('%s -f %s -oi -oem %s' % (
-            mta, commands.mkarg(envfrom), jalist), 'w')
+            mta, shlex.quote(envfrom), jalist), 'w')
         using_sendmail = True
 
     # saving a backup of the report
@@ -415,7 +356,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                     conn.login(smtpuser, smtppasswd)
                 refused = conn.sendmail(fromaddr, toaddrs, message)
                 conn.quit()
-            except (socket.error, smtplib.SMTPException), x:
+            except (socket.error, smtplib.SMTPException) as x:
                 # If wrong password, try again...
                 if isinstance(x, smtplib.SMTPAuthenticationError):
                     ewrite('SMTP error: authentication failed.  Try again.\n')
@@ -443,7 +384,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
                     ewrite('Wrote bug report to %s\n', msgname)
         # Handle when some recipients are refused.
         if refused:
-            for (addr, err) in refused.iteritems():
+            for (addr, err) in refused.items():
                 ewrite('Unable to send report to %s: %d %s\n', addr, err[0],
                        err[1])
             fh, msgname = TempFile(prefix=tfprefix, dir=draftpath)
@@ -500,18 +441,18 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
 
         addresses = []
         for addr in alist:
-            if addr[1] != rfc822.parseaddr(sendto)[1]:
+            if addr[1] != email.utils.parseaddr(sendto)[1]:
                 addresses.append(addr)
 
         if len(addresses):
             ewrite("Copies sent to:\n")
             for address in addrs:
-                ewrite('  %s\n', decode_email_header(address))
+                ewrite('  %s\n', address)
 
         if debbugs_cc and rtype == 'debbugs':
             ewrite("Copies will be sent after processing to:\n")
             for address in cclist:
-                ewrite('  %s\n', decode_email_header(address))
+                ewrite('  %s\n', address)
 
     if not (exinfo or kudos) and rtype == 'debbugs' and sysinfo and 'email' in sysinfo and not failed \
             and mailing:
