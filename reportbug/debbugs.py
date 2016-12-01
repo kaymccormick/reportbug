@@ -670,7 +670,7 @@ def handle_wnpp(package, bts, ui, fromaddr, timeout, online=True, http_proxy=Non
 
         if tag == 'ITP':
             headers.append('X-Debbugs-CC: debian-devel@lists.debian.org')
-            pseudos.append('Owner: %s' % fromaddr.decode('utf-8', 'replace'))
+            pseudos.append('Owner: %s' % fromaddr)
             ui.log_message('Your report will be carbon-copied to debian-devel, '
                            'per Debian policy.\n')
 
