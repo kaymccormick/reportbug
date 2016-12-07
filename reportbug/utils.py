@@ -875,7 +875,7 @@ class Mua:
         mua = self.command
         if '%s' not in mua:
             mua += ' %s'
-        return ui.system(mua % pipes.quote(filename)[1:])
+        return ui.system(mua % pipes.quote(filename))
 
     def get_name(self):
         return self.name
