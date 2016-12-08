@@ -1,4 +1,4 @@
-reportbug (7.0.1) UNRELEASED; urgency=medium
+reportbug (7.0.1) experimental; urgency=medium
 
   * debian/control
     - add python3-requests to python3-reportbug Depends; Closes: #846657
@@ -6,7 +6,7 @@ reportbug (7.0.1) UNRELEASED; urgency=medium
     - dont remove the first character from the filename when calling an external
       MUA; Closes: #846778
 
- -- Sandro Tosi <morph@debian.org>  Wed, 07 Dec 2016 18:50:02 -0500
+ -- Sandro Tosi <morph@debian.org>  Wed, 07 Dec 2016 19:22:37 -0500
 
 reportbug (7.0.0) experimental; urgency=medium
 
