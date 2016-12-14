@@ -103,7 +103,7 @@ def ask_free(s):
 
 
 def create_scrollable(widget, with_viewport=False):
-    scrolled = gtk.ScrolledWindow()
+    scrolled = Gtk.ScrolledWindow()
     scrolled.set_shadow_type(gtk.SHADOW_ETCHED_IN)
     scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
     if with_viewport:
@@ -138,21 +138,21 @@ class CustomDialog(Gtk.Dialog):
         self.set_default_response(buttons[-1])  # this is the response of the last button
         self.set_border_width(5)
 
-        vbox = gtk.VBox(spacing=10)
+        vbox = Gtk.VBox(spacing=10)
         vbox.set_border_width(6)
         self.vbox.pack_start(vbox)
 
         # The header image + label
-        hbox = gtk.HBox(spacing=10)
+        hbox = Gtk.HBox(spacing=10)
         vbox.pack_start(hbox, expand=False)
 
-        align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+        align = Gtk.Alignment(0.5, 0.5, 1.0, 1.0)
         hbox.pack_start(align, expand=False)
 
         image = Gtk.Image.new_from_stock(stock_image, Gtk.IconSize.DIALOG)
         hbox.pack_start(image)
 
-        label = gtk.Label(message)
+        label = Gtk.Label(message)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_FILL)
         label.set_selectable(True)
@@ -169,7 +169,7 @@ class InputStringDialog(CustomDialog):
                                Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
 
     def setup_dialog(self, vbox):
-        self.entry = gtk.Entry()
+        self.entry = Gtk.Entry()
         vbox.pack_start(self.entry, expand=False)
 
     def get_value(self):
@@ -200,10 +200,10 @@ class ExceptionDialog(CustomDialog):
 
     def setup_dialog(self, vbox, tb):
         # The traceback
-        expander = gtk.Expander("More details")
+        expander = Gtk.Expander("More details")
         vbox.pack_start(expander, True)
 
-        view = gtk.TextView()
+        view = Gtk.TextView()
         view.set_editable(False)
         view.get_buffer().set_text(tb)
         scrolled = create_scrollable(view)
@@ -228,7 +228,7 @@ class ReportViewerDialog(Gtk.Dialog):
         self.set_border_width(6)
         self.connect('response', self.on_response)
 
-        view = gtk.TextView()
+        view = Gtk.TextView()
         view.get_buffer().set_text(self.message)
         self.vbox.pack_start(create_scrollable(view))
 
@@ -351,10 +351,10 @@ class BugReport(object):
 
 
 # BTS GUI
-class BugPage(gtk.EventBox, threading.Thread):
+class BugPage(Gtk.EventBox, threading.Thread):
     def __init__(self, assistant, dialog, number, queryonly, bts, mirrors, http_proxy, timeout, archived):
         threading.Thread.__init__(self)
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
         self.setDaemon(True)
 
         self.dialog = dialog
@@ -370,10 +370,10 @@ class BugPage(gtk.EventBox, threading.Thread):
 
         self.bug_status = None
 
-        vbox = gtk.VBox(spacing=12)
+        vbox = Gtk.VBox(spacing=12)
         vbox.pack_start(gtk.Label("Retrieving bug information."), expand=False)
 
-        self.progress = gtk.ProgressBar()
+        self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
         vbox.pack_start(self.progress, expand=False)
 
@@ -404,24 +404,24 @@ class BugPage(gtk.EventBox, threading.Thread):
 
     def not_found(self):
         self.drop_progressbar()
-        self.add(gtk.Label("The bug can't be fetched or it doesn't exist."))
+        self.add(Gtk.Label("The bug can't be fetched or it doesn't exist."))
         self.show_all()
 
     def found(self, info):
         self.drop_progressbar()
         desc = info[0].subject
         bodies = info[1]
-        vbox = gtk.VBox(spacing=12)
+        vbox = Gtk.VBox(spacing=12)
         vbox.set_border_width(12)
-        label = gtk.Label('Description: ' + desc)
+        label = Gtk.Label('Description: ' + desc)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_FILL)
         vbox.pack_start(label, expand=False)
 
-        views = gtk.VBox()
+        views = Gtk.VBox()
         odd = False
         for body in bodies:
-            view = gtk.TextView()
+            view = Gtk.TextView()
             view.set_editable(False)
             view.get_buffer().set_text(body)
             if odd:
@@ -431,12 +431,12 @@ class BugPage(gtk.EventBox, threading.Thread):
         scrolled = create_scrollable(views, True)
         vbox.pack_start(scrolled)
 
-        bbox = gtk.HButtonBox()
-        button = gtk.Button("Open in browser")
+        bbox = Gtk.HButtonBox()
+        button = Gtk.Button("Open in browser")
         button.connect('clicked', self.on_open_browser)
         bbox.pack_start(button)
         if not self.queryonly:
-            button = gtk.Button("Reply")
+            button = Gtk.Button("Reply")
             button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.BUTTON))
             button.connect('clicked', self.on_reply)
             bbox.pack_start(button)
@@ -466,7 +466,7 @@ class BugsDialog(Gtk.Dialog):
         self.assistant = assistant
         self.queryonly = queryonly
         self.application = assistant.application
-        self.notebook = gtk.Notebook()
+        self.notebook = Gtk.Notebook()
         self.vbox.pack_start(self.notebook)
         self.connect('response', self.on_response)
         self.set_default_size(600, 600)
@@ -476,7 +476,7 @@ class BugsDialog(Gtk.Dialog):
 
     def show_bug(self, number, *args):
         page = BugPage(self.assistant, self, number, self.queryonly, *args)
-        self.notebook.append_page(page, gtk.Label(number))
+        self.notebook.append_page(page, Gtk.Label(number))
         page.start()
 
 
@@ -491,7 +491,7 @@ class ReportbugApplication(threading.Thread):
 
     def run(self):
         Gdk.threads_enter()
-        gtk.main()
+        Gtk.main()
         Gdk.threads_leave()
 
     def get_last_value(self):
@@ -616,9 +616,9 @@ class IntroPage(Page):
     default_complete = True
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=24)
+        vbox = Gtk.VBox(spacing=24)
 
-        label = gtk.Label("""
+        label = Gtk.Label("""
 <b>Reportbug</b> is a tool designed to make the reporting of bugs in Debian and derived distributions relatively painless.
 
 This wizard will guide you through the bug reporting process step by step.
@@ -629,7 +629,7 @@ This wizard will guide you through the bug reporting process step by step.
         label.set_justify(gtk.JUSTIFY_FILL)
         vbox.pack_start(label, expand=False)
 
-        link = gtk.LinkButton("http://alioth.debian.org/projects/reportbug",
+        link = Gtk.LinkButton("http://alioth.debian.org/projects/reportbug",
                               "Homepage of reportbug project")
         vbox.pack_start(link, expand=False)
         return vbox
@@ -640,13 +640,13 @@ class GetStringPage(Page):
         self.entry.grab_focus()
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=12)
-        self.label = gtk.Label()
+        vbox = Gtk.VBox(spacing=12)
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
-        self.entry = gtk.Entry()
+        self.entry = Gtk.Entry()
         vbox.pack_start(self.label, expand=False)
         vbox.pack_start(self.entry, expand=False)
         return vbox
@@ -665,8 +665,8 @@ class GetStringPage(Page):
 
         if options:
             options.sort()
-            completion = gtk.EntryCompletion()
-            model = gtk.ListStore(str)
+            completion = Gtk.EntryCompletion()
+            model = Gtk.ListStore(str)
             for option in options:
                 model.append([option])
             completion.set_model(model)
@@ -691,15 +691,15 @@ class GetMultilinePage(Page):
         self.view.grab_focus()
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=12)
-        self.label = gtk.Label()
+        vbox = Gtk.VBox(spacing=12)
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
         vbox.pack_start(self.label, expand=False)
 
-        self.view = gtk.TextView()
+        self.view = Gtk.TextView()
         self.buffer = view.get_buffer()
         scrolled = create_scrollable(self.view)
         vbox.pack_start(scrolled)
@@ -754,27 +754,27 @@ class GetListPage(TreePage):
     value_column = 0
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=12)
-        self.label = gtk.Label()
+        vbox = Gtk.VBox(spacing=12)
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         vbox.pack_start(self.label, expand=False)
 
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
 
-        self.view = gtk.TreeView()
+        self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
         self.view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         scrolled = create_scrollable(self.view)
         hbox.pack_start(scrolled)
 
-        bbox = gtk.VButtonBox()
+        bbox = Gtk.VButtonBox()
         bbox.set_spacing(6)
         bbox.set_layout(gtk.BUTTONBOX_START)
-        button = gtk.Button(stock=gtk.STOCK_ADD)
+        button = Gtk.Button(stock=Gtk.STOCK_ADD)
         button.connect('clicked', self.on_add)
         bbox.pack_start(button, expand=False)
-        button = gtk.Button(stock=gtk.STOCK_REMOVE)
+        button = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         button.connect('clicked', self.on_remove)
         bbox.pack_start(button, expand=False)
         hbox.pack_start(bbox, expand=False)
@@ -812,19 +812,19 @@ class GetListPage(TreePage):
 
         GLib.idle_add(self.label.set_text, prompt)
 
-        self.model = gtk.ListStore(str)
+        self.model = Gtk.ListStore(str)
         self.model.connect('row-changed', self.validate)
         self.view.set_model(self.model)
 
         self.selection.set_mode(gtk.SELECTION_MULTIPLE)
 
-        self.view.append_column(gtk.TreeViewColumn('Item', gtk.CellRendererText(), text=0))
+        self.view.append_column(Gtk.TreeViewColumn('Item', Gtk.CellRendererText(), text=0))
 
 
-class WrapRendererText(gtk.CellRendererText):
+class WrapRendererText(Gtk.CellRendererText):
     def do_render(self, cr, widget, background_area, cell_area, flags):
         self.set_property('wrap-width', cell_area.width)
-        gtk.CellRendererText.do_render(self, cr, widget, background_area, cell_area, flags)
+        Gtk.CellRendererText.do_render(self, cr, widget, background_area, cell_area, flags)
 
 
 GObject.type_register(WrapRendererText)
@@ -834,13 +834,13 @@ class MenuPage(TreePage):
     value_column = 0
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=12)
-        self.label = gtk.Label()
+        vbox = Gtk.VBox(spacing=12)
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         vbox.pack_start(self.label, expand=False)
 
-        self.view = gtk.TreeView()
+        self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
         scrolled = create_scrollable(self.view)
         scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
@@ -856,17 +856,17 @@ class MenuPage(TreePage):
                 order=None, extras=None, multiple=False):
         GLib.idle_add(self.label.set_text, par)
 
-        self.model = gtk.ListStore(str, str)
+        self.model = Gtk.ListStore(str, str)
         self.view.set_model(self.model)
 
         if multiple:
             self.selection.set_mode(gtk.SELECTION_MULTIPLE)
 
-        self.view.append_column(gtk.TreeViewColumn('Option', gtk.CellRendererText(), markup=0))
+        self.view.append_column(Gtk.TreeViewColumn('Option', Gtk.CellRendererText(), markup=0))
         rend = WrapRendererText()
         rend.set_property('wrap-mode', Pango.WrapMode.WORD)
         rend.set_property('wrap-width', 300)
-        self.view.append_column(gtk.TreeViewColumn('Description', rend, text=1))
+        self.view.append_column(Gtk.TreeViewColumn('Description', rend, text=1))
 
         default_iter = None
         # here below, 'text' is the value of the description of the item, but
@@ -972,10 +972,9 @@ class HandleBTSQueryPage(TreePage):
         self.entry.grab_focus()
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=6)
-        self.label = gtk.Label("List of bugs. Select a bug to retrieve and submit more information.")
+        vbox = Gtk.VBox(spacing=6)
+        self.label = Gtk.Label("List of bugs. Select a bug to retrieve and submit more information.")
         vbox.pack_start(self.label, expand=False, padding=6)
-
         hbox = gtk.HBox(spacing=6)
         label = gtk.Label("Filter:")
         hbox.pack_start(label, expand=False)
@@ -988,18 +987,18 @@ class HandleBTSQueryPage(TreePage):
         hbox.pack_start(button, expand=False)
         vbox.pack_start(hbox, expand=False)
 
-        self.view = gtk.TreeView()
+        self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
         scrolled = create_scrollable(self.view)
         self.columns = ['ID', 'Tag', 'Package', 'Description', 'Status', 'Submitter', 'Date', 'Severity', 'Version',
                         'Filed date', 'Modified date']
         for col in zip(self.columns, list(range(len(self.columns)))):
-            column = gtk.TreeViewColumn(col[0], gtk.CellRendererText(), text=col[1])
+            column = Gtk.TreeViewColumn(col[0], Gtk.CellRendererText(), text=col[1])
             column.set_reorderable(True)
             self.view.append_column(column)
         vbox.pack_start(scrolled)
 
-        button = gtk.Button("Retrieve and submit bug information")
+        button = Gtk.Button("Retrieve and submit bug information")
         button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.BUTTON))
         button.connect('clicked', self.on_retrieve_info)
         vbox.pack_start(button, expand=False)
@@ -1066,7 +1065,7 @@ class HandleBTSQueryPage(TreePage):
     def execute(self, buglist, sectitle):
         GLib.idle_add(self.label.set_text, "%s. Double-click a bug to retrieve and submit more information." % sectitle)
 
-        self.model = gtk.TreeStore(*([str] * len(self.columns)))
+        self.model = Gtk.TreeStore(*([str] * len(self.columns)))
         for category in buglist:
             row = [None] * len(self.columns)
             row[3] = category[0]
@@ -1116,7 +1115,7 @@ class DisplayReportPage(Page):
     default_complete = True
 
     def create_widget(self):
-        self.view = gtk.TextView()
+        self.view = Gtk.TextView()
         self.view.set_editable(False)
         scrolled = create_scrollable(self.view)
         return scrolled
@@ -1132,12 +1131,12 @@ class LongMessagePage(Page):
     default_complete = True
 
     def create_widget(self):
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
-        eb = gtk.EventBox()
+        eb = Gtk.EventBox()
         eb.add(self.label)
         return eb
 
@@ -1179,8 +1178,8 @@ class EditorPage(Page):
         scrolled = create_scrollable(self.view)
         vbox.pack_start(scrolled)
 
-        expander = gtk.Expander("Other system information")
-        view = gtk.TextView()
+        expander = Gtk.Expander("Other system information")
+        view = Gtk.TextView()
         view.set_editable(False)
         self.others_buffer = view.get_buffer()
         scrolled = create_scrollable(view)
@@ -1188,8 +1187,8 @@ class EditorPage(Page):
         vbox.pack_start(expander, False)
 
         if not has_spell:
-            box = gtk.EventBox()
-            label = gtk.Label("Please install <b>python-gtkspellcheck</b> to enable spell checking")
+            box = Gtk.EventBox()
+            label = Gtk.Label("Please install <b>python-gtkspellcheck</b> to enable spell checking")
             label.set_use_markup(True)
             label.set_line_wrap(True)
             label.set_selectable(True)
@@ -1251,10 +1250,10 @@ class SelectOptionsPage(Page):
     default_complete = False
 
     def create_widget(self):
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
-        self.vbox = gtk.VBox(spacing=6)
+        self.vbox = Gtk.VBox(spacing=6)
         self.vbox.pack_start(self.label, expand=False, padding=6)
         self.default = None
         return self.vbox
@@ -1290,18 +1289,18 @@ class SelectOptionsPage(Page):
                 continue
             # stdout is a textview for us
             if 'Print message to stdout' in desc:
-                button = gtk.Button("Display message in a text view")
+                button = Gtk.Button("Display message in a text view")
                 button.connect('clicked', self.on_display_clicked)
                 buttons.append(button)
             else:
-                button = gtk.Button()
-                label = gtk.Label(options[menuopt.lower()])
+                button = Gtk.Button()
+                label = Gtk.Label(options[menuopt.lower()])
                 button.add(label)
                 button.connect('clicked', self.on_clicked, menuopt.lower())
                 if menuopt.isupper():
                     label.set_markup("<b>%s</b>" % label.get_text())
                     self.default = button
-                    buttons.insert(0, gtk.HSeparator())
+                    buttons.insert(0, Gtk.HSeparator())
                     buttons.insert(0, button)
                 else:
                     buttons.append(button)
@@ -1316,7 +1315,7 @@ class SystemPage(Page):
     default_complete = False
 
     def create_widget(self):
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
 
         self.terminal = Vte.Terminal()
         self.terminal.set_cursor_blinks(True)
@@ -1324,7 +1323,7 @@ class SystemPage(Page):
         self.terminal.connect('child-exited', self.on_child_exited)
         hbox.pack_start(self.terminal)
 
-        scrollbar = gtk.VScrollbar()
+        scrollbar = Gtk.VScrollbar()
         scrollbar.set_adjustment(self.terminal.get_adjustment())
         hbox.pack_start(scrollbar)
 
@@ -1339,18 +1338,18 @@ class SystemPage(Page):
 
 
 class ProgressPage(Page):
-    page_type = gtk.ASSISTANT_PAGE_PROGRESS
+    page_type = Gtk.AssistantPageType.PROGRESS
 
     def pulse(self):
         self.progress.pulse()
         return True
 
     def create_widget(self):
-        vbox = gtk.VBox(spacing=6)
-        self.label = gtk.Label()
+        vbox = Gtk.VBox(spacing=6)
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
-        self.progress = gtk.ProgressBar()
+        self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
         vbox.pack_start(self.label, expand=False)
         vbox.pack_start(self.progress, expand=False)
@@ -1364,9 +1363,9 @@ class ProgressPage(Page):
         self.set_label("This operation may take a while")
 
 
-class ReportbugAssistant(gtk.Assistant):
+class ReportbugAssistant(Gtk.Assistant):
     def __init__(self, application):
-        gtk.Assistant.__init__(self)
+        Gtk.Assistant.__init__(self)
         self.application = application
 
         self.set_title('Reportbug')
@@ -1383,7 +1382,7 @@ class ReportbugAssistant(gtk.Assistant):
         # This is a real hack for two reasons:
         # 1. There's no other way to access action area but inspecting the assistant and searching for the back button
         # 2. Hide back button on show, because it can be shown-hidden by the assistant depending on the page
-        if isinstance(widget, gtk.Button):
+        if isinstance(widget, Gtk.Button):
             if widget.get_label() == 'gtk-go-back':
                 widget.connect('show', self.on_back_show)
                 return
@@ -1402,7 +1401,7 @@ class ReportbugAssistant(gtk.Assistant):
                 widget.set_image(image)
                 return
 
-        if isinstance(widget, gtk.Container):
+        if isinstance(widget, Gtk.Container):
             widget.forall(self._hack_buttons)
 
     def hack_buttons(self):
@@ -1596,8 +1595,8 @@ Falling back to 'text' interface."""
         dialog.set_markup(message % "<b>gir1.2-vte-2.91</b>")
         dialog.run()
         dialog.destroy()
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         if not sys.stdout.isatty():
             os.execlp('x-terminal-emulator', 'x-terminal-emulator', '-e', 'reportbug -u text')
         return False
@@ -1607,7 +1606,7 @@ Falling back to 'text' interface."""
     sys.excepthook = ExceptionDialog.create_excepthook(oldhook)
 
     # GTK settings
-    gtk.Window.set_default_icon_from_file(DEBIAN_LOGO)
+    Gtk.Window.set_default_icon_from_file(DEBIAN_LOGO)
 
     application = ReportbugApplication()
     assistant = ReportbugAssistant(application)
