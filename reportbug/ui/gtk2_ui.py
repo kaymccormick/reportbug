@@ -34,7 +34,9 @@ try:
 
     import gtk
     import gobject
-    import pango
+
+    gi.require_version('Pango', '1.0')
+    from gi.repository import Pango
 except ImportError:
     raise UINotImportable('Please install the python3-gi and gir1.2-gtk-3.0 packages to use this interface.')
 
@@ -848,7 +850,7 @@ class MenuPage(TreePage):
 
         self.view.append_column(gtk.TreeViewColumn('Option', gtk.CellRendererText(), markup=0))
         rend = WrapRendererText()
-        rend.set_property('wrap-mode', pango.WRAP_WORD)
+        rend.set_property('wrap-mode', Pango.WrapMode.WORD)
         rend.set_property('wrap-width', 300)
         self.view.append_column(gtk.TreeViewColumn('Description', rend, text=1))
 
@@ -1155,7 +1157,7 @@ class EditorPage(Page):
         vbox.pack_start(hbox, expand=False)
 
         self.view = gtk.TextView()
-        self.view.modify_font(pango.FontDescription("Monospace"))
+        self.view.modify_font(Pango.FontDescription("Monospace"))
         self.view.set_wrap_mode(gtk.WRAP_WORD)
         if has_spell:
             gtkspellcheck.SpellChecker(self.view)
