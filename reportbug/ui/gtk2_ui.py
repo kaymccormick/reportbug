@@ -238,7 +238,7 @@ class ReportViewerDialog(Gtk.Dialog):
         # ok Gtk.ResponseType.APPLY is ugly for Gtk.STOCK_COPY, but who cares?
         # maybe adding it as a secondary button or such is better
         if res == Gtk.ResponseType.APPLY:
-            clipboard = gtk.clipboard_get()
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             clipboard.set_text(self.message)
         else:
             self.destroy()
