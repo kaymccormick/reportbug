@@ -806,9 +806,9 @@ class GetListPage(TreePage):
 
 
 class WrapRendererText(gtk.CellRendererText):
-    def do_render(self, window, widget, background_area, cell_area, expose_area, flags):
+    def do_render(self, cr, widget, background_area, cell_area, flags):
         self.set_property('wrap-width', cell_area.width)
-        gtk.CellRendererText.do_render(self, window, widget, background_area, cell_area, expose_area, flags)
+        gtk.CellRendererText.do_render(self, cr, widget, background_area, cell_area, flags)
 
 
 gobject.type_register(WrapRendererText)
