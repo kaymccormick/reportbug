@@ -1056,7 +1056,7 @@ class HandleBTSQueryPage(TreePage):
             row[3] = category[0]
             iter = self.model.append(None, row)
             for bug in category[1]:
-                self.model.append(iter, list(bug))
+                self.model.append(iter, list(map(str, bug)))
 
         self.selection.set_mode(gtk.SELECTION_MULTIPLE)
 
