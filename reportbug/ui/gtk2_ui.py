@@ -114,25 +114,25 @@ def create_scrollable(widget, with_viewport=False):
 
 
 def info_dialog(message):
-    dialog = gtk.MessageDialog(assistant, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                               gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
+    dialog = Gtk.MessageDialog(assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                               Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, message)
     dialog.connect('response', lambda d, *args: d.destroy())
     dialog.set_title('Reportbug')
     dialog.show_all()
 
 
 def error_dialog(message):
-    dialog = gtk.MessageDialog(assistant, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                               gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, message)
+    dialog = Gtk.MessageDialog(assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                               Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, message)
     dialog.connect('response', lambda d, *args: d.destroy())
     dialog.set_title('Reportbug')
     dialog.show_all()
 
 
-class CustomDialog(gtk.Dialog):
+class CustomDialog(Gtk.Dialog):
     def __init__(self, stock_image, message, buttons, *args, **kwargs):
-        gtk.Dialog.__init__(self, "Reportbug", assistant,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        Gtk.Dialog.__init__(self, "Reportbug", assistant,
+                            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                             buttons)
         # Try following the HIG
         self.set_default_response(buttons[-1])  # this is the response of the last button
@@ -164,9 +164,9 @@ class CustomDialog(gtk.Dialog):
 
 class InputStringDialog(CustomDialog):
     def __init__(self, message):
-        CustomDialog.__init__(self, gtk.STOCK_DIALOG_INFO, message,
-                              (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                               gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        CustomDialog.__init__(self, Gtk.STOCK_DIALOG_INFO, message,
+                              (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                               Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
 
     def setup_dialog(self, vbox):
         self.entry = gtk.Entry()
@@ -196,7 +196,7 @@ class ExceptionDialog(CustomDialog):
             sys.exit(1)
 
     def __init__(self, tb):
-        CustomDialog.__init__(self, gtk.STOCK_DIALOG_ERROR, "An error has occurred while doing an operation in Reportbug.\nPlease report the bug.", (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE), tb)
+        CustomDialog.__init__(self, Gtk.STOCK_DIALOG_ERROR, "An error has occurred while doing an operation in Reportbug.\nPlease report the bug.", (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE), tb)
 
     def setup_dialog(self, vbox, tb):
         # The traceback
@@ -215,16 +215,16 @@ class ExceptionDialog(CustomDialog):
         sys.exit(1)
 
 
-class ReportViewerDialog(gtk.Dialog):
+class ReportViewerDialog(Gtk.Dialog):
     def __init__(self, message):
-        gtk.Dialog.__init__(self, "Reportbug", assistant,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                            (gtk.STOCK_COPY, gtk.RESPONSE_APPLY,
-                             gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        Gtk.Dialog.__init__(self, "Reportbug", assistant,
+                            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                            (Gtk.STOCK_COPY, Gtk.ResponseType.APPLY,
+                             Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
         self.message = message
 
         self.set_default_size(400, 400)
-        self.set_default_response(gtk.RESPONSE_CLOSE)
+        self.set_default_response(Gtk.ResponseType.CLOSE)
         self.set_border_width(6)
         self.connect('response', self.on_response)
 
@@ -235,9 +235,9 @@ class ReportViewerDialog(gtk.Dialog):
         self.show_all()
 
     def on_response(self, dialog, res):
-        # ok gtk.RESPONSE_APPLY is ugly for gtk.STOCK_COPY, but who cares?
+        # ok Gtk.ResponseType.APPLY is ugly for Gtk.STOCK_COPY, but who cares?
         # maybe adding it as a secondary button or such is better
-        if res == gtk.RESPONSE_APPLY:
+        if res == Gtk.ResponseType.APPLY:
             clipboard = gtk.clipboard_get()
             clipboard.set_text(self.message)
         else:
@@ -458,11 +458,11 @@ class BugPage(gtk.EventBox, threading.Thread):
         self.dialog.destroy()
 
 
-class BugsDialog(gtk.Dialog):
+class BugsDialog(Gtk.Dialog):
     def __init__(self, assistant, queryonly):
-        gtk.Dialog.__init__(self, "Reportbug: bug information", assistant,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                            (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        Gtk.Dialog.__init__(self, "Reportbug: bug information", assistant,
+                            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                            (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
         self.assistant = assistant
         self.queryonly = queryonly
         self.application = assistant.application
@@ -794,7 +794,7 @@ class GetListPage(TreePage):
         dialog.connect('response', self.on_add_dialog_response)
 
     def on_add_dialog_response(self, dialog, res):
-        if res == gtk.RESPONSE_ACCEPT:
+        if res == Gtk.ResponseType.ACCEPT:
             self.model.append([dialog.get_value()])
         dialog.destroy()
 
@@ -1437,12 +1437,12 @@ class ReportbugAssistant(gtk.Assistant):
         sys.exit(0)
 
     def confirm_exit(self, *args):
-        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,
+        dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.WARNING, Gtk.ButtonsType.YES_NO,
                                    "Are you sure you want to quit Reportbug?")
         response = dialog.run()
         dialog.destroy()
-        if response == gtk.RESPONSE_YES:
+        if response == Gtk.ResponseType.YES:
             sys.exit(0)
 
     def forward(self, page_num):
@@ -1471,31 +1471,31 @@ class ReportbugAssistant(gtk.Assistant):
 
 
 # Dialogs
-class YesNoDialog(ReportbugConnector, gtk.MessageDialog):
+class YesNoDialog(ReportbugConnector, Gtk.MessageDialog):
     def __init__(self, application):
-        gtk.MessageDialog.__init__(self, assistant, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO)
+        Gtk.MessageDialog.__init__(self, assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO)
         self.application = application
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
-        self.application.set_next_value(res == gtk.RESPONSE_YES)
+        self.application.set_next_value(res == Gtk.ResponseType.YES)
         self.application.put_next_value()
         self.destroy()
 
     def execute_operation(self, msg, yeshelp=None, nohelp=None, default=True, nowrap=False):
         self.set_markup(msg)
         if default:
-            self.set_default_response(gtk.RESPONSE_YES)
+            self.set_default_response(Gtk.ResponseType.YES)
         else:
-            self.set_default_response(gtk.RESPONSE_NO)
+            self.set_default_response(Gtk.ResponseType.NO)
         self.show_all()
 
 
-class DisplayFailureDialog(ReportbugConnector, gtk.MessageDialog):
+class DisplayFailureDialog(ReportbugConnector, Gtk.MessageDialog):
     def __init__(self, application):
-        gtk.MessageDialog.__init__(self, assistant, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE)
+        Gtk.MessageDialog.__init__(self, assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.WARNING, Gtk.ButtonsType.CLOSE)
         self.application = application
         self.connect('response', self.on_response)
 
@@ -1508,16 +1508,16 @@ class DisplayFailureDialog(ReportbugConnector, gtk.MessageDialog):
         self.show_all()
 
 
-class GetFilenameDialog(ReportbugConnector, gtk.FileChooserDialog):
+class GetFilenameDialog(ReportbugConnector, Gtk.FileChooserDialog):
     def __init__(self, application):
-        gtk.FileChooserDialog.__init__(self, '', assistant, buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                                                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        Gtk.FileChooserDialog.__init__(self, '', assistant, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                                                     Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         self.application = application
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
         value = None
-        if res == gtk.RESPONSE_OK:
+        if res == Gtk.ResponseType.OK:
             value = self.get_filename()
 
         self.application.set_next_value(value)
@@ -1591,8 +1591,8 @@ def initialize():
     except ImportError:
         message = """Please install the %s package to use the GTK+(known as 'gtk2' in reportbug) interface.
 Falling back to 'text' interface."""
-        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, None)
+        dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, None)
         dialog.set_markup(message % "<b>gir1.2-vte-2.91</b>")
         dialog.run()
         dialog.destroy()
