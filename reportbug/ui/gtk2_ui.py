@@ -1253,7 +1253,8 @@ class SelectOptionsPage(Page):
 
     def setup_focus(self):
         if self.default:
-            self.default.set_flags(gtk.CAN_DEFAULT | gtk.HAS_DEFAULT)
+            self.default.props.can_default = True
+            self.default.props.has_default = True
             self.default.grab_default()
             self.default.grab_focus()
 
