@@ -33,7 +33,12 @@ try:
     pygtkcompat.enable_gtk(version='3.0')
 
     import gtk
-    import gobject
+
+    gi.require_version('GLib', '2.0')
+    from gi.repository import GLib
+
+    gi.require_version('GObject', '2.0')
+    from gi.repository import GObject
 
     gi.require_version('Pango', '1.0')
     from gi.repository import Pango
@@ -373,7 +378,7 @@ class BugPage(gtk.EventBox, threading.Thread):
 
     def run(self):
         # Start the progress bar
-        gobject.timeout_add(10, self.pulse)
+        GLib.timeout_add(10, self.pulse)
 
         info = debbugs.get_report(int(self.number), self.timeout,
                                   self.bts, mirrors=self.mirrors,
@@ -504,7 +509,7 @@ class ReportbugApplication(threading.Thread):
         return callback
 
     def run_once_in_main_thread(self, func, *args, **kwargs):
-        gobject.idle_add(self.create_idle_callback(func, *args, **kwargs))
+        GLib.idle_add(self.create_idle_callback(func, *args, **kwargs))
 
 
 # Connection with reportbug
@@ -652,7 +657,7 @@ class GetStringPage(Page):
 
     def execute(self, prompt, options=None, force_prompt=False, default=''):
         # Hackish: remove the text needed for textual UIs...
-        gobject.idle_add(self.label.set_text, prompt.replace('(enter Ctrl+c to exit reportbug without reporting a bug)', ''))
+        GLib.idle_add(self.label.set_text, prompt.replace('(enter Ctrl+c to exit reportbug without reporting a bug)', ''))
         self.entry.set_text(default)
 
         if options:
@@ -711,7 +716,7 @@ class GetMultilinePage(Page):
     def execute(self, prompt):
         self.empty_ok = True
         # The result must be iterable for reportbug even if it's empty and not modified
-        gobject.idle_add(self.label.set_text, prompt)
+        GLib.idle_add(self.label.set_text, prompt)
         self.buffer.set_text("")
         self.buffer.emit('changed')
 
@@ -802,7 +807,7 @@ class GetListPage(TreePage):
     def execute(self, prompt):
         self.empty_ok = True
 
-        gobject.idle_add(self.label.set_text, prompt)
+        GLib.idle_add(self.label.set_text, prompt)
 
         self.model = gtk.ListStore(str)
         self.model.connect('row-changed', self.validate)
@@ -819,7 +824,7 @@ class WrapRendererText(gtk.CellRendererText):
         gtk.CellRendererText.do_render(self, cr, widget, background_area, cell_area, flags)
 
 
-gobject.type_register(WrapRendererText)
+GObject.type_register(WrapRendererText)
 
 
 class MenuPage(TreePage):
@@ -846,7 +851,7 @@ class MenuPage(TreePage):
 
     def execute(self, par, options, prompt, default=None, any_ok=False,
                 order=None, extras=None, multiple=False):
-        gobject.idle_add(self.label.set_text, par)
+        GLib.idle_add(self.label.set_text, par)
 
         self.model = gtk.ListStore(str, str)
         self.view.set_model(self.model)
@@ -1056,7 +1061,7 @@ class HandleBTSQueryPage(TreePage):
         return matches
 
     def execute(self, buglist, sectitle):
-        gobject.idle_add(self.label.set_text, "%s. Double-click a bug to retrieve and submit more information." % sectitle)
+        GLib.idle_add(self.label.set_text, "%s. Double-click a bug to retrieve and submit more information." % sectitle)
 
         self.model = gtk.TreeStore(*([str] * len(self.columns)))
         for category in buglist:
@@ -1137,7 +1142,7 @@ class LongMessagePage(Page):
         message = message % args
         # make it all on one line, it will be wrapped at display-time
         message = ' '.join(message.split())
-        gobject.idle_add(self.label.set_text, message)
+        GLib.idle_add(self.label.set_text, message)
         # Reportbug should use final_message, so emulate it
         if('999999' in message):
             self.set_page_type(gtk.ASSISTANT_PAGE_CONFIRM)
@@ -1269,7 +1274,7 @@ class SelectOptionsPage(Page):
     def execute(self, prompt, menuopts, options):
         # remove text UI indication
         prompt = prompt.replace('(e to edit)', '')
-        gobject.idle_add(self.label.set_text, prompt)
+        GLib.idle_add(self.label.set_text, prompt)
 
         buttons = []
         for menuopt in menuopts:
@@ -1346,11 +1351,11 @@ class ProgressPage(Page):
         self.progress.set_pulse_step(0.01)
         vbox.pack_start(self.label, expand=False)
         vbox.pack_start(self.progress, expand=False)
-        gobject.timeout_add(10, self.pulse)
+        GLib.timeout_add(10, self.pulse)
         return vbox
 
     def set_label(self, text):
-        gobject.idle_add(self.label.set_text, text)
+        GLib.idle_add(self.label.set_text, text)
 
     def reset_label(self):
         self.set_label("This operation may take a while")
@@ -1423,7 +1428,7 @@ class ReportbugAssistant(gtk.Assistant):
         if self.showing_page == self.progress_page:
             self.progress_page.reset_label()
 
-        gobject.idle_add(self.showing_page.setup_focus)
+        GLib.idle_add(self.showing_page.setup_focus)
 
     def close(self, *args):
         sys.exit(0)
