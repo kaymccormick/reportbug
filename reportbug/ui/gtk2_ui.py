@@ -140,24 +140,24 @@ class CustomDialog(Gtk.Dialog):
 
         vbox = Gtk.VBox(spacing=10)
         vbox.set_border_width(6)
-        self.vbox.pack_start(vbox)
+        self.vbox.pack_start(vbox, True, True, 0)
 
         # The header image + label
         hbox = Gtk.HBox(spacing=10)
-        vbox.pack_start(hbox, expand=False)
+        vbox.pack_start(hbox, False, True, 0)
 
         align = Gtk.Alignment(0.5, 0.5, 1.0, 1.0)
-        hbox.pack_start(align, expand=False)
+        hbox.pack_start(align, False, True, 0)
 
         image = Gtk.Image.new_from_stock(stock_image, Gtk.IconSize.DIALOG)
-        hbox.pack_start(image)
+        hbox.pack_start(image, True, True, 0)
 
         label = Gtk.Label(message)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_FILL)
         label.set_selectable(True)
         label.set_property("can-focus", False)
-        hbox.pack_start(label, expand=False)
+        hbox.pack_start(label, False, True, 0)
 
         self.setup_dialog(vbox, *args, **kwargs)
 
@@ -170,7 +170,7 @@ class InputStringDialog(CustomDialog):
 
     def setup_dialog(self, vbox):
         self.entry = Gtk.Entry()
-        vbox.pack_start(self.entry, expand=False)
+        vbox.pack_start(self.entry, False, True, 0)
 
     def get_value(self):
         return self.entry.get_text()
@@ -201,7 +201,7 @@ class ExceptionDialog(CustomDialog):
     def setup_dialog(self, vbox, tb):
         # The traceback
         expander = Gtk.Expander("More details")
-        vbox.pack_start(expander, True)
+        vbox.pack_start(expander, True, True, 0)
 
         view = Gtk.TextView()
         view.set_editable(False)
@@ -230,7 +230,7 @@ class ReportViewerDialog(Gtk.Dialog):
 
         view = Gtk.TextView()
         view.get_buffer().set_text(self.message)
-        self.vbox.pack_start(create_scrollable(view))
+        self.vbox.pack_start(create_scrollable(view), True, True, 0)
 
         self.show_all()
 
@@ -371,11 +371,11 @@ class BugPage(Gtk.EventBox, threading.Thread):
         self.bug_status = None
 
         vbox = Gtk.VBox(spacing=12)
-        vbox.pack_start(gtk.Label("Retrieving bug information."), expand=False)
+        vbox.pack_start(Gtk.Label("Retrieving bug information."), False, True, 0)
 
         self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
-        vbox.pack_start(self.progress, expand=False)
+        vbox.pack_start(self.progress, False, True, 0)
 
         self.add(vbox)
 
@@ -416,7 +416,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         label = Gtk.Label('Description: ' + desc)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_FILL)
-        vbox.pack_start(label, expand=False)
+        vbox.pack_start(label, False, True, 0)
 
         views = Gtk.VBox()
         odd = False
@@ -426,21 +426,21 @@ class BugPage(Gtk.EventBox, threading.Thread):
             view.get_buffer().set_text(body)
             if odd:
                 view.set_state(gtk.STATE_PRELIGHT)
-            views.pack_start(view, False)
+            views.pack_start(view, False, True, 0)
             odd = not odd
         scrolled = create_scrollable(views, True)
-        vbox.pack_start(scrolled)
+        vbox.pack_start(scrolled, True, True, 0)
 
         bbox = Gtk.HButtonBox()
         button = Gtk.Button("Open in browser")
         button.connect('clicked', self.on_open_browser)
-        bbox.pack_start(button)
+        bbox.pack_start(button, True, True, 0)
         if not self.queryonly:
             button = Gtk.Button("Reply")
             button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.BUTTON))
             button.connect('clicked', self.on_reply)
-            bbox.pack_start(button)
-        vbox.pack_start(bbox, expand=False)
+            bbox.pack_start(button, True, True, 0)
+        vbox.pack_start(bbox, False, True, 0)
 
         self.add(vbox)
         self.show_all()
@@ -467,7 +467,7 @@ class BugsDialog(Gtk.Dialog):
         self.queryonly = queryonly
         self.application = assistant.application
         self.notebook = Gtk.Notebook()
-        self.vbox.pack_start(self.notebook)
+        self.vbox.pack_start(self.notebook, True, True, 0)
         self.connect('response', self.on_response)
         self.set_default_size(600, 600)
 
@@ -627,11 +627,11 @@ This wizard will guide you through the bug reporting process step by step.
         label.set_use_markup(True)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_FILL)
-        vbox.pack_start(label, expand=False)
+        vbox.pack_start(label, False, True, 0)
 
         link = Gtk.LinkButton("http://alioth.debian.org/projects/reportbug",
                               "Homepage of reportbug project")
-        vbox.pack_start(link, expand=False)
+        vbox.pack_start(link, False, True, 0)
         return vbox
 
 
@@ -647,8 +647,8 @@ class GetStringPage(Page):
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
         self.entry = Gtk.Entry()
-        vbox.pack_start(self.label, expand=False)
-        vbox.pack_start(self.entry, expand=False)
+        vbox.pack_start(self.label, False, True, 0)
+        vbox.pack_start(self.entry, False, True, 0)
         return vbox
 
     def connect_signals(self):
@@ -697,12 +697,12 @@ class GetMultilinePage(Page):
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
-        vbox.pack_start(self.label, expand=False)
+        vbox.pack_start(self.label, False, True, 0)
 
         self.view = Gtk.TextView()
         self.buffer = view.get_buffer()
         scrolled = create_scrollable(self.view)
-        vbox.pack_start(scrolled)
+        vbox.pack_start(scrolled, True, True, 0)
         return vbox
 
     def connect_signals(self):
@@ -758,7 +758,7 @@ class GetListPage(TreePage):
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
-        vbox.pack_start(self.label, expand=False)
+        vbox.pack_start(self.label, False, True, 0)
 
         hbox = Gtk.HBox(spacing=6)
 
@@ -766,20 +766,20 @@ class GetListPage(TreePage):
         self.view.set_rules_hint(True)
         self.view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         scrolled = create_scrollable(self.view)
-        hbox.pack_start(scrolled)
+        hbox.pack_start(scrolled, True, True, 0)
 
         bbox = Gtk.VButtonBox()
         bbox.set_spacing(6)
         bbox.set_layout(gtk.BUTTONBOX_START)
         button = Gtk.Button(stock=Gtk.STOCK_ADD)
         button.connect('clicked', self.on_add)
-        bbox.pack_start(button, expand=False)
+        bbox.pack_start(button, False, True, 0)
         button = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         button.connect('clicked', self.on_remove)
-        bbox.pack_start(button, expand=False)
-        hbox.pack_start(bbox, expand=False)
+        bbox.pack_start(button, False, True, 0)
+        hbox.pack_start(bbox, False, True, 0)
 
-        vbox.pack_start(hbox)
+        vbox.pack_start(hbox, True, True, 0)
         return vbox
 
     def get_value(self):
@@ -838,13 +838,13 @@ class MenuPage(TreePage):
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
-        vbox.pack_start(self.label, expand=False)
+        vbox.pack_start(self.label, False, True, 0)
 
         self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
         scrolled = create_scrollable(self.view)
         scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        vbox.pack_start(scrolled)
+        vbox.pack_start(scrolled, True, True, 0)
         vbox.show_all()
         return vbox
 
@@ -974,18 +974,19 @@ class HandleBTSQueryPage(TreePage):
     def create_widget(self):
         vbox = Gtk.VBox(spacing=6)
         self.label = Gtk.Label("List of bugs. Select a bug to retrieve and submit more information.")
-        vbox.pack_start(self.label, expand=False, padding=6)
-        hbox = gtk.HBox(spacing=6)
-        label = gtk.Label("Filter:")
-        hbox.pack_start(label, expand=False)
-        self.entry = gtk.Entry()
-        hbox.pack_start(self.entry)
-        button = gtk.Button()
+        vbox.pack_start(self.label, False, True, 6)
+
+        hbox = Gtk.HBox(spacing=6)
+        label = Gtk.Label("Filter:")
+        hbox.pack_start(label, False, True, 0)
+        self.entry = Gtk.Entry()
+        hbox.pack_start(self.entry, True, True, 0)
+        button = Gtk.Button()
         button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
         button.set_relief(gtk.RELIEF_NONE)
         button.connect('clicked', self.on_filter_clear)
-        hbox.pack_start(button, expand=False)
-        vbox.pack_start(hbox, expand=False)
+        hbox.pack_start(button, False, True, 0)
+        vbox.pack_start(hbox, False, True, 0)
 
         self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
@@ -996,12 +997,12 @@ class HandleBTSQueryPage(TreePage):
             column = Gtk.TreeViewColumn(col[0], Gtk.CellRendererText(), text=col[1])
             column.set_reorderable(True)
             self.view.append_column(column)
-        vbox.pack_start(scrolled)
+        vbox.pack_start(scrolled, True, True, 0)
 
         button = Gtk.Button("Retrieve and submit bug information")
         button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.BUTTON))
         button.connect('clicked', self.on_retrieve_info)
-        vbox.pack_start(button, expand=False)
+        vbox.pack_start(button, False, True, 0)
         return vbox
 
     def connect_signals(self):
@@ -1162,21 +1163,21 @@ class FinalMessagePage(LongMessagePage):
 
 class EditorPage(Page):
     def create_widget(self):
-        vbox = gtk.VBox(spacing=6)
-        hbox = gtk.HBox(spacing=12)
-        hbox.pack_start(gtk.Label("Subject: "), expand=False)
-        self.subject = gtk.Entry()
-        hbox.pack_start(self.subject)
-        vbox.pack_start(hbox, expand=False)
+        vbox = Gtk.VBox(spacing=6)
+        hbox = Gtk.HBox(spacing=12)
+        hbox.pack_start(Gtk.Label("Subject: "), False, True, 0)
+        self.subject = Gtk.Entry()
+        hbox.pack_start(self.subject, True, True, 0)
+        vbox.pack_start(hbox, False, True, 0)
 
-        self.view = gtk.TextView()
+        self.view = Gtk.TextView()
         self.view.modify_font(Pango.FontDescription("Monospace"))
         self.view.set_wrap_mode(gtk.WRAP_WORD)
         if has_spell:
             gtkspellcheck.SpellChecker(self.view)
         self.info_buffer = self.view.get_buffer()
         scrolled = create_scrollable(self.view)
-        vbox.pack_start(scrolled)
+        vbox.pack_start(scrolled, True, True, 0)
 
         expander = Gtk.Expander("Other system information")
         view = Gtk.TextView()
@@ -1184,7 +1185,7 @@ class EditorPage(Page):
         self.others_buffer = view.get_buffer()
         scrolled = create_scrollable(view)
         expander.add(scrolled)
-        vbox.pack_start(expander, False)
+        vbox.pack_start(expander, False, True, 0)
 
         if not has_spell:
             box = Gtk.EventBox()
@@ -1196,7 +1197,7 @@ class EditorPage(Page):
             box.add(label)
             box.modify_bg(gtk.STATE_NORMAL, self.WARNING_COLOR)
             box.connect('button-press-event', lambda *args: box.destroy())
-            vbox.pack_start(box, False)
+            vbox.pack_start(box, False, True, 0)
         return vbox
 
     def switch_out(self):
@@ -1254,7 +1255,7 @@ class SelectOptionsPage(Page):
         self.label.set_line_wrap(True)
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.vbox = Gtk.VBox(spacing=6)
-        self.vbox.pack_start(self.label, expand=False, padding=6)
+        self.vbox.pack_start(self.label, False, True, 6)
         self.default = None
         return self.vbox
 
@@ -1306,7 +1307,7 @@ class SelectOptionsPage(Page):
                     buttons.append(button)
 
         for button in buttons:
-            self.vbox.pack_start(button, expand=False)
+            self.vbox.pack_start(button, False, True, 0)
 
         self.vbox.show_all()
 
@@ -1321,11 +1322,11 @@ class SystemPage(Page):
         self.terminal.set_cursor_blinks(True)
         self.terminal.set_emulation("xterm")
         self.terminal.connect('child-exited', self.on_child_exited)
-        hbox.pack_start(self.terminal)
+        hbox.pack_start(self.terminal, True, True, 0)
 
         scrollbar = Gtk.VScrollbar()
         scrollbar.set_adjustment(self.terminal.get_adjustment())
-        hbox.pack_start(scrollbar)
+        hbox.pack_start(scrollbar, True, True, 0)
 
         return hbox
 
@@ -1351,8 +1352,8 @@ class ProgressPage(Page):
         self.label.set_justify(gtk.JUSTIFY_FILL)
         self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
-        vbox.pack_start(self.label, expand=False)
-        vbox.pack_start(self.progress, expand=False)
+        vbox.pack_start(self.label, False, True, 0)
+        vbox.pack_start(self.progress, False, True, 0)
         GLib.timeout_add(10, self.pulse)
         return vbox
 
