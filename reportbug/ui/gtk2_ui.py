@@ -425,7 +425,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
             view.set_editable(False)
             view.get_buffer().set_text(body)
             if odd:
-                view.set_state(gtk.STATE_PRELIGHT)
+                view.set_state_flags(Gtk.StateFlags.PRELIGHT, False)
             views.pack_start(view, False, True, 0)
             odd = not odd
         scrolled = create_scrollable(views, True)
