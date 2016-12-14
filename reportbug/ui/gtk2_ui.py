@@ -48,6 +48,9 @@ try:
 
     gi.require_version('GdkPixbuf', '2.0')
     from gi.repository import GdkPixbuf
+
+    gi.require_version('Gtk', '3.0')
+    from gi.repository import Gtk
 except ImportError:
     raise UINotImportable('Please install the python3-gi and gir1.2-gtk-3.0 packages to use this interface.')
 
@@ -146,7 +149,7 @@ class CustomDialog(gtk.Dialog):
         align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
         hbox.pack_start(align, expand=False)
 
-        image = gtk.image_new_from_stock(stock_image, gtk.ICON_SIZE_DIALOG)
+        image = Gtk.Image.new_from_stock(stock_image, Gtk.IconSize.DIALOG)
         hbox.pack_start(image)
 
         label = gtk.Label(message)
@@ -434,7 +437,7 @@ class BugPage(gtk.EventBox, threading.Thread):
         bbox.pack_start(button)
         if not self.queryonly:
             button = gtk.Button("Reply")
-            button.set_image(gtk.image_new_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_BUTTON))
+            button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.BUTTON))
             button.connect('clicked', self.on_reply)
             bbox.pack_start(button)
         vbox.pack_start(bbox, expand=False)
@@ -979,7 +982,7 @@ class HandleBTSQueryPage(TreePage):
         self.entry = gtk.Entry()
         hbox.pack_start(self.entry)
         button = gtk.Button()
-        button.set_image(gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
+        button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
         button.set_relief(gtk.RELIEF_NONE)
         button.connect('clicked', self.on_filter_clear)
         hbox.pack_start(button, expand=False)
@@ -997,7 +1000,7 @@ class HandleBTSQueryPage(TreePage):
         vbox.pack_start(scrolled)
 
         button = gtk.Button("Retrieve and submit bug information")
-        button.set_image(gtk.image_new_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_BUTTON))
+        button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.BUTTON))
         button.connect('clicked', self.on_retrieve_info)
         vbox.pack_start(button, expand=False)
         return vbox
@@ -1388,13 +1391,13 @@ class ReportbugAssistant(gtk.Assistant):
                 widget.connect('show', self.on_back_show)
                 return
             if widget.get_label() == 'gtk-cancel':
-                image = gtk.image_new_from_stock(gtk.STOCK_QUIT,
-                                                 gtk.ICON_SIZE_BUTTON)
+                image = Gtk.Image.new_from_stock(Gtk.STOCK_QUIT,
+                                                 Gtk.IconSize.BUTTON)
                 widget.set_label("_Quit")
                 widget.set_image(image)
                 return
             if widget.get_label() == 'gtk-go-forward':
-                image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_BUTTON)
+                image = Gtk.Image.new_from_stock(Gtk.STOCK_GO_FORWARD, Gtk.IconSize.BUTTON)
                 widget.set_label("_Continue")
                 widget.set_image(image)
                 return
