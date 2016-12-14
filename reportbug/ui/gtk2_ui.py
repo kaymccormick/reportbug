@@ -37,6 +37,12 @@ try:
 
     gi.require_version('Pango', '1.0')
     from gi.repository import Pango
+
+    gi.require_version('Gdk', '3.0')
+    from gi.repository import Gdk
+
+    gi.require_version('GdkPixbuf', '2.0')
+    from gi.repository import GdkPixbuf
 except ImportError:
     raise UINotImportable('Please install the python3-gi and gir1.2-gtk-3.0 packages to use this interface.')
 
@@ -49,7 +55,7 @@ except:
     has_spell = False
 
 #gtk.set_interactive(0)
-gtk.gdk.threads_init()
+Gdk.threads_init()
 
 import sys
 import re
@@ -476,9 +482,9 @@ class ReportbugApplication(threading.Thread):
         self.next_value = None
 
     def run(self):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         gtk.main()
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
 
     def get_last_value(self):
         return self.queue.get()
@@ -526,7 +532,7 @@ class Page(ReportbugConnector):
     page_type = gtk.ASSISTANT_PAGE_CONTENT
     default_complete = False
     side_image = DEBIAN_LOGO
-    WARNING_COLOR = gtk.gdk.color_parse("#fff8ae")
+    WARNING_COLOR = Gdk.color_parse("#fff8ae")
 
     def __init__(self, assistant):
         self.assistant = assistant
@@ -565,7 +571,7 @@ class Page(ReportbugConnector):
         self.assistant.insert_page(self.widget, self.page_num)
         self.set_page_complete(self.default_complete)
         self.set_page_type(self.page_type)
-        self.assistant.set_page_side_image(self.widget, gtk.gdk.pixbuf_new_from_file(self.side_image))
+        self.assistant.set_page_side_image(self.widget, GdkPixbuf.Pixbuf.new_from_file(self.side_image))
         self.assistant.set_next_page(self)
         self.set_page_title("Reportbug")
 
