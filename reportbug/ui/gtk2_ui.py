@@ -1590,7 +1590,7 @@ Falling back to 'text' interface."""
     sys.excepthook = ExceptionDialog.create_excepthook(oldhook)
 
     # GTK settings
-    gtk.window_set_default_icon_from_file(DEBIAN_LOGO)
+    gtk.Window.set_default_icon_from_file(DEBIAN_LOGO)
     gtk.link_button_set_uri_hook(lambda button, uri: launch_browser(uri))
 
     application = ReportbugApplication()
