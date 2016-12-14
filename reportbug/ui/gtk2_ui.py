@@ -104,8 +104,8 @@ def ask_free(s):
 
 def create_scrollable(widget, with_viewport=False):
     scrolled = Gtk.ScrolledWindow()
-    scrolled.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-    scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+    scrolled.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+    scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     if with_viewport:
         scrolled.add_with_viewport(widget)
     else:
@@ -154,7 +154,7 @@ class CustomDialog(Gtk.Dialog):
 
         label = Gtk.Label(message)
         label.set_line_wrap(True)
-        label.set_justify(gtk.JUSTIFY_FILL)
+        label.set_justify(Gtk.Justification.FILL)
         label.set_selectable(True)
         label.set_property("can-focus", False)
         hbox.pack_start(label, False, True, 0)
@@ -415,7 +415,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         vbox.set_border_width(12)
         label = Gtk.Label('Description: ' + desc)
         label.set_line_wrap(True)
-        label.set_justify(gtk.JUSTIFY_FILL)
+        label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(label, False, True, 0)
 
         views = Gtk.VBox()
@@ -537,7 +537,7 @@ class ReportbugConnector(object):
 # Assistant
 class Page(ReportbugConnector):
     next_page_num = 0
-    page_type = gtk.ASSISTANT_PAGE_CONTENT
+    page_type = Gtk.AssistantPageType.CONTENT
     default_complete = False
     side_image = DEBIAN_LOGO
     WARNING_COLOR = Gdk.color_parse("#fff8ae")
@@ -612,7 +612,7 @@ class Page(ReportbugConnector):
 
 
 class IntroPage(Page):
-    page_type = gtk.ASSISTANT_PAGE_INTRO
+    page_type = Gtk.AssistantPageType.INTRO
     default_complete = True
 
     def create_widget(self):
@@ -626,7 +626,7 @@ This wizard will guide you through the bug reporting process step by step.
 <b>Note:</b> bug reports are publicly archived(including the email address of the submitter).""")
         label.set_use_markup(True)
         label.set_line_wrap(True)
-        label.set_justify(gtk.JUSTIFY_FILL)
+        label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(label, False, True, 0)
 
         link = Gtk.LinkButton("http://alioth.debian.org/projects/reportbug",
@@ -643,7 +643,7 @@ class GetStringPage(Page):
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
         self.entry = Gtk.Entry()
@@ -694,7 +694,7 @@ class GetMultilinePage(Page):
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
         vbox.pack_start(self.label, False, True, 0)
@@ -739,7 +739,7 @@ class TreePage(Page):
 
     def get_value(self):
         model, paths = self.selection.get_selected_rows()
-        multiple = self.selection.get_mode() == gtk.SELECTION_MULTIPLE
+        multiple = self.selection.get_mode() == Gtk.SelectionMode.MULTIPLE
         result = []
         for path in paths:
             value = model.get_value(model.get_iter(path), self.value_column)
@@ -757,20 +757,20 @@ class GetListPage(TreePage):
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(self.label, False, True, 0)
 
         hbox = Gtk.HBox(spacing=6)
 
         self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
-        self.view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         scrolled = create_scrollable(self.view)
         hbox.pack_start(scrolled, True, True, 0)
 
         bbox = Gtk.VButtonBox()
         bbox.set_spacing(6)
-        bbox.set_layout(gtk.BUTTONBOX_START)
+        bbox.set_layout(Gtk.ButtonBoxStyle.START)
         button = Gtk.Button(stock=Gtk.STOCK_ADD)
         button.connect('clicked', self.on_add)
         bbox.pack_start(button, False, True, 0)
@@ -816,7 +816,7 @@ class GetListPage(TreePage):
         self.model.connect('row-changed', self.validate)
         self.view.set_model(self.model)
 
-        self.selection.set_mode(gtk.SELECTION_MULTIPLE)
+        self.selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         self.view.append_column(Gtk.TreeViewColumn('Item', Gtk.CellRendererText(), text=0))
 
@@ -837,13 +837,13 @@ class MenuPage(TreePage):
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(self.label, False, True, 0)
 
         self.view = Gtk.TreeView()
         self.view.set_rules_hint(True)
         scrolled = create_scrollable(self.view)
-        scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         vbox.pack_start(scrolled, True, True, 0)
         vbox.show_all()
         return vbox
@@ -860,7 +860,7 @@ class MenuPage(TreePage):
         self.view.set_model(self.model)
 
         if multiple:
-            self.selection.set_mode(gtk.SELECTION_MULTIPLE)
+            self.selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         self.view.append_column(Gtk.TreeViewColumn('Option', Gtk.CellRendererText(), markup=0))
         rend = WrapRendererText()
@@ -911,7 +911,7 @@ class HandleBTSQueryPage(TreePage):
 
         self.queryonly = queryonly
         if queryonly:
-            self.page_type = gtk.ASSISTANT_PAGE_CONFIRM
+            self.page_type = Gtk.AssistantPageType.CONFIRM
 
         sysinfo = debbugs.SYSTEMS[bts]
         root = sysinfo.get('btsroot')
@@ -983,7 +983,7 @@ class HandleBTSQueryPage(TreePage):
         hbox.pack_start(self.entry, True, True, 0)
         button = Gtk.Button()
         button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
-        button.set_relief(gtk.RELIEF_NONE)
+        button.set_relief(Gtk.ReliefStyle.NONE)
         button.connect('clicked', self.on_filter_clear)
         hbox.pack_start(button, False, True, 0)
         vbox.pack_start(hbox, False, True, 0)
@@ -1074,7 +1074,7 @@ class HandleBTSQueryPage(TreePage):
             for bug in category[1]:
                 self.model.append(iter, list(map(str, bug)))
 
-        self.selection.set_mode(gtk.SELECTION_MULTIPLE)
+        self.selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         self.model.filter_text = ""
         self.filter = self.model.filter_new()
@@ -1097,7 +1097,7 @@ class ShowReportPage(Page):
 
     def sync_pre_operation(self, *args, **kwargs):
         if kwargs.get('queryonly'):
-            self.page_type = gtk.ASSISTANT_PAGE_CONFIRM
+            self.page_type = Gtk.AssistantPageType.CONFIRM
         return args, kwargs
 
     def execute(self, number, system, mirrors, http_proxy, timeout, queryonly=False, title='', archived='no', mbox_reader_cmd=None):
@@ -1134,7 +1134,7 @@ class LongMessagePage(Page):
     def create_widget(self):
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         self.label.set_selectable(True)
         self.label.set_property("can-focus", False)
         eb = Gtk.EventBox()
@@ -1148,12 +1148,12 @@ class LongMessagePage(Page):
         GLib.idle_add(self.label.set_text, message)
         # Reportbug should use final_message, so emulate it
         if('999999' in message):
-            self.set_page_type(gtk.ASSISTANT_PAGE_CONFIRM)
+            self.set_page_type(Gtk.AssistantPageType.CONFIRM)
             self.set_page_title("Thanks for your report")
 
 
 class FinalMessagePage(LongMessagePage):
-    page_type = gtk.ASSISTANT_PAGE_CONFIRM
+    page_type = Gtk.AssistantPageType.CONFIRM
     default_complete = True
 
     def execute(self, *args, **kwargs):
@@ -1172,7 +1172,7 @@ class EditorPage(Page):
 
         self.view = Gtk.TextView()
         self.view.modify_font(Pango.FontDescription("Monospace"))
-        self.view.set_wrap_mode(gtk.WRAP_WORD)
+        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
         if has_spell:
             gtkspellcheck.SpellChecker(self.view)
         self.info_buffer = self.view.get_buffer()
@@ -1195,7 +1195,7 @@ class EditorPage(Page):
             label.set_selectable(True)
             label.set_property("can-focus", False)
             box.add(label)
-            box.modify_bg(gtk.STATE_NORMAL, self.WARNING_COLOR)
+            box.modify_bg(Gtk.StateType.NORMAL, self.WARNING_COLOR)
             box.connect('button-press-event', lambda *args: box.destroy())
             vbox.pack_start(box, False, True, 0)
         return vbox
@@ -1253,7 +1253,7 @@ class SelectOptionsPage(Page):
     def create_widget(self):
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         self.vbox = Gtk.VBox(spacing=6)
         self.vbox.pack_start(self.label, False, True, 6)
         self.default = None
@@ -1349,7 +1349,7 @@ class ProgressPage(Page):
         vbox = Gtk.VBox(spacing=6)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
         vbox.pack_start(self.label, False, True, 0)
