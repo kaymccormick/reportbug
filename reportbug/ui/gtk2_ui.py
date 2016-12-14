@@ -25,15 +25,6 @@ from reportbug.exceptions import UINotImportable
 try:
     import gi
 
-    # use a PyGTK compatibility layer
-    # https://wiki.gnome.org/Projects/PyGObject/IntrospectionPorting
-    from gi import pygtkcompat
-
-    pygtkcompat.enable()
-    pygtkcompat.enable_gtk(version='3.0')
-
-    import gtk
-
     gi.require_version('GLib', '2.0')
     from gi.repository import GLib
 
