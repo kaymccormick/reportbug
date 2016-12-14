@@ -1034,7 +1034,7 @@ class HandleBTSQueryPage(TreePage):
                 return True
         return False
 
-    def filter_visible_func(self, model, iter):
+    def filter_visible_func(self, model, iter, user_data=None):
         matches = self.match_filter(iter)
         if not self.model.iter_parent(iter) and not matches:
             # If no children are visible, hide it
