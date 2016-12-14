@@ -1591,7 +1591,6 @@ Falling back to 'text' interface."""
 
     # GTK settings
     gtk.Window.set_default_icon_from_file(DEBIAN_LOGO)
-    gtk.link_button_set_uri_hook(lambda button, uri: launch_browser(uri))
 
     application = ReportbugApplication()
     assistant = ReportbugAssistant(application)
