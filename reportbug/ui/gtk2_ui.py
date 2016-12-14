@@ -23,6 +23,8 @@
 from reportbug.exceptions import UINotImportable
 
 try:
+    import gi
+
     # use a PyGTK compatibility layer
     # https://wiki.gnome.org/Projects/PyGObject/IntrospectionPorting
     from gi import pygtkcompat
@@ -36,7 +38,7 @@ try:
 except ImportError:
     raise UINotImportable('Please install the python3-gi and gir1.2-gtk-3.0 packages to use this interface.')
 
-global vte
+global Vte
 
 try:
     import gtkspellcheck
@@ -1299,7 +1301,7 @@ class SystemPage(Page):
     def create_widget(self):
         hbox = gtk.HBox()
 
-        self.terminal = vte.Terminal()
+        self.terminal = Vte.Terminal()
         self.terminal.set_cursor_blinks(True)
         self.terminal.set_emulation("xterm")
         self.terminal.connect('child-exited', self.on_child_exited)
@@ -1564,16 +1566,17 @@ def forward_operations(parent, operations):
 
 
 def initialize():
-    global application, assistant, vte
+    global application, assistant, Vte
 
     try:
-        vte = __import__("vte")
+        gi.require_version('Vte', '2.91')
+        from gi.repository import Vte
     except ImportError:
         message = """Please install the %s package to use the GTK+(known as 'gtk2' in reportbug) interface.
 Falling back to 'text' interface."""
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                    gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, None)
-        dialog.set_markup(message % "<b>python-vte</b>")
+        dialog.set_markup(message % "<b>gir1.2-vte-2.91</b>")
         dialog.run()
         dialog.destroy()
         while gtk.events_pending():
