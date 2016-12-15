@@ -1,9 +1,9 @@
-reportbug (7.1.0) UNRELEASED; urgency=medium
+reportbug (7.1.0) experimental; urgency=medium
 
   * port GTK interface to GTK3; thanks to Simon McVittie for sending all the
     patches to implement this; Closes: #651590
 
- -- Sandro Tosi <morph@debian.org>  Wed, 14 Dec 2016 19:32:36 -0500
+ -- Sandro Tosi <morph@debian.org>  Wed, 14 Dec 2016 19:33:58 -0500
 
 reportbug (7.0.1) experimental; urgency=medium
 
