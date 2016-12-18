@@ -1,3 +1,11 @@
+reportbug (7.1.1) UNRELEASED; urgency=medium
+
+  * reportbug/debbugs.py
+    - add sections for Rust and JavaScript, patch by Josh Triplett;
+      Closes: #847537
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 18 Dec 2016 12:53:54 -0500
+
 reportbug (7.1.0) experimental; urgency=medium
 
   * port GTK interface to GTK3; thanks to Simon McVittie for sending all the
