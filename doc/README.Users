@@ -13,10 +13,10 @@ smtptls
 
 Thanks to: Raphael Geissert <atomo64@gmail.com>
 
-How to Usertags a Bug at Report Time
-====================================
+How to add Usertags to a Bug at Report Time
+===========================================
 
-If you're filing a bug and you what to usertag it, you can add these
+If you're filing a bug and you want to usertag it, you can add these
 lines (in the pseudo-header)
 
 User: <user email address>
@@ -30,9 +30,9 @@ Severity: <severity>
 
 lines in the bug body.
 
-Please note that if you specify more than 2 tag, then they will be
+Please note that if you specify more than 2 tags, then they will be
 ordered alphabetically (so if you use usercategories, it will only
-appears in the first one).
+appear in the first one).
 
 Thanks to: Sandro Tosi <morph@debian.org>
 
@@ -73,7 +73,7 @@ Then a change to ~/.emacs file is needed, in order to add:
 or else Emacs won't listen for connections from emacsclient (and a new
 `emacs` instance is executed).
 
-With this changes, using the `gnus` MUA, the mail is opened in the
+With these changes, using the `gnus` MUA, the mail is opened in the
 running `emacs`, or if there's none, a new instance is executed.
 
 Thanks to: Håkon Stordahl <hakon@stordahl.org>
@@ -103,11 +103,11 @@ reportbug move it (or leave it) to the correct location (for example,
 'X-Debbugs-Cc' if added to the pseudo-header is then moved to mail headers
 section to be processed by debbugs engine).
 
-That said, please note that this two ways have now a different semantics: any
+That said, please note that these two ways have different semantics: any
 pseudo-header passed on the command-line is preserved as a pseudo-header, and
 not moved to the mail headers part of the email, while adding a header into the
-mail body still trigger the reportbug recognition code that will move the header
-to mail headers part if not a "common" pseudo-header (like 'Usertags',
+mail body still triggers the reportbug recognition code that will move the header
+to mail headers part if it is not a "common" pseudo-header (like 'Usertags',
 'Severity', or 'Package' and so on).
 
 Network Errors and Timeout
@@ -141,7 +141,7 @@ This host is useful in situations like:
 Please keep in mind that this service has some limitations:
 
  - only 5 reports per hour are allowed (technically, 5 connections to
-   the server, even if they don't result in bugs submission);
+   the server, even if they don't result in bug submission);
  - relay is not allowed.
 
 The last rule, in particular, doesn't allow to send a carbon-copy of
@@ -150,5 +150,5 @@ the bug), and X-Debbugs-CC has to be used instead (that will send an
 email after BTS processing).
 
 Let us also clarify that this service is in no way controlled by
-reportbug maintainers, so in case any questions/complains/information
+reportbug maintainers, so in case any questions/complaints/information
 requests you have to contact owner@bugs.debian.org .
