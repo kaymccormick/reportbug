@@ -4,6 +4,7 @@ from nose.plugins.attrib import attr
 import mock
 from reportbug import utils
 from reportbug import debbugs
+from reportbug import urlutils
 
 import urllib.request, urllib.parse, urllib.error
 import re
@@ -158,17 +159,21 @@ class TestMiscFunctions(unittest.TestCase):
             self.assertEqual(debbugs.convert_severity(severity, type), value)
 
     @attr('network')  # marking the test as using network
-    @unittest.skip("Need to talk with dondelelcaro about make them sync")
     def test_pseudopackages_in_sync(self):
 
         dictparse = re.compile(r'([^\s]+)\s+(.+)', re.IGNORECASE)
 
         bdo_list = {}
-        pseudo = urllib.request.urlopen('https://bugs.debian.org/pseudopackages/pseudo-packages.description')
-        for l in pseudo:
+        pseudo = urlutils.urlopen('https://bugs.debian.org/pseudopackages/pseudo-packages.description')
+        for l in pseudo.splitlines():
             m = dictparse.search(l)
             bdo_list[m.group(1)] = m.group(2)
 
+        # we removed base from reportbug
+        del bdo_list['base']
+        # uniform reportbug customized descriptions
+        for customized in 'www.debian.org', 'ftp.debian.org':
+            bdo_list[customized] = debbugs.debother[customized]
         self.maxDiff = None
         self.assertEqual(debbugs.debother, bdo_list)
 

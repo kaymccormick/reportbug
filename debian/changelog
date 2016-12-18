@@ -3,10 +3,12 @@ reportbug (7.1.1) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - add sections for Rust and JavaScript, patch by Josh Triplett;
       Closes: #847537
+    - update the list of pseudopackages (and fix & re-enable unittest);
+      Closes: #831848, 
   * doc/README.Users
     - grammar fixes/improvements; patch by Vilius Panevėžys; Closes: #811193
 
- -- Sandro Tosi <morph@debian.org>  Sun, 18 Dec 2016 12:59:43 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 18 Dec 2016 15:45:46 -0500
 
 reportbug (7.1.0) experimental; urgency=medium
 
