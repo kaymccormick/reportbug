@@ -172,7 +172,7 @@ class TestMiscFunctions(unittest.TestCase):
         # we removed base from reportbug
         del bdo_list['base']
         # uniform reportbug customized descriptions
-        for customized in 'www.debian.org', 'ftp.debian.org':
+        for customized in ['ftp.debian.org', ]:
             bdo_list[customized] = debbugs.debother[customized]
         self.maxDiff = None
         self.assertEqual(debbugs.debother, bdo_list)

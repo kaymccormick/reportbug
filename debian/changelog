@@ -4,11 +4,13 @@ reportbug (7.1.1) UNRELEASED; urgency=medium
     - add sections for Rust and JavaScript, patch by Josh Triplett;
       Closes: #847537
     - update the list of pseudopackages (and fix & re-enable unittest);
-      Closes: #831848, 
+      Closes: #831848
+    - revert the description of www.debian.org to the official one (see also
+      #813108); Closes: #813113
   * doc/README.Users
     - grammar fixes/improvements; patch by Vilius Panevėžys; Closes: #811193
 
- -- Sandro Tosi <morph@debian.org>  Sun, 18 Dec 2016 15:45:46 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 18 Dec 2016 16:07:26 -0500
 
 reportbug (7.1.0) experimental; urgency=medium
 
