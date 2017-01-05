@@ -1,3 +1,4 @@
+# coding=utf-8
 import unittest
 
 from reportbug import utils
@@ -70,6 +71,11 @@ class TestEmail(unittest.TestCase):
         mail = 'nomail@nodomain.ext'
         addr = utils.get_user_id(mail, name)
         self.assertEqual(addr, '"%s" <%s>' % (name, mail))
+
+        name = "Ńámé MìddlèNàmé Ŝüŗnâmè"
+        mail = 'nomail@nodomain.ext'
+        addr = utils.get_user_id(mail, name)
+        self.assertEqual(addr, '=?utf-8?b?xYPDoW3DqSBNw6xkZGzDqE7DoG3DqSDFnMO8xZduw6Jtw6g=?= <nomail@nodomain.ext>')
 
     def test_find_rewritten(self):
         unittest.skip("Is utils.find_rewritten actually useful to someone? deprecate it?")
