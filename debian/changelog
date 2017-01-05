@@ -4,8 +4,11 @@ reportbug (7.1.2) UNRELEASED; urgency=medium
     - fix the 'email' name clash in reportbug.utils functions by renaming their
       arguments to 'emailaddr', this fixes names with special characters in the
       address; patch by Didier 'OdyX' Raboud; Closes: #848692
+  * reportbug/ui/text_ui.py
+    - use integer division when computing the max length for a name; suggestion
+      by Ben Longbons; Closes: #848655
 
- -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:07:00 -0500
+ -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:36:55 -0500
 
 reportbug (7.1.1) unstable; urgency=medium
 

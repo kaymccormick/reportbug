@@ -353,7 +353,7 @@ def menu(par, options, prompt, default=None, title=None, any_ok=False,
     allowed = [x[0] for x in options]
     allowed = allowed + extras
 
-    maxlen_name = min(max(list(map(len, allowed))), columns / 3)
+    maxlen_name = min(max(list(map(len, allowed))), columns // 3)
     digits = int(math.ceil(math.log10(len(options) + 1)))
 
     i = 1
