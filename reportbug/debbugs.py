@@ -178,6 +178,7 @@ debother = {
     'ftp.debian.org': 'Problems with the FTP site and Package removal requests',
     'general': 'General problems (e.g. "many manpages are mode 755")',
     'installation-reports': 'Reports of installation problems with stable & testing',
+    'jenkins.debian.org': 'Issues with the jenkins.debian.org service',
     'lists.debian.org': 'The mailing lists, debian-*@lists.debian.org',
     'mirrors': 'Problems with the official mirrors',
     'nm.debian.org': 'New Member process and nm.debian.org webpages',
