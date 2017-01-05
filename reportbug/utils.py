@@ -305,7 +305,7 @@ def get_user_id(emailaddr='', realname='', charset='utf-8'):
         if not realname:
             realname = info[4].split(',', 1)[0]
             # Convert & in gecos field 4 to capitalized logname: #224231
-            realname = realname.replace('&', info[0].upper())
+            realname = realname.replace('&', info[0].capitalize())
 
     if not realname:
         return emailaddr

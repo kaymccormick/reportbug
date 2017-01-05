@@ -4,6 +4,8 @@ reportbug (7.1.2) UNRELEASED; urgency=medium
     - fix the 'email' name clash in reportbug.utils functions by renaming their
       arguments to 'emailaddr', this fixes names with special characters in the
       address; patch by Didier 'OdyX' Raboud; Closes: #848692
+    - capitalize, not uppercase, ampersend user replacement; patch by Nis
+      Martensen; Closes: #849677
   * reportbug/ui/text_ui.py
     - use integer division when computing the max length for a name; suggestion
       by Ben Longbons; Closes: #848655
@@ -11,7 +13,7 @@ reportbug (7.1.2) UNRELEASED; urgency=medium
     - port bug script and control file to py3k; patch by Nis Martensen;
       Closes: #849749
 
- -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:46:05 -0500
+ -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:51:20 -0500
 
 reportbug (7.1.1) unstable; urgency=medium
 
