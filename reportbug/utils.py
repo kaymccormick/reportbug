@@ -275,29 +275,29 @@ def get_email_addr(addr):
     return email.utils.getaddresses([addr,])[0]
 
 
-def get_email(email='', realname=''):
-    return get_email_addr(get_user_id(email, realname))
+def get_email(emailaddr='', realname=''):
+    return get_email_addr(get_user_id(emailaddr, realname))
 
 
-def get_user_id(email='', realname='', charset='utf-8'):
+def get_user_id(emailaddr='', realname='', charset='utf-8'):
     uid = os.getuid()
     info = pwd.getpwuid(uid)
-    email = (os.environ.get('REPORTBUGEMAIL', email) or
-             os.environ.get('DEBEMAIL') or os.environ.get('EMAIL'))
+    emailaddr = (os.environ.get('REPORTBUGEMAIL', emailaddr) or
+                 os.environ.get('DEBEMAIL') or os.environ.get('EMAIL'))
 
-    email = email or find_rewritten(info[0]) or info[0]
+    emailaddr = emailaddr or find_rewritten(info[0]) or info[0]
 
-    if '@' not in email:
+    if '@' not in emailaddr:
         if os.path.exists('/etc/mailname'):
             domainname = open('/etc/mailname').readline().strip()
         else:
             domainname = socket.getfqdn()
 
-        email = email + '@' + domainname
+        emailaddr = emailaddr + '@' + domainname
 
     # Handle EMAIL if it's formatted as 'Bob <bob@host>'.
-    if '<' in email or '(' in email:
-        realname, email = get_email_addr(email)
+    if '<' in emailaddr or '(' in emailaddr:
+        realname, emailaddr = get_email_addr(emailaddr)
 
     if not realname:
         realname = (os.environ.get('DEBFULLNAME') or os.environ.get('DEBNAME')
@@ -308,14 +308,9 @@ def get_user_id(email='', realname='', charset='utf-8'):
             realname = realname.replace('&', info[0].upper())
 
     if not realname:
-        return email
+        return emailaddr
 
-    if re.match(r'[\w\s]+$', realname):
-        return '%s <%s>' % (realname, email)
-
-    addr = email.utils.formataddr((realname, email))
-
-    return addr
+    return email.utils.formataddr((realname, emailaddr))
 
 
 statuscache = {}

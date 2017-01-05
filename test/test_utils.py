@@ -65,6 +65,12 @@ class TestEmail(unittest.TestCase):
         addr = utils.get_user_id(mail)
         self.assertIn(mail, addr)
 
+    def test_bts848692(self):
+        name = "name-with.special`chars'  "
+        mail = 'nomail@nodomain.ext'
+        addr = utils.get_user_id(mail, name)
+        self.assertEqual(addr, '"%s" <%s>' % (name, mail))
+
     def test_find_rewritten(self):
         unittest.skip("Is utils.find_rewritten actually useful to someone? deprecate it?")
 
