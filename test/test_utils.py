@@ -290,22 +290,20 @@ Version: 6.6.3
 
 
 class TestSourcePackages(unittest.TestCase):
-    # @unittest.skip("Too slow")
     def test_get_source_name(self):
-        binpkg = 'python-reportbug'
+        binpkg = 'python3-reportbug'
         src = utils.get_source_name(binpkg)
         self.assertEqual(src, 'reportbug')
 
         src = utils.get_source_name('reportbug-bugfree')
         self.assertIsNone(src)
 
-    # @unittest.skip("Too slow")
     def test_get_source_package(self):
         src = 'reportbug'
         binpkgs = utils.get_source_package(src)
-        self.assertCountEqual([bin[0] for bin in binpkgs], ['python-reportbug', 'reportbug'])
+        self.assertCountEqual([bin[0] for bin in binpkgs], ['python3-reportbug', 'reportbug'])
 
-        bin = 'python-reportbug'
+        bin = 'python3-reportbug'
         binpkgs_frombin = utils.get_source_package(bin)
         self.assertEqual(binpkgs, binpkgs_frombin)
 
