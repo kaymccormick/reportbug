@@ -84,7 +84,7 @@ class TestVersionAvailable(unittest.TestCase):
         self.assertEqual(vers, {})
 
     @attr('network')  # marking the test as using network
-    def test_673204(self):
+    def test_bts673204(self):
         vers = checkversions.get_versions_available('texlive-xetex', 60)
         # squeeze (stable at this time) is the first suite where texlive-xetex
         # is arch:all
