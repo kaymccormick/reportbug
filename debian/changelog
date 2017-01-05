@@ -7,8 +7,11 @@ reportbug (7.1.2) UNRELEASED; urgency=medium
   * reportbug/ui/text_ui.py
     - use integer division when computing the max length for a name; suggestion
       by Ben Longbons; Closes: #848655
+  * share/{bug, control}
+    - port bug script and control file to py3k; patch by Nis Martensen;
+      Closes: #849749
 
- -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:36:55 -0500
+ -- Sandro Tosi <morph@debian.org>  Wed, 04 Jan 2017 19:46:05 -0500
 
 reportbug (7.1.1) unstable; urgency=medium
 
