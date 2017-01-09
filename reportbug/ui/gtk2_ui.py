@@ -191,7 +191,7 @@ class ExceptionDialog(CustomDialog):
 
     def setup_dialog(self, vbox, tb):
         # The traceback
-        expander = Gtk.Expander("More details")
+        expander = Gtk.Expander.new_with_mnemonic("More details")
         vbox.pack_start(expander, True, True, 0)
 
         view = Gtk.TextView()
@@ -1170,7 +1170,7 @@ class EditorPage(Page):
         scrolled = create_scrollable(self.view)
         vbox.pack_start(scrolled, True, True, 0)
 
-        expander = Gtk.Expander("Other system information")
+        expander = Gtk.Expander.new_with_mnemonic("Other system information")
         view = Gtk.TextView()
         view.set_editable(False)
         self.others_buffer = view.get_buffer()
