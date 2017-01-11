@@ -622,11 +622,11 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                 quitlabel = 'Quit'
 
             while True:
-                info = menu('Select a bug to read (and possibly report more information) or report a new bug:', buglist,
+                info = int(menu('Select a bug to read (and possibly report more information) or report a new bug:', buglist,
                             '', ui=ui, title=sectitle, default=p,
                             oklabel='Read bug',
                             cancellabel=cancellabel,
-                            quitlabel=quitlabel)
+                            quitlabel=quitlabel))
                 ui = None
                 if info < 0:
                     if info == -1:
@@ -639,8 +639,7 @@ def handle_bts_query(package, bts, timeout, mirrors=None, http_proxy="",
                         result = debbugs.get_report(info, timeout)[0]
                     break
                 else:
-                    p = info
-                    res = show_report(int(p), bts, mirrors, http_proxy,
+                    res = show_report(info, bts, mirrors, http_proxy,
                                       timeout, queryonly=queryonly)
                     if res:
                         result = res
