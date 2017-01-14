@@ -507,15 +507,12 @@ class ReportbugApplication(threading.Thread):
     def set_next_value(self, value):
         self.next_value = value
 
-    @staticmethod
-    def create_idle_callback(func, *args, **kwargs):
+    def run_once_in_main_thread(self, func, *args, **kwargs):
         def callback():
             func(*args, **kwargs)
             return False
-        return callback
 
-    def run_once_in_main_thread(self, func, *args, **kwargs):
-        GLib.idle_add(self.create_idle_callback(func, *args, **kwargs))
+        GLib.idle_add(callback)
 
 
 # Connection with reportbug
