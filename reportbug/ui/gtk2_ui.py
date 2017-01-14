@@ -76,6 +76,27 @@ global application, assistant, report_message, reportbug_context, ui_context
 # Utilities
 
 
+def _describe_context(context):
+    if context == ui_context:
+        return '<MainContext of UI thread>'
+    elif context == reportbug_context:
+        return '<MainContext of reportbug thread>'
+    else:
+        return repr(context)
+
+
+def _assert_context(expected):
+    really = GLib.MainContext.ref_thread_default()
+
+    # This compares by pointer value of the underlying GMainContext
+    if really != expected:
+        raise AssertionError('Function should be called in %s but was called in %s' %
+                             (_describe_context(really), _describe_context(expected)))
+
+    if not really.is_owner():
+        raise AssertionError('Function should be called with %s acquired')
+
+
 def highlight(s):
     return '<b>%s</b>' % s
 
@@ -94,6 +115,7 @@ def ask_free(s):
 
 
 def create_scrollable(widget, with_viewport=False):
+    _assert_context(ui_context)
     scrolled = Gtk.ScrolledWindow()
     scrolled.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
     scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -105,6 +127,7 @@ def create_scrollable(widget, with_viewport=False):
 
 
 def info_dialog(message):
+    _assert_context(ui_context)
     dialog = Gtk.MessageDialog(assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, message)
     dialog.connect('response', lambda d, *args: d.destroy())
@@ -113,6 +136,7 @@ def info_dialog(message):
 
 
 def error_dialog(message):
+    _assert_context(ui_context)
     dialog = Gtk.MessageDialog(assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, message)
     dialog.connect('response', lambda d, *args: d.destroy())
@@ -122,6 +146,7 @@ def error_dialog(message):
 
 class CustomDialog(Gtk.Dialog):
     def __init__(self, stock_image, message, buttons, *args, **kwargs):
+        _assert_context(ui_context)
         Gtk.Dialog.__init__(self, "Reportbug", assistant,
                             Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                             buttons)
@@ -155,15 +180,18 @@ class CustomDialog(Gtk.Dialog):
 
 class InputStringDialog(CustomDialog):
     def __init__(self, message):
+        _assert_context(ui_context)
         CustomDialog.__init__(self, Gtk.STOCK_DIALOG_INFO, message,
                               (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                                Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
 
     def setup_dialog(self, vbox):
+        _assert_context(ui_context)
         self.entry = Gtk.Entry()
         vbox.pack_start(self.entry, False, True, 0)
 
     def get_value(self):
+        _assert_context(ui_context)
         return self.entry.get_text()
 
 
@@ -171,7 +199,9 @@ class ExceptionDialog(CustomDialog):
     # Register an exception hook to display an error when the GUI breaks
     @classmethod
     def create_excepthook(cls, oldhook):
+        _assert_context(reportbug_context)
         def excepthook(exctype, value, tb):
+            # OK to call from any thread
             if oldhook:
                 oldhook(exctype, value, tb)
             application.run_once_in_main_thread(cls.start_dialog,
@@ -180,6 +210,7 @@ class ExceptionDialog(CustomDialog):
 
     @classmethod
     def start_dialog(cls, tb):
+        _assert_context(ui_context)
         try:
             dialog = cls(tb)
             dialog.show_all()
@@ -187,6 +218,7 @@ class ExceptionDialog(CustomDialog):
             sys.exit(1)
 
     def __init__(self, tb):
+        _assert_context(ui_context)
         CustomDialog.__init__(self, Gtk.STOCK_DIALOG_ERROR, "An error has occurred while doing an operation in Reportbug.\nPlease report the bug.", (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE), tb)
 
     def setup_dialog(self, vbox, tb):
@@ -203,11 +235,13 @@ class ExceptionDialog(CustomDialog):
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
+        _assert_context(ui_context)
         sys.exit(1)
 
 
 class ReportViewerDialog(Gtk.Dialog):
     def __init__(self, message):
+        _assert_context(ui_context)
         Gtk.Dialog.__init__(self, "Reportbug", assistant,
                             Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                             (Gtk.STOCK_COPY, Gtk.ResponseType.APPLY,
@@ -226,6 +260,7 @@ class ReportViewerDialog(Gtk.Dialog):
         self.show_all()
 
     def on_response(self, dialog, res):
+        _assert_context(ui_context)
         # ok Gtk.ResponseType.APPLY is ugly for Gtk.STOCK_COPY, but who cares?
         # maybe adding it as a secondary button or such is better
         if res == Gtk.ResponseType.APPLY:
@@ -344,6 +379,7 @@ class BugReport(object):
 # BTS GUI
 class BugPage(Gtk.EventBox, threading.Thread):
     def __init__(self, assistant, dialog, number, queryonly, bts, mirrors, http_proxy, timeout, archived):
+        _assert_context(ui_context)
         threading.Thread.__init__(self)
         Gtk.EventBox.__init__(self)
         self.setDaemon(True)
@@ -390,21 +426,25 @@ class BugPage(Gtk.EventBox, threading.Thread):
             self.application.run_once_in_main_thread(self.found, info)
 
     def drop_progressbar(self):
+        _assert_context(ui_context)
         child = self.get_child()
         if child:
             self.remove(child)
             child.unparent()
 
     def pulse(self):
+        _assert_context(ui_context)
         self.progress.pulse()
         return self.isAlive()
 
     def not_found(self):
+        _assert_context(ui_context)
         self.drop_progressbar()
         self.add(Gtk.Label("The bug can't be fetched or it doesn't exist."))
         self.show_all()
 
     def found(self, info):
+        _assert_context(ui_context)
         self.drop_progressbar()
         desc = info[0].subject
         bodies = info[1]
@@ -443,9 +483,11 @@ class BugPage(Gtk.EventBox, threading.Thread):
         self.show_all()
 
     def on_open_browser(self, button):
+        _assert_context(ui_context)
         launch_browser(debbugs.get_report_url(self.bts, int(self.number), self.archived))
 
     def on_reply(self, button):
+        _assert_context(ui_context)
         # Return the bug number to reportbug
         self.application.set_next_value(self.bug_status)
         # Forward the assistant to the progress bar
@@ -457,6 +499,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
 
 class BugsDialog(Gtk.Dialog):
     def __init__(self, assistant, queryonly):
+        _assert_context(ui_context)
         Gtk.Dialog.__init__(self, "Reportbug: bug information", assistant,
                             Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                             (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
@@ -498,24 +541,33 @@ class ReportbugApplication(threading.Thread):
         Gdk.threads_leave()
 
     def get_last_value(self):
+        _assert_context(reportbug_context)
         return self.queue.get()
 
     def put_next_value(self):
+        _assert_context(ui_context)
         self.queue.put(self.next_value)
         self.next_value = None
 
     def set_next_value(self, value):
+        _assert_context(ui_context)
         self.next_value = value
 
     def run_once_in_main_thread(self, func, *args, **kwargs):
+        # OK to call from any thread
+
         def callback():
+            _assert_context(ui_context)
             func(*args, **kwargs)
             return False
 
         GLib.idle_add(callback)
 
     def call_in_main_thread(self, func, *args, **kwargs):
+        # OK to call from any thread
+
         def callback():
+            _assert_context(ui_context)
             try:
                 ret = func(*args, **kwargs)
             except BaseException as e:
@@ -539,18 +591,20 @@ class ReportbugApplication(threading.Thread):
 # Syncronize "pipe" with reportbug
 class SyncReturn(RuntimeError):
     def __init__(self, result):
+        _assert_context(reportbug_context)
         RuntimeError.__init__(self, result)
         self.result = result
 
 
 class ReportbugConnector(object):
-    # Executed in the glib thread
     def execute_operation(self, *args, **kwargs):
+        _assert_context(ui_context)
         pass
 
     # Executed in sync with reportbug. raise SyncResult(value) to directly return to reportbug
     # Returns args and kwargs to pass to execute_operation
     def sync_pre_operation(cls, *args, **kwargs):
+        _assert_context(reportbug_context)
         return args, kwargs
 
 
@@ -563,6 +617,7 @@ class Page(ReportbugConnector):
     WARNING_COLOR = Gdk.color_parse("#fff8ae")
 
     def __init__(self, assistant):
+        _assert_context(ui_context)
         self.assistant = assistant
         self.application = assistant.application
         self.widget = self.create_widget()
@@ -572,6 +627,7 @@ class Page(ReportbugConnector):
         self.page_num = Page.next_page_num
 
     def execute_operation(self, *args, **kwargs):
+        _assert_context(ui_context)
         self.switch_in()
         self.connect_signals()
         self.empty_ok = kwargs.pop('empty_ok', False)
@@ -581,20 +637,24 @@ class Page(ReportbugConnector):
         self.setup_focus()
 
     def connect_signals(self):
-        pass
+        _assert_context(ui_context)
 
     def set_page_complete(self, complete):
+        _assert_context(ui_context)
         self.assistant.set_page_complete(self.widget, complete)
 
     def set_page_type(self, type):
+        _assert_context(ui_context)
         self.assistant.set_page_type(self.widget, type)
 
     def set_page_title(self, title):
+        _assert_context(ui_context)
         if title:
             self.assistant.set_page_title(self.widget, title)
 
     # The user will see this as next page
     def switch_in(self):
+        _assert_context(ui_context)
         Page.next_page_num += 1
         self.assistant.insert_page(self.widget, self.page_num)
         self.set_page_complete(self.default_complete)
@@ -605,24 +665,30 @@ class Page(ReportbugConnector):
 
     # Setup keyboard focus in the page
     def setup_focus(self):
+        _assert_context(ui_context)
         self.widget.grab_focus()
 
     # Forward page when a widget is activated(e.g. GtkEntry) only if page is complete
     def activate_forward(self, *args):
+        _assert_context(ui_context)
         if self.assistant.get_page_complete(self.widget):
             self.assistant.forward_page()
 
     # The user forwarded the assistant to see the next page
     def switch_out(self):
-        pass
+        _assert_context(ui_context)
 
     def is_valid(self, value):
+        _assert_context(ui_context)
+
         if self.empty_ok:
             return True
         else:
             return bool(value)
 
     def validate(self, *args, **kwargs):
+        _assert_context(ui_context)
+
         value = self.get_value()
         if self.is_valid(value):
             self.application.set_next_value(value)
@@ -636,6 +702,8 @@ class IntroPage(Page):
     default_complete = True
 
     def create_widget(self):
+        _assert_context(ui_context)
+
         vbox = Gtk.VBox(spacing=24)
 
         label = Gtk.Label("""
@@ -657,9 +725,11 @@ This wizard will guide you through the bug reporting process step by step.
 
 class GetStringPage(Page):
     def setup_focus(self):
+        _assert_context(ui_context)
         self.entry.grab_focus()
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
@@ -672,13 +742,16 @@ class GetStringPage(Page):
         return vbox
 
     def connect_signals(self):
+        _assert_context(ui_context)
         self.entry.connect('changed', self.validate)
         self.entry.connect('activate', self.activate_forward)
 
     def get_value(self):
+        _assert_context(ui_context)
         return self.entry.get_text()
 
     def execute(self, prompt, options=None, force_prompt=False, default=''):
+        _assert_context(ui_context)
         # Hackish: remove the text needed for textual UIs...
         GLib.idle_add(self.label.set_text, prompt.replace('(enter Ctrl+c to exit reportbug without reporting a bug)', ''))
         self.entry.set_text(default)
@@ -701,6 +774,7 @@ class GetStringPage(Page):
 
 class GetPasswordPage(GetStringPage):
     def create_widget(self):
+        _assert_context(ui_context)
         widget = GetStringPage.create_widget(self)
         self.entry.set_visibility(False)
         return widget
@@ -708,9 +782,11 @@ class GetPasswordPage(GetStringPage):
 
 class GetMultilinePage(Page):
     def setup_focus(self):
+        _assert_context(ui_context)
         self.view.grab_focus()
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
@@ -726,9 +802,11 @@ class GetMultilinePage(Page):
         return vbox
 
     def connect_signals(self):
+        _assert_context(ui_context)
         self.buffer.connect('changed', self.validate)
 
     def get_value(self):
+        _assert_context(ui_context)
         text = self.buffer.get_text(self.buffer.get_start_iter(), self.buffer.get_end_iter())
         lines = text.split('\n')
         # Remove the trailing empty line at the end
@@ -737,6 +815,7 @@ class GetMultilinePage(Page):
         return text.split('\n')
 
     def execute(self, prompt):
+        _assert_context(ui_context)
         self.empty_ok = True
         # The result must be iterable for reportbug even if it's empty and not modified
         GLib.idle_add(self.label.set_text, prompt)
@@ -748,16 +827,20 @@ class TreePage(Page):
     value_column = None
 
     def __init__(self, *args, **kwargs):
+        _assert_context(ui_context)
         Page.__init__(self, *args, **kwargs)
         self.selection = self.view.get_selection()
 
     def setup_focus(self):
+        _assert_context(ui_context)
         self.view.grab_focus()
 
     def connect_signals(self):
+        _assert_context(ui_context)
         self.selection.connect('changed', self.validate)
 
     def get_value(self):
+        _assert_context(ui_context)
         model, paths = self.selection.get_selected_rows()
         multiple = self.selection.get_mode() == Gtk.SelectionMode.MULTIPLE
         result = []
@@ -774,6 +857,7 @@ class GetListPage(TreePage):
     value_column = 0
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
@@ -803,22 +887,26 @@ class GetListPage(TreePage):
         return vbox
 
     def get_value(self):
+        _assert_context(ui_context)
         values = []
         for row in self.model:
             values.append(row[self.value_column])
         return values
 
     def on_add(self, button):
+        _assert_context(ui_context)
         dialog = InputStringDialog("Add a new item to the list")
         dialog.show_all()
         dialog.connect('response', self.on_add_dialog_response)
 
     def on_add_dialog_response(self, dialog, res):
+        _assert_context(ui_context)
         if res == Gtk.ResponseType.ACCEPT:
             self.model.append([dialog.get_value()])
         dialog.destroy()
 
     def on_remove(self, button):
+        _assert_context(ui_context)
         model, paths = self.selection.get_selected_rows()
         # We need to transform them to iters, since paths change when removing rows
         iters = []
@@ -828,6 +916,7 @@ class GetListPage(TreePage):
             self.model.remove(iter)
 
     def execute(self, prompt):
+        _assert_context(ui_context)
         self.empty_ok = True
 
         GLib.idle_add(self.label.set_text, prompt)
@@ -843,6 +932,7 @@ class GetListPage(TreePage):
 
 class WrapRendererText(Gtk.CellRendererText):
     def do_render(self, cr, widget, background_area, cell_area, flags):
+        _assert_context(ui_context)
         self.set_property('wrap-width', cell_area.width)
         Gtk.CellRendererText.do_render(self, cr, widget, background_area, cell_area, flags)
 
@@ -854,6 +944,7 @@ class MenuPage(TreePage):
     value_column = 0
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=12)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
@@ -869,11 +960,13 @@ class MenuPage(TreePage):
         return vbox
 
     def connect_signals(self):
+        _assert_context(ui_context)
         TreePage.connect_signals(self)
         self.view.connect('row-activated', self.activate_forward)
 
     def execute(self, par, options, prompt, default=None, any_ok=False,
                 order=None, extras=None, multiple=False):
+        _assert_context(ui_context)
         GLib.idle_add(self.label.set_text, par)
 
         self.model = Gtk.ListStore(str, str)
@@ -923,6 +1016,7 @@ class HandleBTSQueryPage(TreePage):
     def sync_pre_operation(self, package, bts, timeout, mirrors=None, http_proxy="", queryonly=False, screen=None,
                            archived='no', source=False, title=None,
                            version=None, buglist=None, mbox_reader_cmd=None, latest_first=False):
+        _assert_context(reportbug_context)
         self.bts = bts
         self.mirrors = mirrors
         self.http_proxy = http_proxy
@@ -989,9 +1083,11 @@ class HandleBTSQueryPage(TreePage):
         raise SyncReturn(None)
 
     def setup_focus(self):
+        _assert_context(ui_context)
         self.entry.grab_focus()
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=6)
         self.label = Gtk.Label("List of bugs. Select a bug to retrieve and submit more information.")
         vbox.pack_start(self.label, False, True, 6)
@@ -1026,18 +1122,22 @@ class HandleBTSQueryPage(TreePage):
         return vbox
 
     def connect_signals(self):
+        _assert_context(ui_context)
         TreePage.connect_signals(self)
         self.view.connect('row-activated', self.on_retrieve_info)
         self.entry.connect('changed', self.on_filter_changed)
 
     def on_filter_clear(self, button):
+        _assert_context(ui_context)
         self.entry.set_text("")
 
     def on_filter_changed(self, entry):
+        _assert_context(ui_context)
         self.model.filter_text = entry.get_text().lower()
         self.filter.refilter()
 
     def on_retrieve_info(self, *args):
+        _assert_context(ui_context)
         bug_ids = TreePage.get_value(self)
         if not bug_ids:
             info_dialog("Please select one ore more bugs")
@@ -1049,13 +1149,16 @@ class HandleBTSQueryPage(TreePage):
         dialog.show_all()
 
     def is_valid(self, value):
+        _assert_context(ui_context)
         return True
 
     def get_value(self):
+        _assert_context(ui_context)
         # The value returned to reportbug doesn't depend by a selection, but by the dialog of a bug
         return None
 
     def match_filter(self, iter):
+        _assert_context(ui_context)
         # Flatten the columns into a single string
         text = ""
         for col in range(len(self.columns)):
@@ -1071,6 +1174,7 @@ class HandleBTSQueryPage(TreePage):
         return False
 
     def filter_visible_func(self, model, iter, user_data=None):
+        _assert_context(ui_context)
         matches = self.match_filter(iter)
         if not self.model.iter_parent(iter) and not matches:
             # If no children are visible, hide it
@@ -1084,6 +1188,7 @@ class HandleBTSQueryPage(TreePage):
         return matches
 
     def execute(self, buglist, sectitle):
+        _assert_context(ui_context)
         GLib.idle_add(self.label.set_text, "%s. Double-click a bug to retrieve and submit more information." % sectitle)
 
         self.model = Gtk.TreeStore(*([str] * len(self.columns)))
@@ -1106,21 +1211,26 @@ class ShowReportPage(Page):
     default_complete = True
 
     def create_widget(self):
+        _assert_context(ui_context)
         self.page = BugPage(self.assistant, None, None, None, None, None, None, None, None)
         return self.page
 
     def get_value(self):
+        _assert_context(ui_context)
         return None
 
     def is_valid(self, value):
+        _assert_context(ui_context)
         return True
 
     def sync_pre_operation(self, *args, **kwargs):
+        _assert_context(reportbug_context)
         if kwargs.get('queryonly'):
             self.page_type = Gtk.AssistantPageType.CONFIRM
         return args, kwargs
 
     def execute(self, number, system, mirrors, http_proxy, timeout, queryonly=False, title='', archived='no', mbox_reader_cmd=None):
+        _assert_context(ui_context)
         self.page.number = number
         self.page.bts = system
         self.page.mirrors = mirrors
@@ -1136,12 +1246,14 @@ class DisplayReportPage(Page):
     default_complete = True
 
     def create_widget(self):
+        _assert_context(ui_context)
         self.view = Gtk.TextView()
         self.view.set_editable(False)
         scrolled = create_scrollable(self.view)
         return scrolled
 
     def execute(self, message, *args):
+        _assert_context(ui_context)
         # 'use' args only if it's passed
         if args:
             message = message % args
@@ -1152,6 +1264,7 @@ class LongMessagePage(Page):
     default_complete = True
 
     def create_widget(self):
+        _assert_context(ui_context)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(Gtk.Justification.FILL)
@@ -1162,6 +1275,7 @@ class LongMessagePage(Page):
         return eb
 
     def execute(self, message, *args):
+        _assert_context(ui_context)
         message = message % args
         # make it all on one line, it will be wrapped at display-time
         message = ' '.join(message.split())
@@ -1177,12 +1291,14 @@ class FinalMessagePage(LongMessagePage):
     default_complete = True
 
     def execute(self, *args, **kwargs):
+        _assert_context(ui_context)
         LongMessagePage.execute(self, *args, **kwargs)
         self.set_page_title("Thanks for your report")
 
 
 class EditorPage(Page):
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=6)
         hbox = Gtk.HBox(spacing=12)
         hbox.pack_start(Gtk.Label("Subject: "), False, True, 0)
@@ -1222,16 +1338,19 @@ class EditorPage(Page):
 
     def switch_out(self):
         global report_message
+        _assert_context(ui_context)
         report_message = self.get_value()[0]
         f = open(self.filename, "w")
         f.write(report_message)
         f.close()
 
     def connect_signals(self):
+        _assert_context(ui_context)
         self.info_buffer.connect('changed', self.validate)
         self.subject.connect('changed', self.validate)
 
     def get_value(self):
+        _assert_context(ui_context)
         info = self.info_buffer.get_text(self.info_buffer.get_start_iter(),
                                          self.info_buffer.get_end_iter())
         if not info.strip():
@@ -1245,14 +1364,17 @@ class EditorPage(Page):
         return(message, message != self.message)
 
     def handle_first_info(self):
+        _assert_context(ui_context)
         self.focus_in_id = self.view.connect('focus-in-event', self.on_view_focus_in_event)
 
     def on_view_focus_in_event(self, view, *args):
+        _assert_context(ui_context)
         # Empty the buffer only the first time
         self.info_buffer.set_text("")
         view.disconnect(self.focus_in_id)
 
     def execute(self, message, filename, editor, charset='utf-8'):
+        _assert_context(ui_context)
         self.message = message
         self.report = BugReport(message)
         self.filename = filename
@@ -1271,6 +1393,7 @@ class SelectOptionsPage(Page):
     default_complete = False
 
     def create_widget(self):
+        _assert_context(ui_context)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_justify(Gtk.Justification.FILL)
@@ -1280,14 +1403,17 @@ class SelectOptionsPage(Page):
         return self.vbox
 
     def on_clicked(self, button, menuopt):
+        _assert_context(ui_context)
         self.application.set_next_value(menuopt)
         self.assistant.forward_page()
 
     def on_display_clicked(self, button):
         global report_message
+        _assert_context(ui_context)
         ReportViewerDialog(report_message)
 
     def setup_focus(self):
+        _assert_context(ui_context)
         if self.default:
             self.default.props.can_default = True
             self.default.props.has_default = True
@@ -1295,6 +1421,7 @@ class SelectOptionsPage(Page):
             self.default.grab_focus()
 
     def execute(self, prompt, menuopts, options):
+        _assert_context(ui_context)
         # remove text UI indication
         prompt = prompt.replace('(e to edit)', '')
         GLib.idle_add(self.label.set_text, prompt)
@@ -1336,6 +1463,7 @@ class SystemPage(Page):
     default_complete = False
 
     def create_widget(self):
+        _assert_context(ui_context)
         hbox = Gtk.HBox()
 
         self.terminal = Vte.Terminal()
@@ -1351,10 +1479,12 @@ class SystemPage(Page):
         return hbox
 
     def on_child_exited(self, terminal):
+        _assert_context(ui_context)
         self.application.set_next_value(None)
         self.assistant.forward_page()
 
     def execute(self, cmdline):
+        _assert_context(ui_context)
         self.terminal.fork_command('/bin/bash', ['/bin/bash', '-c', cmdline])
 
 
@@ -1362,10 +1492,12 @@ class ProgressPage(Page):
     page_type = Gtk.AssistantPageType.PROGRESS
 
     def pulse(self):
+        _assert_context(ui_context)
         self.progress.pulse()
         return True
 
     def create_widget(self):
+        _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=6)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
@@ -1378,14 +1510,17 @@ class ProgressPage(Page):
         return vbox
 
     def set_label(self, text):
+        _assert_context(ui_context)
         GLib.idle_add(self.label.set_text, text)
 
     def reset_label(self):
+        _assert_context(ui_context)
         self.set_label("This operation may take a while")
 
 
 class ReportbugAssistant(Gtk.Assistant):
     def __init__(self, application):
+        _assert_context(ui_context)
         Gtk.Assistant.__init__(self)
         self.application = application
 
@@ -1400,6 +1535,7 @@ class ReportbugAssistant(Gtk.Assistant):
         self.setup_pages()
 
     def _hack_buttons(self, widget):
+        _assert_context(ui_context)
         # This is a real hack for two reasons:
         # 1. There's no other way to access action area but inspecting the assistant and searching for the back button
         # 2. Hide back button on show, because it can be shown-hidden by the assistant depending on the page
@@ -1426,18 +1562,22 @@ class ReportbugAssistant(Gtk.Assistant):
             widget.forall(self._hack_buttons)
 
     def hack_buttons(self):
+        _assert_context(ui_context)
         self._hack_buttons(self)
 
     def connect_signals(self):
+        _assert_context(ui_context)
         self.connect('cancel', self.confirm_exit)
         self.connect('prepare', self.on_prepare)
         self.connect('delete-event', self.close)
         self.connect('apply', self.close)
 
     def on_back_show(self, widget):
+        _assert_context(ui_context)
         widget.hide()
 
     def on_prepare(self, assistant, widget):
+        _assert_context(ui_context)
         # If the user goes back then forward, we must ensure the feedback value to reportbug must be sent
         # when the user clicks on "Forward" to the requested page by reportbug
         if self.showing_page and self.showing_page == self.requested_page and self.get_current_page() > self.showing_page.page_num:
@@ -1454,9 +1594,11 @@ class ReportbugAssistant(Gtk.Assistant):
         GLib.idle_add(self.showing_page.setup_focus)
 
     def close(self, *args):
+        _assert_context(ui_context)
         sys.exit(0)
 
     def confirm_exit(self, *args):
+        _assert_context(ui_context)
         dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.WARNING, Gtk.ButtonsType.YES_NO,
                                    "Are you sure you want to quit Reportbug?")
@@ -1466,22 +1608,26 @@ class ReportbugAssistant(Gtk.Assistant):
             sys.exit(0)
 
     def forward(self, page_num):
+        _assert_context(ui_context)
         return page_num + 1
 
     def forward_page(self):
+        _assert_context(ui_context)
         self.set_current_page(self.forward(self.showing_page.page_num))
 
     def set_next_page(self, page):
+        _assert_context(ui_context)
         self.requested_page = page
         # If we're in progress immediately show this guy
         if self.showing_page == self.progress_page:
             self.set_current_page(page.page_num)
 
-    # Called in UI thread
     def set_progress_label(self, text, *args, **kwargs):
+        _assert_context(ui_context)
         self.progress_page.set_label(text % args)
 
     def setup_pages(self):
+        _assert_context(ui_context)
         # We insert pages between the intro and the progress, so that we give the user the feedback
         # that the applications is still running when he presses the "Forward" button
         self.showing_page = IntroPage(self)
@@ -1494,17 +1640,20 @@ class ReportbugAssistant(Gtk.Assistant):
 # Dialogs
 class YesNoDialog(ReportbugConnector, Gtk.MessageDialog):
     def __init__(self, application):
+        _assert_context(ui_context)
         Gtk.MessageDialog.__init__(self, assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO)
         self.application = application
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
+        _assert_context(ui_context)
         self.application.set_next_value(res == Gtk.ResponseType.YES)
         self.application.put_next_value()
         self.destroy()
 
     def execute_operation(self, msg, yeshelp=None, nohelp=None, default=True, nowrap=False):
+        _assert_context(ui_context)
         self.set_markup(msg)
         if default:
             self.set_default_response(Gtk.ResponseType.YES)
@@ -1515,28 +1664,33 @@ class YesNoDialog(ReportbugConnector, Gtk.MessageDialog):
 
 class DisplayFailureDialog(ReportbugConnector, Gtk.MessageDialog):
     def __init__(self, application):
+        _assert_context(ui_context)
         Gtk.MessageDialog.__init__(self, assistant, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.WARNING, Gtk.ButtonsType.CLOSE)
         self.application = application
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
+        _assert_context(ui_context)
         self.application.put_next_value()
         self.destroy()
 
     def execute_operation(self, msg, *args):
+        _assert_context(ui_context)
         self.set_markup(msg % args)
         self.show_all()
 
 
 class GetFilenameDialog(ReportbugConnector, Gtk.FileChooserDialog):
     def __init__(self, application):
+        _assert_context(ui_context)
         Gtk.FileChooserDialog.__init__(self, '', assistant, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                                                                      Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         self.application = application
         self.connect('response', self.on_response)
 
     def on_response(self, dialog, res):
+        _assert_context(ui_context)
         value = None
         if res == Gtk.ResponseType.OK:
             value = self.get_filename()
@@ -1546,22 +1700,25 @@ class GetFilenameDialog(ReportbugConnector, Gtk.FileChooserDialog):
         self.destroy()
 
     def execute_operation(self, title, force_prompt=False):
+        _assert_context(ui_context)
         self.set_title(ask_free(title))
         self.show_all()
 
 
-# Called in reportbug thread
 def log_message(*args, **kwargs):
+    _assert_context(reportbug_context)
     application.run_once_in_main_thread(assistant.set_progress_label, *args, **kwargs)
 
 
 def select_multiple(*args, **kwargs):
+    _assert_context(reportbug_context)
     kwargs['multiple'] = True
     kwargs['empty_ok'] = True
     return menu(*args, **kwargs)
 
 
 def get_multiline(prompt, *args, **kwargs):
+    _assert_context(reportbug_context)
     if 'ENTER' in prompt:
         # This is a list, let's handle it the best way
         return get_list(prompt, *args, **kwargs)
@@ -1588,7 +1745,9 @@ dialogs = {'yes_no': YesNoDialog,
 
 
 def create_forwarder(parent, klass):
+    _assert_context(reportbug_context)
     def func(*args, **kwargs):
+        _assert_context(reportbug_context)
         op = application.call_in_main_thread(klass, parent)
         try:
             args, kwargs = op.sync_pre_operation(*args, **kwargs)
@@ -1600,6 +1759,7 @@ def create_forwarder(parent, klass):
 
 
 def forward_operations(parent, operations):
+    _assert_context(reportbug_context)
     for operation, klass in operations.items():
         globals()[operation] = create_forwarder(parent, klass)
 
@@ -1654,4 +1814,5 @@ Falling back to 'text' interface."""
 
 
 def can_input():
+    _assert_context(reportbug_context)
     return True
