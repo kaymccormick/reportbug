@@ -1731,7 +1731,7 @@ def get_multiline(prompt, *args, **kwargs):
         # This is a list, let's handle it the best way
         return get_list(prompt, *args, **kwargs)
     else:
-        return get_multiline(prompt, *args, **kwargs)
+        return _get_multiline(prompt, *args, **kwargs)
 
 pages = {'get_string': GetStringPage,
          'get_password': GetPasswordPage,
@@ -1745,6 +1745,7 @@ pages = {'get_string': GetStringPage,
          'select_options': SelectOptionsPage,
          'get_list': GetListPage,
          'system': SystemPage,
+         '_get_multiline': GetMultilinePage,
          }
 dialogs = {'yes_no': YesNoDialog,
            'get_filename': GetFilenameDialog,
