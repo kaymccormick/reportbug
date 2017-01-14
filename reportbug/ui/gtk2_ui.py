@@ -71,7 +71,7 @@ from reportbug.urlutils import launch_browser
 ISATTY = True
 DEBIAN_LOGO = "/usr/share/pixmaps/debian-logo.png"
 
-global application, assistant, report_message
+global application, assistant, report_message, reportbug_context, ui_context
 
 # Utilities
 
@@ -347,6 +347,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         threading.Thread.__init__(self)
         Gtk.EventBox.__init__(self)
         self.setDaemon(True)
+        self.context = GLib.MainContext()
 
         self.dialog = dialog
         self.assistant = assistant
@@ -371,6 +372,11 @@ class BugPage(Gtk.EventBox, threading.Thread):
         self.add(vbox)
 
     def run(self):
+        if not self.context.acquire():
+            # should be impossible
+            raise AssertionError('Could not acquire my own main-context')
+        self.context.push_thread_default()
+
         # Start the progress bar
         GLib.timeout_add(10, self.pulse)
 
@@ -474,6 +480,7 @@ class BugsDialog(Gtk.Dialog):
 # Application
 class ReportbugApplication(threading.Thread):
     def __init__(self):
+        _assert_context(reportbug_context)
         threading.Thread.__init__(self)
         self.setDaemon(True)
 
@@ -481,6 +488,11 @@ class ReportbugApplication(threading.Thread):
         self.next_value = None
 
     def run(self):
+        if not ui_context.acquire():
+            # should be impossible
+            raise AssertionError('Could not acquire UI context')
+        ui_context.push_thread_default()
+
         Gdk.threads_enter()
         Gtk.main()
         Gdk.threads_leave()
@@ -1576,7 +1588,7 @@ def forward_operations(parent, operations):
 
 
 def initialize():
-    global application, assistant, Vte
+    global application, assistant, reportbug_context, ui_context, Vte
 
     try:
         gi.require_version('Vte', '2.91')
@@ -1594,6 +1606,18 @@ Falling back to 'text' interface."""
         if not sys.stdout.isatty():
             os.execlp('x-terminal-emulator', 'x-terminal-emulator', '-e', 'reportbug -u text')
         return False
+
+    # The first thread of the process runs reportbug's UI-agnostic logic
+    reportbug_context = GLib.MainContext()
+    if not reportbug_context.acquire():
+        # should be impossible
+        raise AssertionError('Could not acquire new main-context')
+    reportbug_context.push_thread_default()
+
+    # A secondary thread (the ReportbugApplication) runs the GTK UI.
+    # This is the "default main context", used by GLib.idle_add() and similar
+    # non-thread-aware APIs.
+    ui_context = GLib.MainContext.default()
 
     # Exception hook
     oldhook = sys.excepthook
