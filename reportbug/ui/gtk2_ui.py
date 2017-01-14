@@ -1448,6 +1448,7 @@ class ReportbugAssistant(Gtk.Assistant):
         if self.showing_page == self.progress_page:
             self.set_current_page(page.page_num)
 
+    # Called in UI thread
     def set_progress_label(self, text, *args, **kwargs):
         self.progress_page.set_label(text % args)
 
@@ -1520,8 +1521,9 @@ class GetFilenameDialog(ReportbugConnector, Gtk.FileChooserDialog):
         self.show_all()
 
 
+# Called in reportbug thread
 def log_message(*args, **kwargs):
-    return assistant.set_progress_label(*args, **kwargs)
+    application.run_once_in_main_thread(assistant.set_progress_label, *args, **kwargs)
 
 
 def select_multiple(*args, **kwargs):
