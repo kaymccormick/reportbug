@@ -1352,7 +1352,8 @@ class EditorPage(Page):
     def get_value(self):
         _assert_context(ui_context)
         info = self.info_buffer.get_text(self.info_buffer.get_start_iter(),
-                                         self.info_buffer.get_end_iter())
+                                         self.info_buffer.get_end_iter(),
+                                         True)
         if not info.strip():
             return None
         subject = self.subject.get_text().strip()
