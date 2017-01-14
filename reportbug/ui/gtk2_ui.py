@@ -514,6 +514,26 @@ class ReportbugApplication(threading.Thread):
 
         GLib.idle_add(callback)
 
+    def call_in_main_thread(self, func, *args, **kwargs):
+        def callback():
+            try:
+                ret = func(*args, **kwargs)
+            except BaseException as e:
+                self.set_next_value(e)
+            else:
+                self.set_next_value(ret)
+
+            self.put_next_value()
+            return False
+
+        GLib.idle_add(callback)
+        ret = self.get_last_value()
+
+        if isinstance(ret, BaseException):
+            raise ret
+        else:
+            return ret
+
 
 # Connection with reportbug
 # Syncronize "pipe" with reportbug
@@ -1569,7 +1589,7 @@ dialogs = {'yes_no': YesNoDialog,
 
 def create_forwarder(parent, klass):
     def func(*args, **kwargs):
-        op = klass(parent)
+        op = application.call_in_main_thread(klass, parent)
         try:
             args, kwargs = op.sync_pre_operation(*args, **kwargs)
         except SyncReturn as e:
@@ -1624,13 +1644,12 @@ Falling back to 'text' interface."""
     Gtk.Window.set_default_icon_from_file(DEBIAN_LOGO)
 
     application = ReportbugApplication()
-    assistant = ReportbugAssistant(application)
-
-    # Forwarders
-    forward_operations(assistant, pages)
+    application.start()
     forward_operations(application, dialogs)
 
-    application.start()
+    assistant = application.call_in_main_thread(ReportbugAssistant, application)
+    forward_operations(assistant, pages)
+
     return True
 
 
