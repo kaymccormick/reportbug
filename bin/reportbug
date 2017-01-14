@@ -1323,7 +1323,8 @@ class UI(object):
                    "Please change your locale if this is incorrect.\n\n", charset)
 
         fromaddr = utils.get_user_id(self.options.email, self.options.realname, charset)
-        ewrite("Using '%s' as your from address.\n", fromaddr)
+        ewrite("Using '%s' as your from address.\n",
+                str(email.header.make_header(email.header.decode_header(fromaddr))))
         if self.options.debugmode:
             sendto = fromaddr
 
