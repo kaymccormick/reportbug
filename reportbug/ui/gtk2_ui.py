@@ -47,11 +47,7 @@ except ImportError:
 
 global Vte
 
-try:
-    import gtkspellcheck
-    has_spell = True
-except:
-    has_spell = False
+gtkspellcheck = None
 
 #gtk.set_interactive(0)
 Gdk.threads_init()
@@ -1309,7 +1305,18 @@ class EditorPage(Page):
         self.view = Gtk.TextView()
         self.view.modify_font(Pango.FontDescription("Monospace"))
         self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        if has_spell:
+
+        # We have to do the import in the UI thread, because it loads a
+        # SQLite database at import time, and the Python SQLite bindings
+        # don't allow transferring a SQLite handle between threads.
+        global gtkspellcheck
+        if gtkspellcheck is None:
+            try:
+                import gtkspellcheck
+            except:
+                gtkspellcheck = NotImplemented
+
+        if gtkspellcheck is not NotImplemented:
             gtkspellcheck.SpellChecker(self.view)
         self.info_buffer = self.view.get_buffer()
         scrolled = create_scrollable(self.view)
@@ -1323,7 +1330,7 @@ class EditorPage(Page):
         expander.add(scrolled)
         vbox.pack_start(expander, False, True, 0)
 
-        if not has_spell:
+        if gtkspellcheck is NotImplemented:
             box = Gtk.EventBox()
             label = Gtk.Label("Please install <b>python-gtkspellcheck</b> to enable spell checking")
             label.set_use_markup(True)
