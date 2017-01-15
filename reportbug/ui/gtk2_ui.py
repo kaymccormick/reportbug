@@ -790,7 +790,7 @@ class GetMultilinePage(Page):
         vbox.pack_start(self.label, False, True, 0)
 
         self.view = Gtk.TextView()
-        self.buffer = view.get_buffer()
+        self.buffer = self.view.get_buffer()
         scrolled = create_scrollable(self.view)
         vbox.pack_start(scrolled, True, True, 0)
         return vbox
