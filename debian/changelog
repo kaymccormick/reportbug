@@ -7,9 +7,12 @@ reportbug (7.1.3) UNRELEASED; urgency=medium
       Martensen; Closes: #851322
   * man/reportbug.1
     - fix order of email environment variables; patch by Nis Martensen;
-    Closes: #851355
+      Closes: #851355
+  * bin/reportbug
+    - output user from address in human-readable format; patch by Nis Martensen;
+      Closes: 851361
 
- -- Sandro Tosi <morph@debian.org>  Sun, 15 Jan 2017 15:27:05 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 15 Jan 2017 15:29:32 -0500
 
 reportbug (7.1.2) unstable; urgency=medium
 
