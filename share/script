@@ -4,7 +4,7 @@
 import os
 import re
 
-OUT=os.fdopen(3, 'w')
+OUT = os.fdopen(3, 'w', encoding='utf-8', errors='backslashreplace')
 
 envprint = False
 for var in ['EDITOR', 'PAGER', 'VISUAL', 'REPORTBUGEMAIL', 'DEBEMAIL', 'EMAIL',
@@ -22,7 +22,7 @@ if os.path.exists(USERFILE):
     if envprint:
         print(file=OUT)
     print('** %s:' % USERFILE, file=OUT)
-    for line in open(USERFILE, 'r'):
+    for line in open(USERFILE, 'r', encoding='utf-8', errors='backslashreplace'):
         line = line.strip()
         if line and not line.startswith('#'):
             m = passwdre.match(line)
