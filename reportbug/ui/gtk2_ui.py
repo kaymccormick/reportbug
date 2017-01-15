@@ -472,7 +472,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         button.connect('clicked', self.on_open_browser)
         bbox.pack_start(button, True, True, 0)
         if not self.queryonly:
-            button = Gtk.Button("Reply")
+            button = Gtk.Button(label="Reply")
             button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.BUTTON))
             button.connect('clicked', self.on_reply)
             bbox.pack_start(button, True, True, 0)
@@ -515,7 +515,7 @@ class BugsDialog(Gtk.Dialog):
 
     def show_bug(self, number, *args):
         page = BugPage(self.assistant, self, number, self.queryonly, *args)
-        self.notebook.append_page(page, Gtk.Label(number))
+        self.notebook.append_page(page, Gtk.Label(label=number))
         page.start()
 
 
@@ -705,7 +705,7 @@ class IntroPage(Page):
 
         vbox = Gtk.VBox(spacing=24)
 
-        label = Gtk.Label("""
+        label = Gtk.Label(label="""
 <b>Reportbug</b> is a tool designed to make the reporting of bugs in Debian and derived distributions relatively painless.
 
 This wizard will guide you through the bug reporting process step by step.
@@ -1088,11 +1088,11 @@ class HandleBTSQueryPage(TreePage):
     def create_widget(self):
         _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=6)
-        self.label = Gtk.Label("List of bugs. Select a bug to retrieve and submit more information.")
+        self.label = Gtk.Label(label="List of bugs. Select a bug to retrieve and submit more information.")
         vbox.pack_start(self.label, False, True, 6)
 
         hbox = Gtk.HBox(spacing=6)
-        label = Gtk.Label("Filter:")
+        label = Gtk.Label(label="Filter:")
         hbox.pack_start(label, False, True, 0)
         self.entry = Gtk.Entry()
         hbox.pack_start(self.entry, True, True, 0)
@@ -1114,7 +1114,7 @@ class HandleBTSQueryPage(TreePage):
             self.view.append_column(column)
         vbox.pack_start(scrolled, True, True, 0)
 
-        button = Gtk.Button("Retrieve and submit bug information")
+        button = Gtk.Button(label="Retrieve and submit bug information")
         button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.BUTTON))
         button.connect('clicked', self.on_retrieve_info)
         vbox.pack_start(button, False, True, 0)
@@ -1300,7 +1300,7 @@ class EditorPage(Page):
         _assert_context(ui_context)
         vbox = Gtk.VBox(spacing=6)
         hbox = Gtk.HBox(spacing=12)
-        hbox.pack_start(Gtk.Label("Subject: "), False, True, 0)
+        hbox.pack_start(Gtk.Label(label="Subject: "), False, True, 0)
         self.subject = Gtk.Entry()
         hbox.pack_start(self.subject, True, True, 0)
         vbox.pack_start(hbox, False, True, 0)
@@ -1335,7 +1335,7 @@ class EditorPage(Page):
 
         if gtkspellcheck is NotImplemented:
             box = Gtk.EventBox()
-            label = Gtk.Label("Please install <b>python-gtkspellcheck</b> to enable spell checking")
+            label = Gtk.Label(label="Please install <b>python-gtkspellcheck</b> to enable spell checking")
             label.set_use_markup(True)
             label.set_line_wrap(True)
             label.set_selectable(True)
@@ -1448,12 +1448,12 @@ class SelectOptionsPage(Page):
                 continue
             # stdout is a textview for us
             if 'Print message to stdout' in desc:
-                button = Gtk.Button("Display message in a text view")
+                button = Gtk.Button(label="Display message in a text view")
                 button.connect('clicked', self.on_display_clicked)
                 buttons.append(button)
             else:
                 button = Gtk.Button()
-                label = Gtk.Label(options[menuopt.lower()])
+                label = Gtk.Label(label=options[menuopt.lower()])
                 button.add(label)
                 button.connect('clicked', self.on_clicked, menuopt.lower())
                 if menuopt.isupper():
