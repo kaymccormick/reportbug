@@ -5,8 +5,8 @@ build
 *stamp*
 reportbug.egg-info
 debian/files
-debian/python-reportbug.substvars
-debian/python-reportbug/
+debian/python3-reportbug.substvars
+debian/python3-reportbug/
 debian/reportbug.substvars
 debian/reportbug/
 man/querybts.fr.1
