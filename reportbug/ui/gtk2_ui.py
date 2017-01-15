@@ -49,9 +49,6 @@ global Vte
 
 gtkspellcheck = None
 
-#gtk.set_interactive(0)
-Gdk.threads_init()
-
 import sys
 import re
 import os
@@ -535,9 +532,7 @@ class ReportbugApplication(threading.Thread):
             raise AssertionError('Could not acquire UI context')
         ui_context.push_thread_default()
 
-        Gdk.threads_enter()
         Gtk.main()
-        Gdk.threads_leave()
 
     def get_last_value(self):
         _assert_context(reportbug_context)
