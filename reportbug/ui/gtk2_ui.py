@@ -1330,7 +1330,7 @@ class EditorPage(Page):
 
         if gtkspellcheck is NotImplemented:
             box = Gtk.EventBox()
-            label = Gtk.Label(label="Please install <b>python-gtkspellcheck</b> to enable spell checking")
+            label = Gtk.Label(label="Please install <b>python3-gtkspellcheck</b> to enable spell checking")
             label.set_use_markup(True)
             label.set_line_wrap(True)
             label.set_selectable(True)
