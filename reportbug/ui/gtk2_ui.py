@@ -158,13 +158,16 @@ class CustomDialog(Gtk.Dialog):
         hbox = Gtk.HBox(spacing=10)
         vbox.pack_start(hbox, False, True, 0)
 
-        align = Gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+        # TODO: deprecated, new code is meant to set the halign/valign/margin
+        # properties on the child widget instead. Also this is probably
+        # useless without having a child widget?
+        align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0)
         hbox.pack_start(align, False, True, 0)
 
         image = Gtk.Image.new_from_stock(stock_image, Gtk.IconSize.DIALOG)
         hbox.pack_start(image, True, True, 0)
 
-        label = Gtk.Label(message)
+        label = Gtk.Label(label=message)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.FILL)
         label.set_selectable(True)
@@ -395,7 +398,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         self.bug_status = None
 
         vbox = Gtk.VBox(spacing=12)
-        vbox.pack_start(Gtk.Label("Retrieving bug information."), False, True, 0)
+        vbox.pack_start(Gtk.Label(label="Retrieving bug information."), False, True, 0)
 
         self.progress = Gtk.ProgressBar()
         self.progress.set_pulse_step(0.01)
@@ -436,7 +439,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
     def not_found(self):
         _assert_context(ui_context)
         self.drop_progressbar()
-        self.add(Gtk.Label("The bug can't be fetched or it doesn't exist."))
+        self.add(Gtk.Label(label="The bug can't be fetched or it doesn't exist."))
         self.show_all()
 
     def found(self, info):
@@ -446,7 +449,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         bodies = info[1]
         vbox = Gtk.VBox(spacing=12)
         vbox.set_border_width(12)
-        label = Gtk.Label('Description: ' + desc)
+        label = Gtk.Label(label='Description: ' + desc)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(label, False, True, 0)
@@ -465,7 +468,7 @@ class BugPage(Gtk.EventBox, threading.Thread):
         vbox.pack_start(scrolled, True, True, 0)
 
         bbox = Gtk.HButtonBox()
-        button = Gtk.Button("Open in browser")
+        button = Gtk.Button(label="Open in browser")
         button.connect('clicked', self.on_open_browser)
         bbox.pack_start(button, True, True, 0)
         if not self.queryonly:
