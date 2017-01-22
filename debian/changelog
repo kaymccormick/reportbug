@@ -1,3 +1,11 @@
+reportbug (7.1.4) UNRELEASED; urgency=medium
+
+  * reportbug/submit.py
+    - use the correct email.encoders modules when attaching binary files;
+      Closes: #850317
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 22 Jan 2017 18:03:02 -0500
+
 reportbug (7.1.3) unstable; urgency=medium
 
   * debian/control

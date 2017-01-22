@@ -174,7 +174,7 @@ def mime_attach(body, attachments, charset, body_charset=None):
             part = MIMEBase(maintype, subtype)
             part.set_payload(fp.read())
             fp.close()
-            email.Encoders.encode_base64(part)
+            email.encoders.encode_base64(part)
         part.add_header('Content-Disposition', 'attachment',
                         filename=os.path.basename(attachment))
         message.attach(part)
