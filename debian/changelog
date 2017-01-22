@@ -1,4 +1,4 @@
-reportbug (7.1.4) UNRELEASED; urgency=medium
+reportbug (7.1.4) unstable; urgency=medium
 
   * reportbug/submit.py
     - use the correct email.encoders modules when attaching binary files;
@@ -8,7 +8,7 @@ reportbug (7.1.4) UNRELEASED; urgency=medium
   * doc/README.Users
     - update GTK interface doc about which packages to install
 
- -- Sandro Tosi <morph@debian.org>  Sun, 22 Jan 2017 18:14:03 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 22 Jan 2017 18:16:04 -0500
 
 reportbug (7.1.3) unstable; urgency=medium
 
