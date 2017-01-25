@@ -496,7 +496,7 @@ class AvailDB(object):
 
 def get_dpkg_database():
     try:
-        fp = open(STATUSDB)
+        fp = open(STATUSDB, errors="backslashreplace")
         if fp:
             return AvailDB(fp=fp)
     except IOError:
@@ -976,7 +976,7 @@ def parse_config_files():
     for filename in FILES:
         if os.path.exists(filename):
             try:
-                lex = our_lex(open(filename), posix=True)
+                lex = our_lex(open(filename, errors="backslashreplace"), posix=True)
             except IOError as msg:
                 continue
 
@@ -1235,7 +1235,7 @@ def exec_and_parse_bugscript(handler, bugscript):
     isattachments = False
     headers = pseudoheaders = text = ''
     attachments = []
-    fp = open(filename)
+    fp = open(filename, errors="backslashreplace")
     for line in fp.readlines():
         # we identify the blocks for headers and pseudo-h
         if line == '-- BEGIN HEADERS --\n':
