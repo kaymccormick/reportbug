@@ -661,6 +661,8 @@ def get_dependency_info(package, depends, rel="depends on"):
 
     dependencies = []
     for dep in depends:
+        # drop possible architecture qualifier from package names
+        dep = [d.split(':')[0] for d in dep]
         for bit in dep:
             dependencies.append((tuple(dep), bit))
 
