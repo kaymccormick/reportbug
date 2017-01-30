@@ -46,6 +46,8 @@ try:
 
     gi.require_version('Gtk', '3.0')
     from gi.repository import Gtk
+
+    gi.require_foreign('cairo')
 except ImportError:
     raise UINotImportable('Please install the python3-gi and gir1.2-gtk-3.0 packages to use this interface.')
 
