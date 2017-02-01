@@ -22,6 +22,10 @@
 
 from reportbug.exceptions import UINotImportable
 
+import os
+if not ('DISPLAY' in os.environ or 'WAYLAND_DISPLAY' in os.environ):
+    raise UINotImportable('No graphical display detected, falling back to text UI.')
+
 try:
     import gi
 
