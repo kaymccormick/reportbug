@@ -1781,7 +1781,7 @@ def initialize():
     try:
         gi.require_version('Vte', '2.91')
         from gi.repository import Vte
-    except ImportError:
+    except (ImportError,ValueError):
         message = """Please install the %s package to use the GTK+(known as 'gtk2' in reportbug) interface.
 Falling back to 'text' interface."""
         dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
