@@ -7,8 +7,11 @@ reportbug (7.1.5) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - fallback gracefully to text UI if running GTK+ interface on a text
       console; patch by Nis Martensen; Closes: #853269
+    - fallback gracefully to text UI in case some of the GTK+ deps are not
+      available, by catching all the relevant exceptions; patch by Jakob Haufe;
+      Closes: #854405
 
- -- Sandro Tosi <morph@debian.org>  Sun, 12 Feb 2017 11:51:14 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 12 Feb 2017 11:53:02 -0500
 
 reportbug (7.1.4) unstable; urgency=medium
 
