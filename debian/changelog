@@ -1,4 +1,4 @@
-reportbug (7.1.5) UNRELEASED; urgency=medium
+reportbug (7.1.5) unstable; urgency=medium
 
   * reportbug/utils.py
     - handle correcly the situation where reportbug config file and dpkg status
@@ -13,7 +13,7 @@ reportbug (7.1.5) UNRELEASED; urgency=medium
     - require also Cairo, required to render the GTK+ interface; patch by Nis
       Martensen; Closes: #852652
 
- -- Sandro Tosi <morph@debian.org>  Sun, 12 Feb 2017 11:59:06 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 12 Feb 2017 12:07:18 -0500
 
 reportbug (7.1.4) unstable; urgency=medium
 
