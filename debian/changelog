@@ -1,3 +1,12 @@
+reportbug (7.1.5) UNRELEASED; urgency=medium
+
+  * reportbug/utils.py
+    - handle correcly the situation where reportbug config file and dpkg status
+      database have a different charset than current locale; patch by Nis
+      Martensen; Closes: #848729
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 12 Feb 2017 11:39:52 -0500
+
 reportbug (7.1.4) unstable; urgency=medium
 
   * reportbug/submit.py
