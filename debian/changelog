@@ -1,4 +1,4 @@
-reportbug (7.1.6) UNRELEASED; urgency=medium
+reportbug (7.1.6) unstable; urgency=medium
 
   * reportbug/utils.py
     - wrap every command execution in a helper function to (eventually) decode
@@ -8,7 +8,7 @@ reportbug (7.1.6) UNRELEASED; urgency=medium
     - handle text attachments in different encodings, currently making reportbug
       crash; patch by Nis Martensen; Follow up for #848729
 
- -- Sandro Tosi <morph@debian.org>  Tue, 18 Apr 2017 21:02:09 -0400
+ -- Sandro Tosi <morph@debian.org>  Tue, 18 Apr 2017 21:12:02 -0400
 
 reportbug (7.1.5) unstable; urgency=medium
 
