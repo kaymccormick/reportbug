@@ -4,8 +4,11 @@ reportbug (7.1.6) UNRELEASED; urgency=medium
     - wrap every command execution in a helper function to (eventually) decode
       the command output, this will prevent non-UTF-8 output to crash reportbug;
       patch by Nis Martensen; Closes: #857794
+  * reportbug/submit.py
+    - handle text attachments in different encodings, currently making reportbug
+      crash; patch by Nis Martensen; Follow up for #848729
 
- -- Sandro Tosi <morph@debian.org>  Tue, 18 Apr 2017 20:51:22 -0400
+ -- Sandro Tosi <morph@debian.org>  Tue, 18 Apr 2017 21:02:09 -0400
 
 reportbug (7.1.5) unstable; urgency=medium
 
