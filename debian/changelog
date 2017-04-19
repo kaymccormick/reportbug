@@ -1,3 +1,12 @@
+reportbug (7.1.6) UNRELEASED; urgency=medium
+
+  * reportbug/utils.py
+    - wrap every command execution in a helper function to (eventually) decode
+      the command output, this will prevent non-UTF-8 output to crash reportbug;
+      patch by Nis Martensen; Closes: #857794
+
+ -- Sandro Tosi <morph@debian.org>  Tue, 18 Apr 2017 20:51:22 -0400
+
 reportbug (7.1.5) unstable; urgency=medium
 
   * reportbug/utils.py
