@@ -789,11 +789,11 @@ def get_debian_release_info():
 
 
 def lsb_release_info():
-    return get_command_output('lsb_release -a 2>/dev/null') + '\n'
+    return get_command_output('lsb_release -a 2>/dev/null')
 
 
 def get_arch():
-    arch = get_command_output('COLUMNS=79 dpkg --print-architecture 2>/dev/null')
+    arch = get_command_output('COLUMNS=79 dpkg --print-architecture 2>/dev/null').strip()
     if not arch:
         un = os.uname()
         arch = un[4]
