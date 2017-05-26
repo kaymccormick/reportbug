@@ -362,7 +362,7 @@ def get_package_status(package, avail=False):
     packarg = pipes.quote(package)
     if avail:
         output = get_command_output(
-            "COLUMNS=79 dpkg --print-avail %s 2>/dev/null" % packarg)
+            "apt-cache show %s 2>/dev/null" % packarg)
     else:
         output = get_command_output(
             "COLUMNS=79 dpkg --status %s 2>/dev/null" % packarg)
