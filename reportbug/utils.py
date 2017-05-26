@@ -338,7 +338,7 @@ def get_package_status(package, avail=False):
     statusre = re.compile('Status: ')
     originre = re.compile('Origin: ')
     bugsre = re.compile('Bugs: ')
-    descre = re.compile('Description(?:-.*)?: ')
+    descre = re.compile('Description(?:-[a-zA-Z]+)?: ')
     fullre = re.compile(' ')
     srcre = re.compile('Source: ')
     sectionre = re.compile('Section: ')
@@ -351,6 +351,7 @@ def get_package_status(package, avail=False):
     recommends = []
     suggests = []
     confmode = False
+    descmode = False
     state = ''
 
     try:
@@ -370,6 +371,12 @@ def get_package_status(package, avail=False):
         line = line.rstrip()
         if not line:
             continue
+
+        if descmode:
+            if line[0] == ' ':
+                fulldesc.append(line)
+            else:
+                descmode = False
 
         if confmode:
             if line[:2] != ' /':
@@ -392,6 +399,7 @@ def get_package_status(package, avail=False):
             (crud, bugs) = line.split(": ", 1)
         elif descre.match(line):
             (crud, desc) = line.split(": ", 1)
+            descmode = True
         elif dependsre.match(line):
             (crud, thisdepends) = line.split(": ", 1)
             # Remove versioning crud
@@ -419,8 +427,6 @@ def get_package_status(package, avail=False):
             src_name = src_name.split()[0]
         elif sectionre.match(line):
             crud, section = line.split(": ", 1)
-        elif desc and line[0] == ' ':
-            fulldesc.append(line)
 
     installed = False
     if status:
