@@ -362,7 +362,7 @@ def get_package_status(package, avail=False):
     packarg = pipes.quote(package)
     if avail:
         output = get_command_output(
-            "apt-cache show %s 2>/dev/null" % packarg)
+            "LC_ALL=C.UTF-8 apt-cache show %s 2>/dev/null" % packarg)
     else:
         output = get_command_output(
             "COLUMNS=79 dpkg --status %s 2>/dev/null" % packarg)
@@ -525,7 +525,7 @@ def get_avail_database():
 
 def available_package_description(package):
     data = get_command_output('apt-cache show ' + pipes.quote(package))
-    descre = re.compile('^Description(?:-.*)?: (.*)$')
+    descre = re.compile('^Description(?:-[a-zA-Z]+)?: (.*)$')
     for line in data.split('\n'):
         m = descre.match(line)
         if m:
@@ -599,7 +599,7 @@ def get_package_info(packages, skip_notfound=False):
     packob = re.compile('^Package: (?P<pkg>.*)$', re.MULTILINE)
     statob = re.compile('^Status: (?P<stat>.*)$', re.MULTILINE)
     versob = re.compile('^Version: (?P<vers>.*)$', re.MULTILINE)
-    descob = re.compile('^Description(?:-.*)?: (?P<desc>.*)$', re.MULTILINE)
+    descob = re.compile('^Description(?:-[a-zA-Z]+)?: (?P<desc>.*)$', re.MULTILINE)
 
     ret = []
     for p in packinfo:
