@@ -130,7 +130,7 @@ def search_path_for(filename):
     if d:
         return realpath(filename)
 
-    path = os.environ.get("PATH", os.defpath).split('/')
+    path = os.environ.get("PATH", os.defpath).split(':')
     for d in pathdirs:
         if d not in path:
             path.append(d)

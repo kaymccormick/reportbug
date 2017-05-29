@@ -10,6 +10,8 @@ reportbug (7.1.7) UNRELEASED; urgency=medium
       Nis Martensen; Closes: #861153
     - update suites names: fade out squeeze (wheezy is now oldoldstable) and
       introduce buster (testing), bullseye (next-testing); Closes: #862801
+    - in search_path_for, split PATH directories using ':'; patch by Kamaraju
+      Kusumanchi; Closes: #827088
   * reportbug/debbugs.py
     - add manpages.debian.org to pseudo-packages list; Closes: #861859
   * debian/control
@@ -31,7 +33,7 @@ reportbug (7.1.7) UNRELEASED; urgency=medium
     - fix error formatting when printing the error for draft directory
       non-existing; patch by Gaetano Guerriero; Closes: #816375
 
- -- Sandro Tosi <morph@debian.org>  Mon, 29 May 2017 14:14:27 -0400
+ -- Sandro Tosi <morph@debian.org>  Mon, 29 May 2017 14:23:18 -0400
 
 reportbug (7.1.6) unstable; urgency=medium
 
