@@ -92,11 +92,11 @@ fhs_directories = ['/', '/usr', '/usr/share', '/var', '/usr/X11R6',
                    '/usr/man', '/usr/doc', '/usr/bin']
 
 # A map between codenames and suites
-CODENAME2SUITE = {'squeeze': 'oldoldstable',
-                'wheezy': 'oldstable',
-                'jessie': 'stable',
-                'stretch': 'testing',
-                'buster': 'next-testing',
+CODENAME2SUITE = {'wheezy': 'oldoldstable',
+                'jessie': 'oldstable',
+                'stretch': 'stable',
+                'buster': 'testing',
+                'bullseye': 'next-testing',
                 'sid': 'unstable',
                 'experimental': 'experimental'}
 SUITE2CODENAME = dict([(suite, codename) for codename, suite in list(CODENAME2SUITE.items())])
