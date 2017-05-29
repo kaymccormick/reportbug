@@ -5,8 +5,11 @@ reportbug (7.1.7) UNRELEASED; urgency=medium
       patch by Nis Martensen; Closes: #863322
     - switch to use apt-cache instead of dpkg --print-avail; patch by Nis
       Martensen
+    - get_command_output() doesnt strip a trailing new-line, so deal with that
+      behavior when running lsb_release and dpkg --print-architecture; patch by
+      Nis Martensen; Closes: #861153
 
- -- Sandro Tosi <morph@debian.org>  Mon, 29 May 2017 11:11:24 -0400
+ -- Sandro Tosi <morph@debian.org>  Mon, 29 May 2017 11:16:02 -0400
 
 reportbug (7.1.6) unstable; urgency=medium
 
