@@ -180,6 +180,7 @@ debother = {
     'installation-reports': 'Reports of installation problems with stable & testing',
     'jenkins.debian.org': 'Issues with the jenkins.debian.org service',
     'lists.debian.org': 'The mailing lists, debian-*@lists.debian.org',
+    'manpages.debian.org': 'Issues with the Debian Manpages Website and coordination of maintenance',
     'mirrors': 'Problems with the official mirrors',
     'nm.debian.org': 'New Member process and nm.debian.org webpages',
     'pet.debian.net': 'The Debian Package Entropy Tracker',
