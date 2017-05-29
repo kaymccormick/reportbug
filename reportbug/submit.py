@@ -27,7 +27,6 @@ from subprocess import Popen, STDOUT, PIPE
 import email
 import smtplib
 import socket
-import email
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.audio import MIMEAudio
