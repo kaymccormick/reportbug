@@ -1205,7 +1205,7 @@ def launch_mbox_reader(cmd, url, http_proxy, timeout):
     (fd, fname) = TempFile()
     try:
         for line in mbox.splitlines():
-            fd.write(line)
+            fd.write(line + '\n')
         fd.close()
         if cmd is not None:
             try:

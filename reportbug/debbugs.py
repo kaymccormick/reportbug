@@ -971,7 +971,7 @@ def parse_html_report(number, url, http_proxy, timeout, followups=False, cgi=Tru
 
     parser = BTSParser(cgi=cgi, followups=followups)
     for line in page.splitlines():
-        parser.feed(line)
+        parser.feed(line + '\n')
     parser.close()
 
     items = parser.preblock
@@ -1123,7 +1123,7 @@ def get_reports(package, timeout, system='debian', mirrors=None, version=None,
 
         parser = BTSParser()
         for line in page.splitlines():
-            parser.feed(line)
+            parser.feed(line + '\n')
         parser.close()
 
         return parser.bugcount, parser.title, parser.hierarchy
