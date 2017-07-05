@@ -823,6 +823,7 @@ TAGS = {
     'ipv6': 'This bug affects support for Internet Protocol version 6.',
     'lfs': 'This bug affects support for large files (over 2 gigabytes).',
     'l10n': 'This bug reports a localization/internationalization issue.',
+    'a11y': 'This bug is relevant to the accessibility of the package.',
     'newcomer': 'This bug has a known solution but the maintainer requests someone else implement it.',
 }
 
