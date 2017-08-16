@@ -50,6 +50,8 @@ particular:
  - gir1.2-vte-2.91
  - python3-gtkspellcheck
 
+or, install the reportbug-gtk package to get the needed dependencies.
+
 If after installing both of them still GTK+ UI doesn't show up, please
 file a report (in text ui :) ).
 
