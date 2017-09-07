@@ -108,12 +108,27 @@ def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpa
         body = None
     return body
 
+def _MIMEText_wrapper(text):
+    msg = MIMEText(text)
+    # Too long lines need to be encoded (see RFC2822), but MIMEText does
+    # not yet handle this for us.
+    # Since utf-8 will already be base64-encoded at this point, we only
+    # need to deal with the us-ascii case.
+    if msg.get_content_charset() == 'us-ascii' and \
+            max(len(l) for l in text.splitlines()) > 980:
+        email.encoders.encode_quopri(msg)
+        # due to a bug in the email library, the result now has two CTE
+        # headers, only one of which is correct. Delete both and set the
+        # correct value.
+        del msg['Content-Transfer-Encoding']
+        msg['Content-Transfer-Encoding'] = 'quoted-printable'
+    return msg
 
 def mime_attach(body, attachments, charset, body_charset=None):
     mimetypes.init()
 
     message = MIMEMultipart('mixed')
-    bodypart = MIMEText(body)
+    bodypart = _MIMEText_wrapper(body)
     bodypart.add_header('Content-Disposition', 'inline')
     message.preamble = 'This is a multi-part MIME message sent by reportbug.\n\n'
     message.epilogue = ''
@@ -153,7 +168,7 @@ def mime_attach(body, attachments, charset, body_charset=None):
         if maintype == 'text':
             try:
                 with open(attachment, 'rU') as fp:
-                    part = MIMEText(fp.read())
+                    part = _MIMEText_wrapper(fp.read())
             except UnicodeDecodeError:
                 fp = open(attachment, 'rb')
                 part = MIMEBase(maintype, subtype)
@@ -215,7 +230,7 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
             ewrite("Error: Message creation failed, not sending\n")
             mua = mta = smtphost = None
     else:
-        message = MIMEText(body)
+        message = _MIMEText_wrapper(body)
 
     # Standard headers
     message['From'] = fromaddr
