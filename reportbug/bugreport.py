@@ -82,6 +82,7 @@ class bugreport(object):
         debinfo = ''
         shellpath = utils.realpath('/bin/sh')
         init = utils.get_init_system()
+        lsminfo = utils.get_lsm_info()
 
         locinfo = []
         langsetting = os.environ.get('LANG', 'C')
@@ -177,6 +178,8 @@ class bugreport(object):
             debinfo += 'Shell: /bin/sh linked to %s\n' % shellpath
         if init:
             debinfo += 'Init: %s\n' % init
+        if lsminfo:
+            debinfo += 'LSM: %s\n' % lsminfo
 
         # Don't include system info for certain packages
         if self.sysinfo:

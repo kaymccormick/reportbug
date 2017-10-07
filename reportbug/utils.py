@@ -1304,3 +1304,23 @@ def get_init_system():
         init = 'sysvinit (via /sbin/init)'
 
     return init
+
+def get_lsm_info():
+    """Determines the linux security module enabled on the current machine
+
+    Returns None if there is no LSM enabled on the machine or if the state
+    cannot be determined."""
+
+    lsminfo = None
+    if os.path.exists('/usr/sbin/selinuxenabled') and (subprocess.call(['/usr/sbin/selinuxenabled']) == 0):
+        lsminfo = 'SELinux: enabled - '
+        enforce_status = subprocess.check_output(['/usr/sbin/getenforce']).decode('ascii')
+        lsminfo += 'Mode: %s - ' % enforce_status[:-1]
+        with open('/etc/selinux/config', 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('SELINUXTYPE='):
+                    lsminfo += 'Policy name: %s' % line.split('=')[1][:-1]
+                    break
+
+    return lsminfo
