@@ -982,7 +982,7 @@ class MenuPage(TreePage):
 
         default_iter = None
         # here below, 'text' is the value of the description of the item, but
-        # writen all on a single-line, it will be wrapped by the list settings
+        # written all on a single line, it will be wrapped by the list settings
         if isinstance(options, dict):
             if order:
                 for option in order:

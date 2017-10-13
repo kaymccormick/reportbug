@@ -15,7 +15,7 @@ import glob
 
 setup(name='reportbug', version=reportbug.VERSION_NUMBER,
       description='bug reporting tool',
-      author='reportbug maintainence team',
+      author='reportbug maintenance team',
       author_email='reportbug-maint@lists.alioth.debian.org',
       url='http://alioth.debian.org/projects/reportbug',
       data_files=[('share/reportbug', ['share/handle_bugscript',
