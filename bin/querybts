@@ -141,7 +141,7 @@ def main():
 
         package = args[0]
 
-        m = re.match('^#?(\d+)$', package)
+        m = re.match(r'^#?(\d+)$', package)
         if m:
             num = int(m.group(1))
             url = debbugs.get_report_url(options.system, num, options.mirrors, options.archived)
@@ -158,7 +158,7 @@ def main():
 
         for bugnum in args:
             package = bugnum
-            m = re.match('^#?(\d+)$', bugnum)
+            m = re.match(r'^#?(\d+)$', bugnum)
             if not m:
                 mboxbuglist = ui.handle_bts_query(package, options.system, options.timeout, options.mirrors,
                                                   options.http_proxy, queryonly=True, title=VERSION,

@@ -1974,7 +1974,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                     'directive that it violates (E.g., "1.2.3")? '
                     'Just type "unknown" if you are not sure (that would '
                     'downgrade severity to normal).', force_prompt=True)
-                if re.match('[0-9]+\.[0-9.]+', justification):
+                if re.match(r'[0-9]+\.[0-9.]+', justification):
                     justification = 'Policy ' + justification
                 elif not justification:
                     justification = 'unknown'
