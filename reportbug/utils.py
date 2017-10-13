@@ -225,7 +225,7 @@ def find_package_for(filename, pathonly=False):
 
     # tries to match also files in /var/lib/dpkg/info/
     if filename.startswith('/var/lib/dpkg/info/'):
-        dpkg_info = re.compile('/var/lib/dpkg/info/(.+)\.[^.]+')
+        dpkg_info = re.compile(r'/var/lib/dpkg/info/(.+)\.[^.]+')
         m = dpkg_info.match(filename)
         # callee want a dict as second pair element...
         packages[m.group(1)] = ''
@@ -749,7 +749,7 @@ def get_debian_release_info():
     dists = []
     output = get_command_output('apt-cache policy 2>/dev/null')
     if output:
-        mre = re.compile('\s+(\d+)\s+.*$\s+release\s.*o=(Ubuntu|Debian|Debian Ports),a=([^,]+),', re.MULTILINE)
+        mre = re.compile(r'\s+(\d+)\s+.*$\s+release\s.*o=(Ubuntu|Debian|Debian Ports),a=([^,]+),', re.MULTILINE)
         found = {}
         # XXX: When Python 2.4 rolls around, rewrite this
         for match in mre.finditer(output):
@@ -1154,7 +1154,7 @@ def cleanup_msg(dmessage, headers, pseudos, type):
                 continue
             else:
                 # Permit bogus headers in the pseudoheader section
-                headers.append(re.split(':\s+', line, 1))
+                headers.append(re.split(r':\s+', line, 1))
         elif line.strip() != NEWBIELINE:
             message += line + '\n'
 
@@ -1286,7 +1286,7 @@ def check_package_name(pkg):
 
     Returns True if the package name is valid."""
 
-    pkg_re = re.compile('^[a-z0-9][a-z0-9+-\.]+$')
+    pkg_re = re.compile(r'^[a-z0-9][a-z0-9+-\.]+$')
 
     return True if pkg_re.match(pkg) else False
 
