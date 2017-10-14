@@ -1025,12 +1025,11 @@ def main():
             sys.exit(1)
 
     if options.attachments:
-        # needed to support glob
+        # support glob
+        globbed_attachments = []
         for attachment in options.attachments:
-            # remove each element
-            options.attachments.remove(attachment)
-            # and replace it with its glob
-            options.attachments.extend(glob(attachment))
+            globbed_attachments.extend(glob(attachment))
+        options.attachments = globbed_attachments
         any_missing = False
         for attachment in options.attachments:
             if not os.path.exists(os.path.expanduser(attachment)):
