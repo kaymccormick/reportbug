@@ -1312,8 +1312,16 @@ def get_lsm_info():
     cannot be determined."""
 
     lsminfo = None
+
+    if os.path.exists('/usr/bin/aa-enabled') \
+       and (subprocess.call(['/usr/bin/aa-enabled', '--quiet']) == 0):
+        lsminfo = 'AppArmor: enabled'
+
     if os.path.exists('/usr/sbin/selinuxenabled') and (subprocess.call(['/usr/sbin/selinuxenabled']) == 0):
-        lsminfo = 'SELinux: enabled - '
+        if lsminfo is None:
+            lsminfo = 'SELinux: enabled - '
+        else:
+            lsminfo += '; SELinux: enabled - '
         enforce_status = subprocess.check_output(['/usr/sbin/getenforce']).decode('ascii')
         lsminfo += 'Mode: %s - ' % enforce_status[:-1]
         with open('/etc/selinux/config', 'r') as f:
