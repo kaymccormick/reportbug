@@ -339,7 +339,8 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
             skip_editing = True
             if x == 'l':
                 pager = os.environ.get('PAGER', 'sensible-pager')
-                os.popen(pager, 'w').write(message)
+                with os.popen(pager, 'w') as p:
+                    p.write(message)
             else:
                 sys.stdout.write(message)
         elif x == 't':

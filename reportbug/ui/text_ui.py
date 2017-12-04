@@ -451,10 +451,9 @@ def show_report(number, system, mirrors,
             text = 'Original report - %s\n\n%s' % (buginfo.subject, messages[0])
 
         if not skip_pager:
-            fd = os.popen('sensible-pager', 'w')
             try:
-                fd.write(text)
-                fd.close()
+                with os.popen('sensible-pager', 'w') as fd:
+                    fd.write(text)
             except IOError as x:
                 if x.errno == errno.EPIPE:
                     pass
@@ -1009,7 +1008,8 @@ def display_report(text, use_pager=True, presubj=False):
 
     pager = os.environ.get('PAGER', 'sensible-pager')
     try:
-        os.popen(pager, 'w').write(text)
+        with os.popen(pager, 'w') as p:
+            p.write(text)
     except IOError:
         pass
 
@@ -1023,9 +1023,10 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
 
     # Move the cursor for lazy buggers like me; add your editor here...
     ourline = 0
-    for (lineno, line) in enumerate(open(filename)):
-        if line == '\n' and not ourline:
-            ourline = lineno + 2
+    with open(filename) as f:
+        for (lineno, line) in enumerate(f):
+            if line == '\n' and not ourline:
+                ourline = lineno + 2
 
     opts = ''
     if 'vim' in edname:
@@ -1061,7 +1062,8 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
     if '&' in editor:
         return (None, 1)
 
-    newmessage = open(filename).read()
+    with open(filename) as f:
+        newmessage = f.read()
 
     if newmessage == message:
         ewrite('No changes were made in the editor.\n')

@@ -279,7 +279,8 @@ def send_report(body, attachments, mua, fromaddr, sendto, ccaddr, bccaddr,
     if paranoid and not (template or printonly):
         pager = os.environ.get('PAGER', 'sensible-pager')
         try:
-            os.popen(pager, 'w').write(message)
+            with os.popen(pager, 'w') as p:
+                p.write(message)
         except  Exception as e:
             # if the PAGER exits before all the text has been sent,
             # it'd send a SIGPIPE, so crash only if that's not the case
