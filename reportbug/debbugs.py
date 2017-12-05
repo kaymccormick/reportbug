@@ -931,7 +931,7 @@ def parse_bts_url(url):
 # Dynamically add any additional systems found
 for origin in glob.glob('/etc/dpkg/origins/*'):
     try:
-        fp = open(origin)
+        fp = open(origin, errors='backslashreplace')
         system = os.path.basename(origin)
         SYSTEMS[system] = SYSTEMS.get(system, {'otherpkgs': {},
                                                'query-dpkg': True,

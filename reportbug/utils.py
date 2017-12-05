@@ -246,7 +246,7 @@ def find_rewritten(username):
     for filename in ['/etc/email-addresses']:
         if os.path.exists(filename):
             try:
-                fp = open(filename)
+                fp = open(filename, errors='backslashreplace')
             except IOError:
                 continue
             for line in fp:
@@ -714,7 +714,7 @@ def get_changed_config_files(conffiles, nocompress=False):
     changed = []
     for (filename, md5sum) in conffiles:
         try:
-            fp = open(filename)
+            fp = open(filename, errors='backslashreplace')
         except IOError as msg:
             confinfo[filename] = msg
             continue
@@ -769,9 +769,8 @@ def get_debian_release_info():
             debvers = dists[0][1]
 
     try:
-        fob = open('/etc/debian_version')
-        verfile = fob.readline().strip()
-        fob.close()
+        with open('/etc/debian_version', errors='backslashreplace') as fob:
+            verfile = fob.readline().strip()
     except IOError:
         print('Unable to open /etc/debian_version', file=sys.stderr)
 
@@ -961,7 +960,9 @@ def mua_exists(mua):
     output = '/dev/null'
     if os.path.exists(output):
         try:
-            returnvalue = subprocess.call(MUAVERSION[mua_tmp], stdout=open(output, 'w'), stderr=subprocess.STDOUT,
+            returnvalue = subprocess.call(MUAVERSION[mua_tmp],
+                                          stdout=open(output, 'w', errors='backslashreplace'),
+                                          stderr=subprocess.STDOUT,
                                           shell=True)
         except (IOError, OSError):
             returnvalue = subprocess.call(MUAVERSION[mua_tmp], shell=True)
@@ -1084,7 +1085,7 @@ def parse_bug_control_file(filename):
     submitas = submitto = None
     reportwith = []
     supplemental = []
-    fh = open(filename)
+    fh = open(filename, errors='backslashreplace')
     for line in fh:
         line = line.strip()
         parts = line.split(': ')

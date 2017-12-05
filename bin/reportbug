@@ -142,11 +142,10 @@ def include_file_in_report(message, message_filename,
         """
     if inline:
         try:
-            fp = open(include_filename)
-            message += '\n*** %s\n%s' % (
-                include_filename,
-                fp.read())
-            fp.close()
+            with open(include_filename, errors='backslashreplace') as fp:
+                message += '\n*** {}\n{}'.format(
+                    include_filename,
+                    fp.read())
             fp, temp_filename = TempFile(
                 prefix=tempfile_prefix(package_name), dir=draftpath)
             fp.write(message)
@@ -192,7 +191,8 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
                     stopmsg(filename)
                     sys.exit(1)
 
-            message = open(filename).read()
+            with open(filename, errors='backslashreplace') as f:
+                message = f.read()
             changed = True
 
         prompt = 'Submit this report on %s (e to edit)' % package
@@ -365,7 +365,8 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
                 if 'patch' in newtaglist:
                     patch = True
                 message = message.replace(oldtags, newtags)
-                open(filename, 'w').write(message)
+                with open(filename, 'w', errors='backslashreplace') as f:
+                    f.write(message)
         elif x == 's':
             skip_editing = True
             ccemail = ui.get_string(
@@ -391,7 +392,7 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
             else:
                 break
 
-    return open(filename).read(), patch, justsave
+    return open(filename, errors='backslashreplace').read(), patch, justsave
 
 
 def find_package_for(filename, notatty=False, pathonly=False):
@@ -670,7 +671,7 @@ def offer_configuration(options):
               'home directory.  Please fix this before using '
               'reportbug again.\n', utils.USERFILE)
 
-    fp = os.fdopen(fd, 'w')
+    fp = os.fdopen(fd, 'w', errors='backslashreplace')
     print('# reportbug preferences file', file=fp)
     print('# character encoding: %s' % charset, file=fp)
     print('# Version of reportbug this preferences file was written by', file=fp)
@@ -1167,7 +1168,8 @@ class UI(object):
                           'reduce its size else the report cannot be sent' % (
                               self.options.bodyfile, self.options.max_attachment_size))
                     raise Exception
-                body = open(self.options.bodyfile).read()
+                with open(self.options.bodyfile, errors='backslashreplace') as bf:
+                    body = bf.read()
             except:
                 efail('Unable to read body from file %s.\n', self.options.bodyfile)
 
@@ -1350,11 +1352,8 @@ class UI(object):
         if self.options.include:
             for f in self.options.include:
                 if os.path.exists(f):
-                    fp = open(f)
-                    incfiles = '%s\n*** %s\n%s' % (
-                        incfiles, f,
-                        fp.read())
-                    fp.close()
+                    with open(f, errors='backslashreplace') as fp:
+                        incfiles += '\n*** {}\n{}'.format(f, fp.read())
                 else:
                     ewrite("Can't find %s to include!\n", f)
                     sys.exit(1)
@@ -1863,7 +1862,8 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
         ewrite('\n')
         prompted = False
         if interactive and not (self.options.kudos or exinfo) and presubj:
-            ui.display_report(open(presubj).read() + '\n', presubj=True)
+            with open(presubj, errors='backslashreplace') as f:
+                ui.display_report(f.read() + '\n', presubj=True)
 
         if self.options.kudos:
             subject = subject or ('Thanks for packaging %s!' % package)
@@ -2093,7 +2093,8 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
             if not mua:
                 SIGFILE = os.path.join(HOMEDIR, '.signature')
                 try:
-                    message = "\n\n-- \n" + open(SIGFILE).read()
+                    with open(SIGFILE, errors='backslashreplace') as sf:
+                        message = "\n\n-- \n" + sf.read()
                 except IOError:
                     pass
         else:

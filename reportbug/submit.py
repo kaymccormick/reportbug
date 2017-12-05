@@ -88,9 +88,8 @@ def sign_message(body, fromaddr, package='x', pgp_addr=None, sign='gpg', draftpa
 
     try:
         os.system(signcmd)
-        x = open(file2, 'r')
-        signedbody = x.read()
-        x.close()
+        with open(file2, 'r', errors='backslashreplace') as x:
+            signedbody = x.read()
 
         if os.path.exists(file1):
             os.unlink(file1)

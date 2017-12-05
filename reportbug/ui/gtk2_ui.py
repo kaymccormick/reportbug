@@ -1350,9 +1350,8 @@ class EditorPage(Page):
         global report_message
         _assert_context(ui_context)
         report_message = self.get_value()[0]
-        f = open(self.filename, "w")
-        f.write(report_message)
-        f.close()
+        with open(self.filename, "w", errors='backslashreplace') as f:
+            f.write(report_message)
 
     def connect_signals(self):
         _assert_context(ui_context)

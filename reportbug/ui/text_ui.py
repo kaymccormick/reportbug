@@ -1023,7 +1023,7 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
 
     # Move the cursor for lazy buggers like me; add your editor here...
     ourline = 0
-    with open(filename) as f:
+    with open(filename, errors='backslashreplace') as f:
         for (lineno, line) in enumerate(f):
             if line == '\n' and not ourline:
                 ourline = lineno + 2
@@ -1062,7 +1062,7 @@ def spawn_editor(message, filename, editor, charset='utf-8'):
     if '&' in editor:
         return (None, 1)
 
-    with open(filename) as f:
+    with open(filename, errors='backslashreplace') as f:
         newmessage = f.read()
 
     if newmessage == message:
