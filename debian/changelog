@@ -2,8 +2,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
 
   * reportbug/debbugs.py
     - add `a11y` tag
+  * reportbug/utils.py
+    - fix invalid escape sequence deprecation warnings with Python 3.6; patch by
+      Ville Skyttä; Closes: #878437
 
- -- Sandro Tosi <morph@debian.org>  Tue, 04 Jul 2017 21:00:30 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:49:05 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
