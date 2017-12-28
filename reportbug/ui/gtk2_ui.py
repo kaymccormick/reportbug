@@ -1139,7 +1139,7 @@ class HandleBTSQueryPage(TreePage):
         _assert_context(ui_context)
         bug_ids = TreePage.get_value(self)
         if not bug_ids:
-            info_dialog("Please select one ore more bugs")
+            info_dialog("Please select one or more bugs")
             return
 
         dialog = BugsDialog(self.assistant, self.queryonly)

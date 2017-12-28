@@ -5,8 +5,10 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * reportbug/utils.py
     - fix invalid escape sequence deprecation warnings with Python 3.6; patch by
       Ville Skyttä; Closes: #878437
+  * reportbug/ui/gtk2_ui.py
+    - typo fix; Closes: #875309
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:49:05 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:51:38 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
