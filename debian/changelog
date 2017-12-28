@@ -12,8 +12,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * debian/control
     - add sensible-pager to reportbug depends, since we require sensible-*
       commands to be available; Closes: #871527
+  * man/reportbug.1
+    - fix reference to -A/--attach in the include-file section; patch by Alex
+      Muntada; Closes: #871769, #878420
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:04:51 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:09:33 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
