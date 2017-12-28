@@ -7,8 +7,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
       Ville Skyttä; Closes: #878437
   * reportbug/ui/gtk2_ui.py
     - typo fix; Closes: #875309
+  * debian/control
+    - add sensible-pager to reportbug depends, since we require sensible-*
+      commands to be available; Closes: #871527
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:51:38 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:55:03 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
