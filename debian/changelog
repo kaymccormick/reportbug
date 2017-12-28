@@ -2,6 +2,8 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
 
   * reportbug/debbugs.py
     - add `a11y` tag
+    - dont RFC2047-encode the Owner pseudo header when submitting a WNPP bug;
+      patch by Nis Martensen; Closes: #872780
   * reportbug/utils.py
     - fix invalid escape sequence deprecation warnings with Python 3.6; patch by
       Ville Skyttä; Closes: #878437
@@ -11,7 +13,7 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
     - add sensible-pager to reportbug depends, since we require sensible-*
       commands to be available; Closes: #871527
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 17:55:03 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:04:51 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
