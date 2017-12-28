@@ -15,8 +15,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * man/reportbug.1
     - fix reference to -A/--attach in the include-file section; patch by Alex
       Muntada; Closes: #871769, #878420
+  * reportbug/{debbugs.py, utils.py}
+    - add tailing new-line when processing strings line by line; patch by Nis
+      Martensen; Closes: #866596
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:09:33 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:24:39 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
