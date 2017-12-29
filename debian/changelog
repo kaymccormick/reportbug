@@ -7,6 +7,8 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * reportbug/utils.py, bin/*
     - fix invalid escape sequence deprecation warnings with Python 3.6; patch by
       Ville Skyttä; Closes: #878437
+    - redirect stderr to stdout when running commands via get_command_output(),
+      and this prevents errors to be sent to the terminal; Closes: #882130
   * reportbug/ui/gtk2_ui.py
     - typo fix; Closes: #875309
   * debian/control
@@ -45,7 +47,7 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * debian/rules
     - dont call dpkg-parsechangelog directly, use dpkg/pkg-info.mk instead
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:25:21 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 23:22:28 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
