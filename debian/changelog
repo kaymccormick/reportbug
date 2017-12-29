@@ -35,8 +35,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * use context managers to avoid leaving unclosed file descriptors (which often
     results in users losing control of their terminal windows); patch by Nis
     Martensen; Closes: #695887, #849763, #882983
+  * prevent Unicode(De|En)codeError with most open() calls by using
+    'backslashreplace' in case of errors; patch by Nis Martensen;
+    Closes: #877650, #883577, #868022
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:55:46 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:15:04 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
