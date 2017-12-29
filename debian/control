@@ -3,7 +3,7 @@ Section: utils
 Priority: standard
 Maintainer: Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>
 Uploaders: Sandro Tosi <morph@debian.org>
-Standards-Version: 3.9.8
+Standards-Version: 4.1.2
 Build-Depends: debhelper (>= 9), python3, dh-python
 Build-Depends-Indep: python3-nose, python3-setuptools, python3-mock
 Vcs-Git: https://anonscm.debian.org/git/reportbug/reportbug.git
