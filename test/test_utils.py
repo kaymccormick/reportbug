@@ -171,11 +171,11 @@ class TestPackages(unittest.TestCase):
                               '/etc/reportbug.conf.obsolete',
                               '/etc/reportbug with spaces and obsolete.conf']
 
-        __save = subprocess.getoutput
-        subprocess.getoutput = mock.MagicMock(return_value=pkgstatus)
+        __save = utils.get_command_output
+        utils.get_command_output = mock.MagicMock(return_value=pkgstatus)
         result = utils.get_package_status(pkg)
         conffile = [x[0] for x in result[4]]
-        subprocess.getoutput = __save
+        utils.get_command_output = __save
         del __save
         self.assertListEqual(conffile, expected_conffiles)
 
@@ -328,21 +328,21 @@ class TestSystemInformation(unittest.TestCase):
         self.assertIn(platform.release(), package)
 
     def test_get_multiarch(self):
-        orig = subprocess.getoutput
+        orig = utils.get_command_output
 
-        subprocess.getoutput = mock.MagicMock(return_value='')
+        utils.get_command_output = mock.MagicMock(return_value='')
         multiarch = utils.get_multiarch()
         self.assertEqual(multiarch, '')
 
-        subprocess.getoutput = mock.MagicMock(return_value='i386')
+        utils.get_command_output = mock.MagicMock(return_value='i386')
         multiarch = utils.get_multiarch()
         self.assertEqual(multiarch, 'i386')
 
-        subprocess.getoutput = mock.MagicMock(return_value='i386\namd64')
+        utils.get_command_output = mock.MagicMock(return_value='i386\namd64')
         multiarch = utils.get_multiarch()
         self.assertCountEqual(multiarch.split(', '), ['i386', 'amd64'])
 
-        subprocess.getoutput = orig
+        utils.get_command_output = orig
 
     def test_get_init_system(self):
         __save = os.path.isdir
