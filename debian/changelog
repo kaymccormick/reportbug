@@ -32,8 +32,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * debian/source/options
     - use the default XZ compression algo by removing the custom setting to use
       bzip2; patch by Boyuan Yang; Closes: #863823
+  * use context managers to avoid leaving unclosed file descriptors (which often
+    results in users losing control of their terminal windows); patch by Nis
+    Martensen; Closes: #695887, #849763, #882983
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:49:37 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:55:46 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
