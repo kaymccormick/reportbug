@@ -29,8 +29,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * add Linux Security Model (LSM) information to the 'System info' section of
     the bug report (if any LSM is enabled on the system); patch by Laurent
     Bigonville and intrigeri; Closes: #773346
+  * debian/source/options
+    - use the default XZ compression algo by removing the custom setting to use
+      bzip2; patch by Boyuan Yang; Closes: #863823
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:44:21 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:49:37 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
