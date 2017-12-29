@@ -38,8 +38,10 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * prevent Unicode(De|En)codeError with most open() calls by using
     'backslashreplace' in case of errors; patch by Nis Martensen;
     Closes: #877650, #883577, #868022
+  * debian/copyright
+    - leave only me as Upstream-Author
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:15:04 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:18:50 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
