@@ -21,6 +21,8 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * reportbug/submit.py
     - remove spurious print() of MIME type, introduced during the py3k porting;
       patch by Nis Martensen; Closes: #868154
+    - use quoted-printable encoding for lines that are over 980 chars long;
+      patch by Nis Martensen; Closes: #849765
   * fix some spelling errors; patch by Ville Skyttä; Closes: #878436
   * bin/reportbug
     - preserve attachments order; patch by Ville Skyttä; Closes: #878538
@@ -28,7 +30,7 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
     the bug report (if any LSM is enabled on the system); patch by Laurent
     Bigonville and intrigeri; Closes: #773346
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 19:56:30 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 20:44:21 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
