@@ -1,4 +1,4 @@
-reportbug (7.1.8) UNRELEASED; urgency=medium
+reportbug (7.1.8) unstable; urgency=medium
 
   * reportbug/debbugs.py
     - add `a11y` tag
@@ -47,7 +47,7 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * debian/rules
     - dont call dpkg-parsechangelog directly, use dpkg/pkg-info.mk instead
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 23:22:28 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 23:25:43 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
