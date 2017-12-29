@@ -61,7 +61,7 @@ def open_write_safe(filename, mode='w+b', bufsize=-1):
         fd = os.open(filename, _text_openflags, 0o600)
 
     try:
-        return os.fdopen(fd, mode, bufsize, errors='backslashreplace')
+        return os.fdopen(fd, mode, bufsize)
     except:
         os.close(fd)
         raise
@@ -72,7 +72,7 @@ def open_write_safe(filename, mode='w+b', bufsize=-1):
 def TempFile(suffix="", prefix=template, dir=None, text=True,
              mode="w+", bufsize=-1):
     fh, filename = tempfile.mkstemp(suffix, prefix, dir, text)
-    fd = os.fdopen(fh, mode, bufsize, errors='backslashreplace')
+    fd = os.fdopen(fh, mode, bufsize)
     return (fd, filename)
 
 
