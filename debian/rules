@@ -1,10 +1,7 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+include /usr/share/dpkg/pkg-info.mk
 
-VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | sed 's/^Version: \([^+]*\).*/\1/')
-DISTRO := $(shell dpkg-parsechangelog | egrep '^Distribution:' | sed 's/^Distribution: \([^+]*\).*/\1/')
 REPORTBUG_VERSION := $(shell python3 -c "import reportbug; print(reportbug.VERSION_NUMBER)")
 
 %:
@@ -12,7 +9,7 @@ REPORTBUG_VERSION := $(shell python3 -c "import reportbug; print(reportbug.VERSI
 
 override_dh_auto_build:
 	# Test if versions are synchronized (only if releasing); this will bomb if not synced
-	if [ "$(DISTRO)" != "UNRELEASED" -a "$(REPORTBUG_VERSION)" != "$(VERSION)" ] ; \
+	if [ "$(DEB_DISTRIBUTION)" != "UNRELEASED" -a "$(REPORTBUG_VERSION)" != "$(DEB_VERSION)" ] ; \
 	then \
 		echo 'Please update VERSION_NUMBER variable in reportbug/__init__.py'; exit 1 ; \
 	fi

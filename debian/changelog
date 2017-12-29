@@ -42,8 +42,10 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
     - leave only me as Upstream-Author and Packaged-By
   * debian/control
     - bump Standards-Version to 4.1.2 (no changes needed)
+  * debian/rules
+    - dont call dpkg-parsechangelog directly, use dpkg/pkg-info.mk instead
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:21:14 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:25:21 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
