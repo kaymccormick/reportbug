@@ -39,11 +39,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
     'backslashreplace' in case of errors; patch by Nis Martensen;
     Closes: #877650, #883577, #868022
   * debian/copyright
-    - leave only me as Upstream-Author
+    - leave only me as Upstream-Author and Packaged-By
   * debian/control
     - bump Standards-Version to 4.1.2 (no changes needed)
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:19:19 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 21:21:14 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
