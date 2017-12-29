@@ -24,8 +24,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * fix some spelling errors; patch by Ville Skyttä; Closes: #878436
   * bin/reportbug
     - preserve attachments order; patch by Ville Skyttä; Closes: #878538
+  * add Linux Security Model (LSM) information to the 'System info' section of
+    the bug report (if any LSM is enabled on the system); patch by Laurent
+    Bigonville and intrigeri; Closes: #773346
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 19:16:39 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 19:56:30 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
