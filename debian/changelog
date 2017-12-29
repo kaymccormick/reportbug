@@ -18,8 +18,11 @@ reportbug (7.1.8) UNRELEASED; urgency=medium
   * reportbug/{debbugs.py, utils.py}
     - add tailing new-line when processing strings line by line; patch by Nis
       Martensen; Closes: #866596
+  * reportbug/submit.py
+    - remove spurious print() of MIME type, introduced during the py3k porting;
+      patch by Nis Martensen; Closes: #868154
 
- -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:24:39 -0500
+ -- Sandro Tosi <morph@debian.org>  Thu, 28 Dec 2017 18:59:07 -0500
 
 reportbug (7.1.7) unstable; urgency=medium
 
