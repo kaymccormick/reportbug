@@ -12,7 +12,7 @@ reportbug (7.1.8) unstable; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - typo fix; Closes: #875309
   * debian/control
-    - add sensible-pager to reportbug depends, since we require sensible-*
+    - add sensible-utils to reportbug depends, since we require sensible-*
       commands to be available; Closes: #871527
   * man/reportbug.1
     - fix reference to -A/--attach in the include-file section; patch by Alex

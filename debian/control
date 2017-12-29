@@ -12,7 +12,7 @@ Homepage: http://alioth.debian.org/projects/reportbug/
 
 Package: reportbug
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends}, apt, python3-reportbug (= ${source:Version}), sensible-pager
+Depends: ${misc:Depends}, ${python3:Depends}, apt, python3-reportbug (= ${source:Version}), sensible-utils
 Suggests: postfix | exim4 | mail-transport-agent, gnupg | pgp, debconf-utils (>> 1.1.0), debsums (>= 2.0.47), file (>> 1.30), dlocate, python3-urwid, python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, gir1.2-vte-2.91, python3-gtkspellcheck, xdg-utils, emacs24-bin-common | emacs25-bin-common, claws-mail (>= 3.8.0)
 Description: reports bugs in the Debian distribution
  reportbug is a tool designed to make the reporting of bugs in Debian
