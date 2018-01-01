@@ -144,7 +144,7 @@ def mime_attach(body, attachments, charset, body_charset=None):
             continue
         ctype = None
         cset = charset
-        info = Popen(['file', '--mime', '--brief', attachment],
+        info = Popen(['file', '--mime', '--brief', '--dereference', attachment],
                      stdout=PIPE, stderr=STDOUT).communicate()[0].decode('ascii')
         if info:
             match = re.match(r'([^;, ]*)(,[^;]+)?(?:; )?(.*)', info)
