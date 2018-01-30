@@ -1,3 +1,12 @@
+reportbug (7.1.9) UNRELEASED; urgency=medium
+
+  * bin/reportbug
+    - dont CC secure-testing-team@lists.alioth.debian.org anymore, the team
+      didnt exit for a long time and the ML will disappear when Alioth will be
+      deco'ed; patch by Moritz Muehlenhoff; Closes: #888832
+
+ -- Sandro Tosi <morph@debian.org>  Tue, 30 Jan 2018 18:34:44 -0500
+
 reportbug (7.1.8) unstable; urgency=medium
 
   * reportbug/debbugs.py

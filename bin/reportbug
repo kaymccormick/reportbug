@@ -2083,9 +2083,8 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                 incfiles = addinfo
 
         if bts == 'debian' and 'security' in taglist and sendto != 'team@security.debian.org':
-            ewrite('Will send a CC of this report to the Debian Security and Testing Security Team.\n')
+            ewrite('Will send a CC of this report to the Debian Security Team.\n')
             listcc += ['Debian Security Team <team@security.debian.org>']
-            listcc += ['Debian Testing Security Team <secure-testing-team@lists.alioth.debian.org>']
 
         # Prepare bug report
         if self.options.kudos:
