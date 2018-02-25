@@ -1,4 +1,4 @@
-reportbug (7.1.9) UNRELEASED; urgency=medium
+reportbug (7.1.9) unstable; urgency=medium
 
   * bin/reportbug
     - dont CC secure-testing-team@lists.alioth.debian.org anymore, the team
@@ -10,7 +10,7 @@ reportbug (7.1.9) UNRELEASED; urgency=medium
       confirmation); patch by Markus Koschany and Nis Martensen; Closes: #878088
   * Extend copyright years to 2018
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 Feb 2018 20:55:52 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 Feb 2018 20:56:22 -0500
 
 reportbug (7.1.8) unstable; urgency=medium
 
