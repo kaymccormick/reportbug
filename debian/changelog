@@ -4,8 +4,12 @@ reportbug (7.1.9) UNRELEASED; urgency=medium
     - dont CC secure-testing-team@lists.alioth.debian.org anymore, the team
       didnt exit for a long time and the ML will disappear when Alioth will be
       deco'ed; patch by Moritz Muehlenhoff; Closes: #888832
+  * bin/reportbug, reportbug/utils.py
+    - notify the security team or TLS team if reporting a bug against an upload
+      contaning a security fix, as a possible regression (upon user
+      confirmation); patch by Markus Koschany and Nis Martensen; Closes: #878088
 
- -- Sandro Tosi <morph@debian.org>  Tue, 30 Jan 2018 18:34:44 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 Feb 2018 20:45:46 -0500
 
 reportbug (7.1.8) unstable; urgency=medium
 
