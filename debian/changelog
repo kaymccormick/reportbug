@@ -1,3 +1,10 @@
+reportbug (7.1.11) UNRELEASED; urgency=medium
+
+  * debian/control
+    - update Vcs-* to point to salsa; drop Homepage pointing to alioth
+
+ -- Sandro Tosi <morph@debian.org>  Wed, 28 Feb 2018 08:10:59 -0500
+
 reportbug (7.1.10) unstable; urgency=medium
 
   * debian/control
