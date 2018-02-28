@@ -1,10 +1,10 @@
-reportbug (7.1.10) UNRELEASED; urgency=medium
+reportbug (7.1.10) unstable; urgency=medium
 
   * debian/control
     - add python3-apt dep to python3-reportbug, needed by fix for #878088;
       Closes: #891626
 
- -- Sandro Tosi <morph@debian.org>  Tue, 27 Feb 2018 19:58:38 -0500
+ -- Sandro Tosi <morph@debian.org>  Tue, 27 Feb 2018 20:02:22 -0500
 
 reportbug (7.1.9) unstable; urgency=medium
 
