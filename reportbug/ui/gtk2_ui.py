@@ -716,7 +716,7 @@ This wizard will guide you through the bug reporting process step by step.
         label.set_justify(Gtk.Justification.FILL)
         vbox.pack_start(label, False, True, 0)
 
-        link = Gtk.LinkButton.new_with_label("http://alioth.debian.org/projects/reportbug",
+        link = Gtk.LinkButton.new_with_label("https://salsa.debian.org/reportbug-team/reportbug",
                                              "Homepage of reportbug project")
         vbox.pack_start(link, False, True, 0)
         return vbox
