@@ -19,7 +19,7 @@ class TestUtils(unittest.TestCase):
 
 class TestEmail(unittest.TestCase):
     def test_check_email_addr(self):
-        real_addr = 'reportbug-maint@lists.alioth.debian.org'
+        real_addr = 'debian-reportbug@lists.debian.org'
 
         self.assertTrue(utils.check_email_addr(real_addr))
         self.assertFalse(utils.check_email_addr('dummy'))
@@ -31,15 +31,15 @@ class TestEmail(unittest.TestCase):
         self.assertFalse(utils.check_email_addr('too@many@at@signs'))
 
     def test_get_email_addr(self):
-        email = 'Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>'
+        email = 'Reportbug Maintainers <debian-reportbug@lists.debian.org>'
         name, email_addr = utils.get_email_addr(email)
 
         self.assertEqual(name, 'Reportbug Maintainers')
-        self.assertEqual(email_addr, 'reportbug-maint@lists.alioth.debian.org')
+        self.assertEqual(email_addr, 'debian-reportbug@lists.debian.org')
 
     def test_get_email(self):
         name = 'Reportbug Maintainers'
-        mail = 'reportbug-maint@lists.alioth.debian.org'
+        mail = 'debian-reportbug@lists.debian.org'
 
         n, m = utils.get_email(mail, name)
 
@@ -48,7 +48,7 @@ class TestEmail(unittest.TestCase):
 
     def test_get_user_id(self):
         name = 'Reportbug Maintainers'
-        mail = 'reportbug-maint@lists.alioth.debian.org'
+        mail = 'debian-reportbug@lists.debian.org'
         addr = utils.get_user_id(mail, name)
         self.assertEqual(addr, "%s <%s>" % (name, mail))
 
@@ -57,11 +57,11 @@ class TestEmail(unittest.TestCase):
         addr = utils.get_user_id(mail, name)
         self.assertIn(mail + '@', addr)
 
-        mail = 'Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>'
+        mail = 'Reportbug Maintainers <debian-reportbug@lists.debian.org>'
         addr = utils.get_user_id(mail)
         self.assertEqual(mail, addr)
 
-        mail = 'reportbug-maint@lists.alioth.debian.org'
+        mail = 'debian-reportbug@lists.debian.org'
         addr = utils.get_user_id(mail)
         self.assertIn(mail, addr)
 
@@ -536,8 +536,8 @@ class TestConfig(unittest.TestCase):
             'debconf': False,
             'dontquery': False,
             'editor': 'emacs -nw',
-            'email': 'reportbug-maint@lists.alioth.debian.org',
-            'envelopefrom': 'reportbug-maint@lists.alioth.debian.org',
+            'email': 'debian-reportbug@lists.debian.org',
+            'envelopefrom': 'debian-reportbug@lists.debian.org',
             'headers': ['X-Reportbug-Testsuite: this is the test suite'],
             'http_proxy': 'http://proxy.example.com:3128/',
             'interface': 'gtk2',
@@ -590,7 +590,7 @@ class TestControl(unittest.TestCase):
             utils.parse_bug_control_file(ctrl_file)
 
         self.assertEqual(submitas, 'reportbug2')
-        self.assertEqual(submitto, 'reportbug-maint@lists.alioth.debian.org')
+        self.assertEqual(submitto, 'debian-reportbug@lists.debian.org')
         self.assertIn('python', reportwith)
         self.assertIn('perl', reportwith)
         self.assertIn('python', supplemental)

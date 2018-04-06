@@ -3,6 +3,6 @@ Package-Status: perl
 Report-with: python
 report-with: perl
 Submit-As: reportbug2
-Send-to: reportbug-maint@lists.alioth.debian.org
+Send-to: debian-reportbug@lists.debian.org
 
 dummy: line: will: be: skipped

@@ -1,7 +1,7 @@
 Source: reportbug
 Section: utils
 Priority: standard
-Maintainer: Reportbug Maintainers <reportbug-maint@lists.alioth.debian.org>
+Maintainer: Reportbug Maintainers <debian-reportbug@lists.debian.org>
 Uploaders: Sandro Tosi <morph@debian.org>
 Standards-Version: 4.1.2
 Build-Depends: debhelper (>= 10), python3, dh-python
