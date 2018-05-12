@@ -74,7 +74,7 @@ SEVERITIES = {
     policy violations may be 'normal,' 'minor,' or 'wishlist' bugs.
     (Package maintainers may also designate other bugs as 'serious' and thus
     release-critical; however, end users should not do so.). For the canonical
-    list of issues worthing a serious severity you can refer to this webpage:
+    list of issues deserving a serious severity you can refer to this webpage:
     http://release.debian.org/testing/rc_policy.txt .""",
     'important': """a bug which has a major effect on the usability
     of a package, without rendering it completely unusable to
