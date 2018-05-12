@@ -1280,7 +1280,7 @@ class LongMessagePage(Page):
         message = ' '.join(message.split())
         GLib.idle_add(self.label.set_text, message)
         # Reportbug should use final_message, so emulate it
-        if('999999' in message):
+        if('nnnnnn' in message):
             self.set_page_type(Gtk.AssistantPageType.CONFIRM)
             self.set_page_title("Thanks for your report")
 

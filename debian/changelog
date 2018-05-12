@@ -5,8 +5,9 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * migrate to debian-reportbug@lists.debian.org
   * reportbug/debbugs.py
     - fix a typo in the serious severity description; Closes: #894972
+  * replace 999999@b.d.o with a more generic nnnnnn@b.d.o; Closes: #891144
 
- -- Sandro Tosi <morph@debian.org>  Sat, 12 May 2018 18:45:18 -0400
+ -- Sandro Tosi <morph@debian.org>  Sat, 12 May 2018 19:04:17 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 

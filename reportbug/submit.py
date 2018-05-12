@@ -482,7 +482,7 @@ receive the bug tracking number via email; you may then send any extra
 information to %s (e.g. %s), where n is the bug number.  Normally you
 will receive an acknowledgement via email including the bug report number
 within an hour; if you haven't received a confirmation, then the bug reporting process failed at some point (reportbug or MTA failure, BTS maintenance, etc.).\n""",
-            (sysinfo['email'] % 'n'), (sysinfo['email'] % '999999'))
+            (sysinfo['email'] % 'n'), (sysinfo['email'] % 'nnnnnn'))
 
     # If we've stored more than one copy of the message, delete the
     # one without the SMTP headers.
