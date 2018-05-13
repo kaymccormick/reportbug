@@ -171,6 +171,7 @@ debother = {
     'cdimage.debian.org': 'CD Image issues',
     'cdrom': 'Installation system',
     'cloud.debian.org': 'Issues involving Debian images for public/private clouds',
+    'contributors.debian.org': 'Issues with the Debian Contributors Website and coordination of maintenance',
     'd-i.debian.org': 'Issues regarding the d-i.debian.org service and general Debian Installer tasks',
     'debian-maintainers': 'Problems and requests related to Debian Maintainers',
     'debian-i18n': 'Requests regarding Internationalization (i18n) of the distribution',
