@@ -6,8 +6,13 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - fix a typo in the serious severity description; Closes: #894972
   * replace 999999@b.d.o with a more generic nnnnnn@b.d.o; Closes: #891144
+  * reportbug-gtk package created
+    - a new package now installs the desktop file only along with the
+      dependencies to make it work; desktop install tasks should depend
+      on the new reportbug-gtk package; patch by Stephen Paul Weber;
+      Closes: #842018, #872300
 
- -- Sandro Tosi <morph@debian.org>  Sat, 12 May 2018 19:04:17 -0400
+ -- Sandro Tosi <morph@debian.org>  Sat, 12 May 2018 20:07:05 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
