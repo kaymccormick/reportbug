@@ -4,7 +4,6 @@ import unittest
 
 from nose.plugins.attrib import attr
 
-from reportbug import utils
 from reportbug.ui import gtk2_ui as ui
 import debianbts
 

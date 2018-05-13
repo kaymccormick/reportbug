@@ -31,10 +31,8 @@ import io
 import glob
 import os
 import re
-import time
 import urllib.request, urllib.parse, urllib.error
 import textwrap
-import pprint
 # SOAP interface to Debian BTS
 import debianbts
 from collections import defaultdict

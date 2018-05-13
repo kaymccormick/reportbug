@@ -2,7 +2,6 @@
 
 import unittest
 
-from reportbug import utils
 from reportbug import ui
 from reportbug.ui import __LOADED_UIS as LOADED_UIS
 

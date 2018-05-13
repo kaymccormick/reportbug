@@ -62,7 +62,7 @@ from queue import Queue
 import threading
 import textwrap
 
-from reportbug.exceptions import NoPackage, NoBugs, NoNetwork, NoReport
+from reportbug.exceptions import NoPackage, NoBugs
 from reportbug import debbugs
 from reportbug.urlutils import launch_browser
 

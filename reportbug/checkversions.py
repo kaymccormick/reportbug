@@ -22,12 +22,7 @@
 #  SOFTWARE.
 
 import sys
-import os
-import re
 import urllib.request, urllib.error, urllib.parse
-import gc
-import time
-import gzip
 
 from . import utils
 from .urlutils import open_url
@@ -38,7 +33,6 @@ from reportbug.exceptions import (
 # needed to parse new.822
 from debian.deb822 import Deb822
 from debian import debian_support
-from functools import reduce
 
 RMADISON_URL = 'https://qa.debian.org/madison.php?package=%s&text=on'
 INCOMING_URL = 'http://incoming.debian.org/'

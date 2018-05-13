@@ -6,7 +6,6 @@ from reportbug import utils
 from reportbug import debbugs
 from reportbug import urlutils
 
-import urllib.request, urllib.parse, urllib.error
 import re
 
 

@@ -2,8 +2,6 @@
 
 from setuptools import setup
 import reportbug
-import os
-import glob
 
 # i18n = []
 # for lang in glob.glob('*.po'):

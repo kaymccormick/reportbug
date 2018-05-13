@@ -27,7 +27,7 @@ import platform
 
 try:
     import pwd
-    from .tempfiles import TempFile, tempfile_prefix, cleanup_temp_file
+    from .tempfiles import TempFile, cleanup_temp_file
 except ImportError as e:
     if platform.system() == 'Windows':
         pass
@@ -43,7 +43,6 @@ import apt
 import gzip
 
 from .urlutils import open_url
-from string import ascii_letters, digits
 
 # Paths for dpkg
 DPKGLIB = '/var/lib/dpkg'

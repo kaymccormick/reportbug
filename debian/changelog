@@ -17,8 +17,9 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/submit.py
     - dereference symbolic links when detecting file type; patch by Nis
       Martensen; Closes: #885959
+  * remove unused Python imports; patch by Markus Hackspacher; Closes: #867337
 
- -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 00:38:12 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 12:19:34 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
