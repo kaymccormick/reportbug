@@ -13,8 +13,11 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
       Closes: #842018, #872300
   * remove utils.get_cpu_cores() in favor or os.cpu_count(), as available on
     python3; Closes: #894208
+  * reportbug/submit.py
+    - dereference symbolic links when detecting file type; patch by Nis
+      Martensen; Closes: #885959
 
- -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 00:16:55 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 00:26:20 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
