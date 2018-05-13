@@ -833,25 +833,6 @@ def generate_blank_report(package, pkgversion, severity, justification,
     return str(rep)
 
 
-def get_cpu_cores():
-    cpucount = 0
-    try:
-        fob = open('/proc/cpuinfo')
-    except IOError:
-        print('Unable to open /proc/cpuinfo', file=sys.stderr)
-        return 0
-
-    for line in fob:
-        if line.startswith('processor'):
-            cpucount += 1
-        # Alpha platform
-        if line.startswith('cpus detected'):
-            cpucount = int(line.split()[-1])
-    fob.close()
-
-    return max(cpucount, 1)
-
-
 class our_lex(shlex.shlex):
     def get_token(self):
         token = shlex.shlex.get_token(self)

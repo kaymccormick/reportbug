@@ -314,10 +314,6 @@ class TestSourcePackages(unittest.TestCase):
 
 
 class TestSystemInformation(unittest.TestCase):
-    def test_get_cpu_cores(self):
-        cores = utils.get_cpu_cores()
-        self.assertGreaterEqual(cores, 1)
-
     def test_lsb_release_info(self):
         res = utils.lsb_release_info()
         self.assertIn('Debian', res)

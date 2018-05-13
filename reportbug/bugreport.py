@@ -25,6 +25,7 @@ import os
 from . import utils
 from . import debbugs
 import subprocess
+import os
 
 from .exceptions import *
 
@@ -158,7 +159,7 @@ class bugreport(object):
                 kinfo = []
 
                 if 'SMP' in un[3]:
-                    cores = utils.get_cpu_cores()
+                    cores = os.cpu_count()
                     if cores > 1:
                         kinfo += ['SMP w/%d CPU cores' % cores]
                     elif cores == 1:

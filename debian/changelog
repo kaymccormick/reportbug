@@ -11,8 +11,10 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
       dependencies to make it work; desktop install tasks should depend
       on the new reportbug-gtk package; patch by Stephen Paul Weber;
       Closes: #842018, #872300
+  * remove utils.get_cpu_cores() in favor or os.cpu_count(), as available on
+    python3; Closes: #894208
 
- -- Sandro Tosi <morph@debian.org>  Sat, 12 May 2018 20:07:05 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 00:16:55 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
