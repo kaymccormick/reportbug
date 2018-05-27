@@ -2,7 +2,7 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
 
   * debian/control
     - update Vcs-* to point to salsa; drop Homepage pointing to alioth
-  * migrate to debian-reportbug@lists.debian.org
+  * migrate to debian-reportbug@lists.debian.org; Closes: #899684
   * reportbug/debbugs.py
     - fix a typo in the serious severity description; Closes: #894972
     - add contributors.debian.org to pseudo-packages list
