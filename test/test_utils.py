@@ -247,16 +247,6 @@ Version: 6.6.3
 
         __save = subprocess.getoutput
         subprocess.getoutput = mock.MagicMock(return_value=pkginfo % 'Description')
-        result = utils.available_package_description(pkg)
-        self.assertEqual('reports bugs in the Debian distribution', result)
-        subprocess.getoutput = mock.MagicMock(return_value=pkginfo % 'Description-en')
-        result = utils.available_package_description(pkg)
-        self.assertEqual('reports bugs in the Debian distribution', result)
-        subprocess.getoutput = __save
-        del __save
-
-        __save = subprocess.getoutput
-        subprocess.getoutput = mock.MagicMock(return_value=pkginfo % 'Description')
         result = utils.get_package_status(pkg)
         self.assertEqual('reports bugs in the Debian distribution', result[11])
         subprocess.getoutput = mock.MagicMock(return_value=pkginfo % 'Description-en')
@@ -285,13 +275,6 @@ Version: 6.6.3
         avail_db = utils.get_avail_database()
         entry = next(avail_db)
         self.assertIsNotNone(entry)
-
-    def test_available_package_description(self):
-        descr = utils.available_package_description('reportbug')
-        self.assertEqual(descr, 'reports bugs in the Debian distribution')
-
-        descr = utils.available_package_description('reportbug-bugfree')
-        self.assertIsNone(descr)
 
 
 class TestSourcePackages(unittest.TestCase):

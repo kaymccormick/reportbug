@@ -524,16 +524,6 @@ def get_avail_database():
     return AvailDB(popenob=subp)
 
 
-def available_package_description(package):
-    data = get_command_output('apt-cache show ' + pipes.quote(package))
-    descre = re.compile('^Description(?:-[a-zA-Z]+)?: (.*)$')
-    for line in data.split('\n'):
-        m = descre.match(line)
-        if m:
-            return m.group(1)
-    return None
-
-
 def get_source_name(package):
     packages = []
 
