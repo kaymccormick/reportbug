@@ -18,8 +18,10 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
     - dereference symbolic links when detecting file type; patch by Nis
       Martensen; Closes: #885959
   * remove unused Python imports; patch by Markus Hackspacher; Closes: #867337
+  * lookup package short description using apt python bindings; patch by Nis
+    Martensen; Closes: #564112, #876373, #502860
 
- -- Sandro Tosi <morph@debian.org>  Sun, 13 May 2018 12:19:34 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 14 Jun 2018 20:59:24 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
