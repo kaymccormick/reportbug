@@ -524,16 +524,6 @@ def get_avail_database():
     return AvailDB(popenob=subp)
 
 
-def available_package_description(package):
-    data = get_command_output('apt-cache show ' + pipes.quote(package))
-    descre = re.compile('^Description(?:-[a-zA-Z]+)?: (.*)$')
-    for line in data.split('\n'):
-        m = descre.match(line)
-        if m:
-            return m.group(1)
-    return None
-
-
 def get_source_name(package):
     packages = []
 
@@ -551,6 +541,8 @@ def get_source_package(package):
     retlist = []
     found = {}
 
+    apt_cache = apt.Cache()
+
     data = get_command_output('apt-cache showsrc ' + pipes.quote(package))
     binre = re.compile(r'^Binary: (.*)$')
     for line in data.split('\n'):
@@ -561,7 +553,10 @@ def get_source_package(package):
             packages += packlist
 
     for p in packages:
-        desc = available_package_description(p)
+        try:
+            desc = apt_cache[p].versions[0].summary
+        except KeyError:
+            continue
         if desc and (p not in found):
             retlist += [(p, desc)]
             found[p] = desc
