@@ -20,9 +20,6 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * remove unused Python imports; patch by Markus Hackspacher; Closes: #867337
   * lookup package short description using apt python bindings; patch by Nis
     Martensen; Closes: #564112, #876373, #502860
-  * bin/reportbug
-    - do not crash when debconf-show output cannot be decoded properly; patch by
-      Nis Martensen; Closes: #892898
   * reportbug/bugreport.py
     - dont add the novice bug template if the bug report body was provided on
       the command-line (even if in low-level modes); Closes #890793
