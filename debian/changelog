@@ -23,8 +23,11 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * bin/reportbug
     - do not crash when debconf-show output cannot be decoded properly; patch by
       Nis Martensen; Closes: #892898
+  * reportbug/bugreport.py
+    - dont add the novice bug template if the bug report body was provided on
+      the command-line (even if in low-level modes); Closes #890793
 
- -- Sandro Tosi <morph@debian.org>  Thu, 14 Jun 2018 21:07:01 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 17 Jun 2018 14:41:48 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 

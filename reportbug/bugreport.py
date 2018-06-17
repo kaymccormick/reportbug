@@ -117,7 +117,8 @@ class bugreport(object):
         # add NEWBIELINE only if it's less than advanced and the package is not
         # one of the specials (f.e. those with a dedicated function) also
         # thinking about those systems that don't have 'specials' dict
-        if self.mode < utils.MODE_ADVANCED and self.package not in \
+        # and if a body wasn't provided on the command line
+        if self.mode < utils.MODE_ADVANCED and not body and self.package not in \
                 list(debbugs.SYSTEMS[self.system].get('specials', {}).keys()):
             body = utils.NEWBIELINE + '\n\n' + body
         elif not body:
