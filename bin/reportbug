@@ -2137,7 +2137,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                 p, pkgversion, severity, justification,
                 depinfo, conftext, foundfile, incfiles, bts, exinfo, rtype,
                 klass, subject, tags, body, mode, pseudos, debsumsoutput,
-                issource=issource)
+                issource=issource, options=self.options)
 
         # Substitute server email address
         if submitto and '@' not in sendto:

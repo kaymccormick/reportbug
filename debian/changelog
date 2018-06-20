@@ -23,8 +23,10 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/bugreport.py
     - dont add the novice bug template if the bug report body was provided on
       the command-line (even if in low-level modes); Closes #890793
+  * dont add the 'System Information' section when running reportbug with the
+    option --from-buildd; Closes: #865812
 
- -- Sandro Tosi <morph@debian.org>  Sun, 17 Jun 2018 14:41:48 -0400
+ -- Sandro Tosi <morph@debian.org>  Tue, 19 Jun 2018 21:34:15 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
