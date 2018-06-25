@@ -25,8 +25,11 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
       the command-line (even if in low-level modes); Closes #890793
   * dont add the 'System Information' section when running reportbug with the
     option --from-buildd; Closes: #865812
+  * add explicit text to clarify the newer releases menu (some of which could be
+    in in-development suites) is meant as a request to the reporter to verify if
+    the bug has already been addressed; Closes: #900254, #880857
 
- -- Sandro Tosi <morph@debian.org>  Tue, 19 Jun 2018 21:34:15 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 24 Jun 2018 20:17:20 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 

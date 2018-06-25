@@ -1643,11 +1643,12 @@ class UI(object):
                 if not ui.yes_no(('\nYour version (%s) of %s appears to be out of date.\nThe '
                                   'following newer release(s) are available in the Debian '
                                   'archive:\n' % (pkgversion, package)) + availtext +
-                                 'Do you still want to file a report',
-                                 'Ignore this problem and continue.  This may be '
-                                 'appropriate if you know this bug is still present in more '
-                                 'recent releases of the package.',
-                                 'Exit without filing a report.', False, nowrap=True):
+                                  'Please try to verify if the bug you are about to report is ' +
+                                  'already addressed by these releases.  Do you still want to file a report',
+                                  'Ignore this problem and continue.  This may be '
+                                  'appropriate if you know this bug is still present in more '
+                                  'recent releases of the package.',
+                                  'Exit without filing a report.', False, nowrap=True):
                     efail("Newer released version; stopping.\n")
 
         bts = DEFAULT_BTS
