@@ -6,6 +6,8 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/debbugs.py
     - fix a typo in the serious severity description; Closes: #894972
     - add contributors.debian.org to pseudo-packages list
+    - since it's now in LTS status, comment out jessie-pu from the list of
+      suites presented for release.debian.org; Closes: #902379
   * replace 999999@b.d.o with a more generic nnnnnn@b.d.o; Closes: #891144
   * reportbug-gtk package created
     - a new package now installs the desktop file only along with the
@@ -29,7 +31,7 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
     in in-development suites) is meant as a request to the reporter to verify if
     the bug has already been addressed; Closes: #900254, #880857
 
- -- Sandro Tosi <morph@debian.org>  Sun, 24 Jun 2018 20:17:20 -0400
+ -- Sandro Tosi <morph@debian.org>  Mon, 25 Jun 2018 19:18:28 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
