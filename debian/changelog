@@ -1,4 +1,4 @@
-reportbug (7.1.11) UNRELEASED; urgency=medium
+reportbug (7.5.0) unstable; urgency=medium
 
   * debian/control
     - update Vcs-* to point to salsa; drop Homepage pointing to alioth
@@ -33,7 +33,7 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - fix a crash when showing a changed config file; Closes: #902417
 
- -- Sandro Tosi <morph@debian.org>  Sun, 01 Jul 2018 13:00:03 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 01 Jul 2018 14:37:45 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
