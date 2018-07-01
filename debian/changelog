@@ -13,7 +13,7 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
     - a new package now installs the desktop file only along with the
       dependencies to make it work; desktop install tasks should depend
       on the new reportbug-gtk package; patch by Stephen Paul Weber;
-      Closes: #842018, #872300
+      Closes: #842018, #872300, #902593
   * remove utils.get_cpu_cores() in favor or os.cpu_count(), as available on
     python3; Closes: #894208
   * reportbug/submit.py
@@ -33,7 +33,7 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * reportbug/ui/gtk2_ui.py
     - fix a crash when showing a changed config file; Closes: #902417
 
- -- Sandro Tosi <morph@debian.org>  Sun, 01 Jul 2018 12:48:30 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 01 Jul 2018 13:00:03 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
