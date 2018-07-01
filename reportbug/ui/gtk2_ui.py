@@ -1477,14 +1477,13 @@ class SystemPage(Page):
         hbox = Gtk.HBox()
 
         self.terminal = Vte.Terminal()
-        self.terminal.set_cursor_blinks(True)
-        self.terminal.set_emulation("xterm")
+        self.terminal.set_cursor_blink_mode(True)
         self.terminal.connect('child-exited', self.on_child_exited)
         hbox.pack_start(self.terminal, True, True, 0)
 
         scrollbar = Gtk.VScrollbar()
-        scrollbar.set_adjustment(self.terminal.get_adjustment())
-        hbox.pack_start(scrollbar, True, True, 0)
+        scrollbar.set_adjustment(self.terminal.get_vadjustment())
+        hbox.pack_start(scrollbar, False, True, 0)
 
         return hbox
 
@@ -1495,7 +1494,7 @@ class SystemPage(Page):
 
     def execute(self, cmdline):
         _assert_context(ui_context)
-        self.terminal.fork_command('/bin/bash', ['/bin/bash', '-c', cmdline])
+        self.terminal.spawn_sync(Vte.PtyFlags.DEFAULT, os.environ['HOME'], ['/bin/bash', '-c', cmdline], [], GLib.SpawnFlags.DO_NOT_REAP_CHILD, None, None)
 
 
 class ProgressPage(Page):

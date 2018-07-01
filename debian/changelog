@@ -30,8 +30,10 @@ reportbug (7.1.11) UNRELEASED; urgency=medium
   * add explicit text to clarify the newer releases menu (some of which could be
     in in-development suites) is meant as a request to the reporter to verify if
     the bug has already been addressed; Closes: #900254, #880857
+  * reportbug/ui/gtk2_ui.py
+    - fix a crash when showing a changed config file; Closes: #902417
 
- -- Sandro Tosi <morph@debian.org>  Mon, 25 Jun 2018 19:18:28 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 01 Jul 2018 12:48:30 -0400
 
 reportbug (7.1.10) unstable; urgency=medium
 
