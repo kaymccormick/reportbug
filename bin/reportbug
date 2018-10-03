@@ -260,7 +260,7 @@ def handle_editing(filename, dmessage, options, sendto, attachments, package,
                 if attachfile:
                     # expand vars & glob the input string
                     attachfile = os.path.expanduser(attachfile)
-                    attachfglob = glob(attachfile)
+                    attachfglob = sorted(glob(attachfile), key=str.casefold)
                     # check if the globbing returns any result
                     if not attachfglob:
                         ui.display_failure("Can't find %s to include!\n", attachfile)
@@ -1031,7 +1031,7 @@ def main():
         # support glob
         globbed_attachments = []
         for attachment in options.attachments:
-            globbed_attachments.extend(glob(attachment))
+            globbed_attachments.extend(sorted(glob(attachment), key=str.casefold))
         options.attachments = globbed_attachments
         any_missing = False
         for attachment in options.attachments:
@@ -2203,7 +2203,7 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
                     if patchfile:
                         attachfile = os.path.expanduser(patchfile)
                         # loop over the glob of 'attachfile', we support glob now
-                        for attachf in glob(attachfile):
+                        for attachf in sorted(glob(attachfile), key=str.casefold):
                             if os.path.exists(attachfile):
                                 attachments.append(attachfile)
                             else:
