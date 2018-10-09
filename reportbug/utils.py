@@ -992,6 +992,8 @@ def parse_config_files():
                     args['nocc'] = (token == 'no-cc')
                 elif token in ('no-compress', 'compress'):
                     args['nocompress'] = (token == 'no-compress')
+                elif token in ('no-list-cc-me', 'list-cc-me'):
+                    args['listccme'] = (token == 'list-cc-me')
                 elif token in ('no-query-bts', 'query-bts'):
                     args['dontquery'] = (token == 'no-query-bts')
                 elif token in ('config-files', 'no-config-files'):

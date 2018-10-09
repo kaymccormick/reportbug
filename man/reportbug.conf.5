@@ -97,6 +97,11 @@ it's the From address but it can be selected a different one in case the MTA
 doesn't canonicalize local users to public addresses.
 
 .TP
+.B list-cc-me (\fIboolean\fP)
+Send a carbon copy of the report to your automatically detected email address
+after a report number is assigned, like the \fI\-\-list\-cc\-me\fP option.
+
+.TP
 .B mbox_reader_cmd
 Specify a command to open the bug reports mbox file. You can use
 \fB%s\fP to substitute the mbox file to be used, and \fB%%\fP to insert

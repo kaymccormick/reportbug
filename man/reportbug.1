@@ -232,6 +232,14 @@ number is assigned; this is the equivalent to the option
 \fI\-H 'X\-Debbugs\-CC: ADDRESS'\fP.  This option will only work as
 intended with \fBdebbugs\fP systems.
 .TP
+.B \-\-list\-cc-me
+Send a carbon copy of the report to your automatically detected email address
+after a report number is assigned. This sets an \fIX\-Debbugs\-CC\fP header
+specifying that address. This option will only work as intended with
+\fBdebbugs\fP systems. See the documentation for the \fI\-\-email\fP option and
+the \fIENVIRONMENT\fP section for information on how reportbug detects your
+email address.
+.TP
 .B \-m, \-\-maintonly
 Only send the bug to the package maintainer; the bug tracking system
 will not send a copy to the bug report distribution lists.

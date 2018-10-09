@@ -732,13 +732,13 @@ def offer_configuration(options):
     if stupidmode:
         print('# Disable fallback mode by commenting out the following:', file=fp)
         print('no-cc', file=fp)
-        print('header "X-Debbugs-CC: %s"' % email_addy, file=fp)
+        print('list-cc-me', file=fp)
         print('smtphost reportbug.debian.org', file=fp)
     else:
         print('# If nothing else works, remove the # at the beginning', file=fp)
         print('# of the following three lines:', file=fp)
         print('#no-cc', file=fp)
-        print('#header "X-Debbugs-CC: %s"' % email_addy, file=fp)
+        print('#list-cc-me', file=fp)
         print('#smtphost reportbug.debian.org', file=fp)
 
     print('# You can add other settings after this line.  See', file=fp)
@@ -868,6 +868,8 @@ def main():
                                                 'specified mail transport agent')
     parser.add_option('--list-cc', action='append', dest='listcc',
                       help='send a copy to the specified address')
+    parser.add_option('--list-cc-me', action='store_true', dest='listccme',
+                      help='send a copy to your detected email address')
     parser.add_option('-p', '--print', action='store_true', dest='printonly',
                       help='output the report to standard output only')
     parser.add_option('--report-quiet', action='store_const', dest='sendto',
@@ -1923,6 +1925,13 @@ For more details, please see: http://www.debian.org/devel/wnpp/''')
         listcc = self.options.listcc
         if not listcc:
             listcc = []
+
+        if self.options.listccme:
+            detected_addr = self.options.email or utils.get_email()[1]
+            if not detected_addr:
+                efail("list-cc-me option specified but email address not detected")
+            ewrite("list-cc-me DEBUG: {}".format(detected_addr))
+            listcc += [detected_addr]
 
         if not listcc and mode > MODE_STANDARD and rtype == 'debbugs' and not self.options.testmode and not self.options.template and self.options.ccmenu:
             listcc += ui.get_multiline(
