@@ -1279,6 +1279,8 @@ def get_init_system():
         init = 'systemd (via /run/systemd/system)'
     if not subprocess.call('. /lib/lsb/init-functions ; init_is_upstart', shell=True):
         init = 'upstart (via init_is_upstart())'
+    elif os.path.isfile('/run/runit.stopit'):
+        init = 'runit (via /run/runit.stopit)'
     elif os.path.isfile('/sbin/init') and not os.path.islink('/sbin/init'):
         init = 'sysvinit (via /sbin/init)'
 
