@@ -7,8 +7,9 @@ reportbug (7.5.1) UNRELEASED; urgency=medium
   * reportbug/utils.py
     - restore stderr messages on the terminal, as it's sometimes useful; patch
       by Nis Martensen; Closes: #882130
+    - detect Runit as init system, patch by Lorenzo Puliti; Closes: #913236
 
- -- Sandro Tosi <morph@debian.org>  Fri, 23 Nov 2018 21:35:01 -0500
+ -- Sandro Tosi <morph@debian.org>  Fri, 23 Nov 2018 21:50:20 -0500
 
 reportbug (7.5.0) unstable; urgency=medium
 
