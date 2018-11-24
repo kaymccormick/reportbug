@@ -240,7 +240,7 @@ def handle_debian_ftp(package, bts, ui, fromaddr, timeout, online=True, http_pro
     if tag == 'other':
         return
     else:
-        prompt = 'Please enter the name of the package: '
+        prompt = 'Please enter the name(s) of the package(s): '
         package = ui.get_string(prompt)
         if not package:
             ui.log_message('You seem to want to report a generic bug, not request a removal\n')

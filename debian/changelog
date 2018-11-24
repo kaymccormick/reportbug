@@ -2,8 +2,10 @@ reportbug (7.5.1) UNRELEASED; urgency=medium
 
   * debian/control
     - mark reportbug-gtk as priority: optional; Closes: #910814
+  * reportbug/debbugs.py
+    - ftp.debian.org removal bugs should say "package(s)"; Closes: #912967
 
- -- Sandro Tosi <morph@debian.org>  Fri, 23 Nov 2018 18:38:58 -0500
+ -- Sandro Tosi <morph@debian.org>  Fri, 23 Nov 2018 19:50:05 -0500
 
 reportbug (7.5.0) unstable; urgency=medium
 
