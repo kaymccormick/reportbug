@@ -13,8 +13,13 @@ reportbug (7.5.1) UNRELEASED; urgency=medium
   * bin/reportbug
     - wildcard globbing for attachments should attach in alphabetical order,
       patch by Nis Martensen; Closes: #906990
+  * reportbug/ui/urwid_ui.py
+    - fix regression in opening editor from Urwid UI, patch by John Scott;
+      Closes: #903969, #908515, #904391
+  * Add --list-cc-me option to X-Debbugs-CC your detected email address, patch
+    by Josh Triplett; Closes: #910697
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 13:36:20 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 14:01:34 -0500
 
 reportbug (7.5.0) unstable; urgency=medium
 
