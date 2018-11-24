@@ -1,4 +1,4 @@
-reportbug (7.5.1) UNRELEASED; urgency=medium
+reportbug (7.5.1) unstable; urgency=medium
 
   * debian/control
     - mark reportbug-gtk as priority: optional; Closes: #910814
@@ -19,7 +19,7 @@ reportbug (7.5.1) UNRELEASED; urgency=medium
   * Add --list-cc-me option to X-Debbugs-CC your detected email address, patch
     by Josh Triplett; Closes: #910697
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 14:01:34 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 15:27:06 -0500
 
 reportbug (7.5.0) unstable; urgency=medium
 
