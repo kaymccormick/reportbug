@@ -8,11 +8,13 @@ reportbug (7.5.1) UNRELEASED; urgency=medium
     - restore stderr messages on the terminal, as it's sometimes useful; patch
       by Nis Martensen; Closes: #882130
     - detect Runit as init system, patch by Lorenzo Puliti; Closes: #913236
+    - recognize held packages as installed, patch by Nis Martensen;
+      Closes: #905353
   * bin/reportbug
     - wildcard globbing for attachments should attach in alphabetical order,
       patch by Nis Martensen; Closes: #906990
 
- -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 13:33:15 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 24 Nov 2018 13:36:20 -0500
 
 reportbug (7.5.0) unstable; urgency=medium
 
