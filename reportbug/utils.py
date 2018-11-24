@@ -185,7 +185,7 @@ def get_command_output(cmd):
     use_shell = False
     if isinstance(cmd, str) and ' ' in cmd:
         use_shell = True
-    return subprocess.run(cmd, shell=use_shell, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode(errors='backslashreplace')
+    return subprocess.run(cmd, shell=use_shell, stdout=subprocess.PIPE).stdout.decode(errors='backslashreplace')
 
 
 def query_dpkg_for(filename, use_dlocate=True):
