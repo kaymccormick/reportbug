@@ -1069,6 +1069,13 @@ def get_reports(package, timeout, system='debian', mirrors=None, version=None,
                 pkg_filter = 'src'
             else:
                 pkg_filter = 'package'
+            if http_proxy:
+                from urllib.parse import urlparse
+                parsed_url = urlparse(http_proxy)
+                # Probably ought to use more info for the proxy, if applicable.
+                debianbts.set_soap_proxy(dict(proxy_host=parsed_url.hostname,
+                                         proxy_port=parsed_url.port))
+
             bugs = debianbts.get_bugs(pkg_filter, package)
         else:
             bugs = list(map(int, package))
