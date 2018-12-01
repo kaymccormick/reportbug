@@ -146,6 +146,7 @@ def open_url(url, http_proxy=None, timeout=60):
     proxies = urllib.request.getproxies()
     if http_proxy:
         proxies['http'] = http_proxy
+        proxies['https'] = http_proxy
 
     try:
         page = urlopen(url, proxies, timeout)
